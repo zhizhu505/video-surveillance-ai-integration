@@ -1,9 +1,6 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-"""
-全功能视频监控系统 - 核心代码包
-"""
+## 全功能视频监控系统 - 核心代码包
+
 
 # 视频监控危险行为检测系统
 
@@ -390,20 +387,7 @@ if [检测条件]:
    - SAM (Segment Anything Model)
    - CLIP (Contrastive Language-Image Pre-training)
 
-2. **多模态大模型**：用于视觉-语言理解
-   - GPT-4V
-   - Gemini
-   - Qwen-VL
-   - LLaVA
-   - Claude 3 Vision
-
-3. **大语言模型**：用于告警分析和决策支持
-   - GPT-4/3.5
-   - Claude
-   - Qwen/Qwen2
-   - Llama 2/3
-   - Mistral
-
+/
 ## 安装大模型依赖
 
 ### 添加依赖
