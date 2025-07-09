@@ -6,10 +6,12 @@ import threading
 from typing import Dict, List, Any, Optional, Tuple, Union
 from pathlib import Path
 
-from models.alert_rule import AlertRule, AlertRuleConfig, AlertLevel
-from models.alert_event import AlertEvent, AlertEventStore
-from models.alert_processor import AlertProcessor
-from models.alert_plugins import NotificationManager
+# 正确的路径 (在models和模块名之间多加一层 .alert)
+from models.alert.alert_rule import AlertRule, AlertRuleConfig, AlertLevel
+from models.alert.alert_event import AlertEvent, AlertEventStore
+# 同样，在models和模块名之间多加一层 .alert
+from models.alert.alert_processor import AlertProcessor
+from models.alert.alert_plugins import NotificationManager
 
 
 class AlertSystem:
