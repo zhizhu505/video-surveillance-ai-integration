@@ -10328,3 +10328,152 @@ NameError: name 'motion_area' is not defined
 
 2025-07-09 22:00:55,648 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250709_220055.txt
 2025-07-09 22:00:55,648 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-09 22:56:38,440 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-09 22:56:38,441 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-09 22:56:38,854 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-09 22:56:44,121 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-09 22:56:44,126 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-09 22:56:44,127 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.2
+2025-07-09 22:56:44,473 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-09 22:56:44,478 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-09 22:56:44,478 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-09 22:56:44,479 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-09 22:56:44,480 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-09 22:56:44,480 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-09 22:56:44,519 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-09 22:56:44,520 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-09 22:56:45,072 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-09 22:56:49,050 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:49] "GET / HTTP/1.1" 200 -
+2025-07-09 22:56:49,094 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:49] "GET /video_feed HTTP/1.1" 200 -
+2025-07-09 22:56:49,098 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:49] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:49,868 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 11, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 11, 'area': 0.145, 'threshold': 0.05}
+2025-07-09 22:56:50,079 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:50] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:50,841 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 22, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 22, 'area': 0.33916666666666667, 'threshold': 0.05}
+2025-07-09 22:56:51,070 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:51] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:51,891 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 34, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 34, 'area': 0.37083333333333335, 'threshold': 0.05}
+2025-07-09 22:56:52,076 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:52] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:52,875 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 45, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 45, 'area': 0.3983333333333333, 'threshold': 0.05}
+2025-07-09 22:56:53,081 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:53] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:53,793 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 56, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 56, 'area': 0.37916666666666665, 'threshold': 0.05}
+2025-07-09 22:56:54,070 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:54] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:54,775 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: Õª»ªæÁ¡“‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 67, œÍ«È: {'type': 'Õª»ªæÁ¡“‘À∂Ø', 'confidence': 1.0, 'frame': 67, 'magnitude': np.float32(6.4061484), 'threshold': 3}
+2025-07-09 22:56:54,776 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 67, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 67, 'area': 0.5308333333333334, 'threshold': 0.05}
+2025-07-09 22:56:55,085 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:55] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:55,737 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 78, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 78, 'area': 0.4008333333333333, 'threshold': 0.05}
+2025-07-09 22:56:56,074 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:56] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:56,951 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: Õª»ªæÁ¡“‘À∂Ø ÷√–≈∂»: 0.95 ÷°∫≈: 89, œÍ«È: {'type': 'Õª»ªæÁ¡“‘À∂Ø', 'confidence': np.float32(0.95494246), 'frame': 89, 'magnitude': np.float32(5.729655), 'threshold': 3}
+2025-07-09 22:56:56,952 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 89, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 89, 'area': 0.5391666666666667, 'threshold': 0.05}
+2025-07-09 22:56:57,079 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:57] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:58,070 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:58] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:58,401 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 100, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 100, 'area': 0.4008333333333333, 'threshold': 0.05}
+2025-07-09 22:56:59,079 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:56:59] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:56:59,851 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 111, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 111, 'area': 0.45, 'threshold': 0.05}
+2025-07-09 22:57:00,073 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:00] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:01,074 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:01] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:01,270 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: Õª»ªæÁ¡“‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 122, œÍ«È: {'type': 'Õª»ªæÁ¡“‘À∂Ø', 'confidence': 1.0, 'frame': 122, 'magnitude': np.float32(7.824078), 'threshold': 3}
+2025-07-09 22:57:01,271 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 122, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 122, 'area': 0.59, 'threshold': 0.05}
+2025-07-09 22:57:02,073 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:02] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:02,615 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 133, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 133, 'area': 0.25333333333333335, 'threshold': 0.05}
+2025-07-09 22:57:03,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:03] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:03,974 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 144, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 144, 'area': 0.21083333333333334, 'threshold': 0.05}
+2025-07-09 22:57:04,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:04] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:05,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:05] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:05,412 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: Õª»ªæÁ¡“‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 155, œÍ«È: {'type': 'Õª»ªæÁ¡“‘À∂Ø', 'confidence': 1.0, 'frame': 155, 'magnitude': np.float32(6.6596193), 'threshold': 3}
+2025-07-09 22:57:05,414 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 155, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 155, 'area': 0.5125, 'threshold': 0.05}
+2025-07-09 22:57:05,968 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:05] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:06,075 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:06] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:06,866 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 166, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 166, 'area': 0.21666666666666667, 'threshold': 0.05}
+2025-07-09 22:57:07,077 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:07] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:08,073 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:08] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:08,310 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 177, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 177, 'area': 0.175, 'threshold': 0.05}
+2025-07-09 22:57:09,078 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:09] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:09,818 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 188, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 188, 'area': 0.18166666666666667, 'threshold': 0.05}
+2025-07-09 22:57:10,070 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:10] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:11,077 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:11] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:11,278 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 199, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 199, 'area': 0.3, 'threshold': 0.05}
+2025-07-09 22:57:12,077 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:12] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:12,711 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 210, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 210, 'area': 0.125, 'threshold': 0.05}
+2025-07-09 22:57:13,073 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:13] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:14,081 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:14] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:14,137 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 222, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 222, 'area': 0.36583333333333334, 'threshold': 0.05}
+2025-07-09 22:57:15,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:15] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:16,082 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:16] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:16,567 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 242, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 242, 'area': 0.0975, 'threshold': 0.05}
+2025-07-09 22:57:17,073 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:17] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:17,996 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 253, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 253, 'area': 0.12, 'threshold': 0.05}
+2025-07-09 22:57:18,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:18] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:19,079 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:19] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:19,368 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 264, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 264, 'area': 0.3275, 'threshold': 0.05}
+2025-07-09 22:57:20,072 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:20] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:20,883 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 276, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 276, 'area': 0.21583333333333332, 'threshold': 0.05}
+2025-07-09 22:57:21,080 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:21] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:22,070 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:22] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:22,276 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 287, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 287, 'area': 0.10583333333333333, 'threshold': 0.05}
+2025-07-09 22:57:23,081 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:23] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:23,705 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 298, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 298, 'area': 0.44416666666666665, 'threshold': 0.05}
+2025-07-09 22:57:24,080 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:24] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:25,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:25] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:25,115 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 309, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 309, 'area': 0.39166666666666666, 'threshold': 0.05}
+2025-07-09 22:57:26,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:26] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:26,442 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: Õª»ªæÁ¡“‘À∂Ø ÷√–≈∂»: 0.68 ÷°∫≈: 320, œÍ«È: {'type': 'Õª»ªæÁ¡“‘À∂Ø', 'confidence': np.float32(0.67624265), 'frame': 320, 'magnitude': np.float32(4.057456), 'threshold': 3}
+2025-07-09 22:57:26,444 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 320, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 320, 'area': 0.53, 'threshold': 0.05}
+2025-07-09 22:57:27,079 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:27] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:28,043 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 331, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 331, 'area': 0.3858333333333333, 'threshold': 0.05}
+2025-07-09 22:57:28,074 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:28] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:29,081 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:29] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:29,506 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: Õª»ªæÁ¡“‘À∂Ø ÷√–≈∂»: 0.78 ÷°∫≈: 342, œÍ«È: {'type': 'Õª»ªæÁ¡“‘À∂Ø', 'confidence': np.float32(0.7810636), 'frame': 342, 'magnitude': np.float32(4.686382), 'threshold': 3}
+2025-07-09 22:57:29,508 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 342, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 342, 'area': 0.5541666666666667, 'threshold': 0.05}
+2025-07-09 22:57:30,077 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:30] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:31,089 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 353, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 353, 'area': 0.14166666666666666, 'threshold': 0.05}
+2025-07-09 22:57:31,090 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:31] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:32,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:32] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:32,479 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: Õª»ªæÁ¡“‘À∂Ø ÷√–≈∂»: 0.72 ÷°∫≈: 364, œÍ«È: {'type': 'Õª»ªæÁ¡“‘À∂Ø', 'confidence': np.float32(0.7196593), 'frame': 364, 'magnitude': np.float32(4.317956), 'threshold': 3}
+2025-07-09 22:57:32,481 - AllInOneSystem - INFO - [Œ£œ’––Œ™] ¿‡–Õ: ¥Û∑∂Œß“Ï≥£‘À∂Ø ÷√–≈∂»: 1.00 ÷°∫≈: 364, œÍ«È: {'type': '¥Û∑∂Œß“Ï≥£‘À∂Ø', 'confidence': 1.0, 'frame': 364, 'area': 0.41333333333333333, 'threshold': 0.05}
+2025-07-09 22:57:33,071 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:33] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:33,456 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:33] "POST /control HTTP/1.1" 200 -
+2025-07-09 22:57:33,473 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-09 22:57:34,086 - werkzeug - INFO - 127.0.0.1 - - [09/Jul/2025 22:57:34] "GET /stats HTTP/1.1" 200 -
+2025-07-09 22:57:34,355 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-09 22:57:34,357 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 50.23 √Î
+◊‹÷° ˝: 822
+¥¶¿Ì÷° ˝: 372 (45.3%)
+∆Ωæ˘÷°¬ : 16.36 FPS
+∏ÊæØ◊‹ ˝: 39
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Õª»ªæÁ¡“‘À∂Ø: 7
+  - ¥Û∑∂Œß“Ï≥£‘À∂Ø: 32
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: None
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.2
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: False
+  - save_alerts: False
+
+2025-07-09 22:57:34,361 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250709_225734.txt
+2025-07-09 22:57:34,374 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π

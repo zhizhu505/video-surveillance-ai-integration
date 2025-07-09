@@ -1,42 +1,110 @@
-# Python
+# ==========================
+# 基本Python项目忽略规则
+# ==========================
+
+# Python编译文件
 __pycache__/
 *.py[cod]
-*.so
-*.pyd
 *.pyo
-*.pdb
-*.egg-info/
+*.pyc
+*.pyd
+*.so
+
+# 包文件
 *.egg
+*.egg-info/
+dist/
+build/
+*.whl
+
+# 日志和缓存
 *.log
+*.tmp
+.cache/
+.pytest_cache/
 
-# Jupyter Notebook
-.ipynb_checkpoints/
+# ==========================
+# 环境和依赖
+# ==========================
 
-# 环境/依赖
+# 虚拟环境
 venv/
-.env
-.env.*
+env/
+.venv/
 .Python
 
-# IDE
-.idea/
-.vscode/
-*.swp
+# 环境变量
+.env
+.env.*
 
+# ==========================
+# IDE和编辑器
+# ==========================
+
+# PyCharm/IntelliJ
+.idea/
+*.iml
+*.iws
+
+# VS Code
+.vscode/
+
+# Vim
+*.swp
+*.swo
+
+# ==========================
 # 系统文件
+# ==========================
 .DS_Store
 Thumbs.db
 
-# 输出/缓存
-system_output/
-*.tmp
+# ==========================
+# 数据和模型
+# ==========================
 
-# 数据/模型
+# 大模型文件（超过100MB）
 *.pt
 *.h5
 *.onnx
 *.ckpt
 *.weights
+*.pth
 
-# 其他
-# 如有需要可补充更多规则 
+# 但包含特定小模型（根据实际情况调整）
+!models/small_model.pt  # 示例：包含小模型
+
+# 数据文件
+data/raw/  # 原始数据通常不提交
+data/*.csv  # 大型CSV文件
+
+# ==========================
+# 文档和输出
+# ==========================
+
+# 文档生成目录
+docs/_build/
+docs/*.pdf
+docs/*.html
+
+# 系统输出
+system_output/
+output/
+results/
+
+# ==========================
+# Jupyter Notebook
+# ==========================
+.ipynb_checkpoints/
+*.ipynb_output
+
+# ==========================
+# 特定项目文件
+# ==========================
+
+# 不要忽略这些文件
+!run_all_in_one.bat
+!config.json
+
+# 警告：不要提交大于100MB的文件
+# 参考：https://git-lfs.github.com/
