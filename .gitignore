@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+*.pdb
+*.egg-info/
+*.egg
+*.log
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# 环境/依赖
+venv/
+.env
+.env.*
+.Python
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# 输出/缓存
+system_output/
+*.tmp
+
+# 数据/模型
+*.pt
+*.h5
+*.onnx
+*.ckpt
+*.weights
+
+# 其他
+# 如有需要可补充更多规则 
