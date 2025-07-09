@@ -35,16 +35,16 @@ class DangerRecognizer:
         """
         # 默认配置
         self.config = {
-            'feature_count_threshold': 100,  # 特征点数量阈值
-            'feature_change_ratio': 1.5,     # 特征变化比率阈值
-            'motion_magnitude_threshold': 10, # 运动幅度阈值
-            'motion_area_threshold': 0.05,   # 运动区域阈值(占比)
-            'fall_motion_threshold': 10,     # 摔倒检测阈值
-            'alert_cooldown': 10,            # 告警冷却帧数
-            'history_length': 30,            # 历史帧数量
-            'save_alerts': True,             # 是否保存告警
-            'alert_dir': 'alerts',           # 告警保存目录
-            'min_confidence': 0.5,           # 最小置信度
+            'feature_count_threshold': 30,      # 降低特征点数量阈值
+            'feature_change_ratio': 1.2,        # 降低特征变化率阈值
+            'motion_magnitude_threshold': 3,    # 降低运动幅度阈值
+            'motion_area_threshold': 0.01,      # 降低大面积运动阈值
+            'fall_motion_threshold': 5,         # 降低摔倒检测阈值
+            'alert_cooldown': 5,                # 缩短告警冷却
+            'history_length': 30,
+            'save_alerts': True,
+            'alert_dir': 'alerts',
+            'min_confidence': 0.2,              # 降低最小置信度
         }
         
         # 更新用户配置
@@ -159,51 +159,30 @@ class DangerRecognizer:
         
         if not features:
             return stats
-        
-        # 计算运动统计
-        magnitudes = []
-        motion_area = 0
-        vertical_motion = 0
-        
-        for feature in features:
-            if hasattr(feature, 'magnitude'):
-                magnitudes.append(feature.magnitude)
-            
-            if hasattr(feature, 'position') and hasattr(feature, 'end_position'):
-                # 计算方向
-                dx = feature.end_position[0] - feature.position[0]
-                dy = feature.end_position[1] - feature.position[1]
-                
-                vertical_motion += dy
-                
-                # 量化方向
-                angle = np.degrees(np.arctan2(dy, dx))
-                direction = round(angle / 45) * 45
-                if direction in stats['motion_directions']:
-                    stats['motion_directions'][direction] += 1
-                else:
-                    stats['motion_directions'][direction] = 1
-                
-                # 检查是否在告警区域内
-                if self.alert_regions and hasattr(feature, 'position'):
-                    for region in self.alert_regions:
-                        if cv2.pointPolygonTest(region['points'], 
-                                               (int(feature.position[0]), int(feature.position[1])), 
-                                               False) >= 0:
-                            stats['in_alert_region'] = True
-                            break
-            
-            # 估算运动区域
-            if hasattr(feature, 'magnitude'):
-                motion_area += feature.magnitude * 10
-        
-        if magnitudes:
-            stats['avg_magnitude'] = sum(magnitudes) / len(magnitudes)
-            stats['max_magnitude'] = max(magnitudes)
-        
+
+        motion_area = 0  # 修复：初始化motion_area
+
+        # 优先用光流幅度
+        if isinstance(features, dict) and 'flow_mean_magnitude' in features:
+            stats['avg_magnitude'] = features['flow_mean_magnitude']
+            stats['max_magnitude'] = features['flow_max_magnitude']
+            # 用motion_vectors数量估算运动面积
+            if 'motion_vectors' in features:
+                # 16为采样步长，motion_vectors数量*采样面积
+                motion_area = len(features['motion_vectors']) * 16 * 16
+        else:
+            # 兼容原有特征点方式
+            magnitudes = []
+            if features:
+                for feature in features:
+                    if hasattr(feature, 'magnitude'):
+                        magnitudes.append(feature.magnitude)
+                        motion_area += feature.magnitude * 10  # 原有面积估算
+            if magnitudes:
+                stats['avg_magnitude'] = np.mean(magnitudes)
+                stats['max_magnitude'] = np.max(magnitudes)
+
         stats['motion_area'] = min(1.0, motion_area / frame_area)
-        stats['vertical_motion'] = vertical_motion / max(1, len(features))
-        
         return stats
     
     def _analyze_danger(self, frame, features, object_detections=None):
@@ -222,7 +201,11 @@ class DangerRecognizer:
         
         alerts = []
         feature_count = len(features) if features else 0
-        
+        # 调试输出每帧特征
+        print(f"[调试] 帧号: {self.current_frame}, 特征点数: {feature_count}, "
+              f"平均幅度: {self.history[-1]['avg_magnitude'] if self.history else 0:.2f}, "
+              f"最大幅度: {self.history[-1]['max_magnitude'] if self.history else 0:.2f}, "
+              f"运动面积: {self.history[-1]['motion_area'] if self.history else 0:.4f}")
         # 检查冷却时间
         if self.current_frame - self.last_alert_frame <= self.config['alert_cooldown']:
             return []
@@ -231,6 +214,7 @@ class DangerRecognizer:
         if feature_count > self.config['feature_count_threshold']:
             confidence = min(1.0, feature_count / (self.config['feature_count_threshold'] * 3))
             if confidence >= self.config['min_confidence']:
+                print(f"[判定] 突然剧烈运动: 特征点数={feature_count}, 阈值={self.config['feature_count_threshold']}, 置信度={confidence:.2f}")
                 alerts.append({
                     'type': self.DANGER_TYPES['sudden_motion'],
                     'confidence': confidence,
@@ -247,6 +231,7 @@ class DangerRecognizer:
                 
                 confidence = min(1.0, (feature_change_ratio - 1) / self.config['feature_change_ratio'])
                 if confidence >= self.config['min_confidence']:
+                    print(f"[判定] 特征变化率: 变化率={feature_change_ratio:.2f}, 阈值={self.config['feature_change_ratio']}, 置信度={confidence:.2f}")
                     alerts.append({
                         'type': self.DANGER_TYPES['sudden_motion'],
                         'confidence': confidence,
@@ -266,6 +251,7 @@ class DangerRecognizer:
                 
                 confidence = min(1.0, current / (self.config['motion_magnitude_threshold'] * 2))
                 if confidence >= self.config['min_confidence']:
+                    print(f"[判定] 运动幅度: 当前={current:.2f}, 阈值={self.config['motion_magnitude_threshold']}, 置信度={confidence:.2f}")
                     alerts.append({
                         'type': self.DANGER_TYPES['sudden_motion'],
                         'confidence': confidence,
@@ -279,6 +265,7 @@ class DangerRecognizer:
         if motion_area > self.config['motion_area_threshold']:
             confidence = min(1.0, motion_area / self.config['motion_area_threshold'])
             if confidence >= self.config['min_confidence']:
+                print(f"[判定] 大面积运动: 面积={motion_area:.4f}, 阈值={self.config['motion_area_threshold']}, 置信度={confidence:.2f}")
                 alerts.append({
                     'type': self.DANGER_TYPES['large_area_motion'],
                     'confidence': confidence,
@@ -297,6 +284,7 @@ class DangerRecognizer:
                     
                     for region_idx, region in enumerate(self.alert_regions):
                         if cv2.pointPolygonTest(region['points'], (center_x, center_y), False) >= 0:
+                            print(f"[判定] 入侵警戒区: 目标={obj.get('class', 'unknown')}, 区域={region['name']}, 置信度={obj.get('confidence', 0.8):.2f}")
                             # 目标在警戒区域内
                             alerts.append({
                                 'type': self.DANGER_TYPES['intrusion'],
@@ -314,6 +302,7 @@ class DangerRecognizer:
                 recent_vertical = sum(h['vertical_motion'] for h in self.history[-3:])
                 
                 if abs(recent_vertical) < 5:  # 快速下降后静止
+                    print(f"[判定] 摔倒检测: 垂直运动={vertical_motion:.2f}, 阈值={self.config['fall_motion_threshold']}")
                     alerts.append({
                         'type': self.DANGER_TYPES['fall'],
                         'confidence': 0.7,

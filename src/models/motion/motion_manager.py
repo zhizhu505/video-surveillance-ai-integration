@@ -148,6 +148,9 @@ class MotionFeatureManager:
                             motion_vectors.append((x, y, fx, fy, mag[y, x]))
                 features['motion_vectors'] = motion_vectors
                 
+                # 调试输出
+                print(f"[光流Farneback] 帧: {self.frame_count}, motion_vectors: {len(motion_vectors)}, mean_mag: {features['flow_mean_magnitude']:.2f}, max_mag: {features['flow_max_magnitude']:.2f}")
+                
             elif self.optical_flow_method == 'sparse':
                 if self.prev_points is None:
                     self.prev_points = cv2.goodFeaturesToTrack(self.prev_gray, **self.feature_params)
@@ -178,6 +181,9 @@ class MotionFeatureManager:
                             features['flow_max_magnitude'] = np.max(magnitudes)
                         
                         features['motion_vectors'] = motion_vectors
+                        
+                        # 调试输出
+                        print(f"[光流Sparse] 帧: {self.frame_count}, motion_vectors: {len(motion_vectors)}, mean_mag: {features.get('flow_mean_magnitude', 0):.2f}, max_mag: {features.get('flow_max_magnitude', 0):.2f}")
                         
                         # 更新点
                         self.prev_points = good_new.reshape(-1, 1, 2)
@@ -297,7 +303,7 @@ class MotionFeatureManager:
             features['keypoint_extraction_time'] = time.time() - start_time
         
         # 更新前一帧
-        self.prev_gray = gray
+        self.prev_gray = gray.copy()
         
         return features
     

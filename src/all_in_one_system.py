@@ -93,6 +93,8 @@ class AllInOneSystem:
         self.alerts = []  # 当前触发的告警列表
         self.alert_count = 0  # 累积告警次数
         self.start_time = time.time()  # 启动时间戳，用于计算运行时长
+        self.recognized_behaviors = []  # 存储识别到的行为信息
+
 
         # 线程和队列设置
         self.frame_queue = Queue(maxsize=30)  # 存储「捕获线程 → 处理线程」的帧（缓冲队列）
@@ -428,6 +430,16 @@ class AllInOneSystem:
                     if alerts:
                         self.alerts = alerts
                         self.alert_count += len(alerts)
+                        # 打印并保存每条危险行为
+                        for alert in alerts:
+                            alert_msg = f"[危险行为] 类型: {alert.get('type', '未知')} 置信度: {alert.get('confidence', 0):.2f} 帧号: {alert.get('frame', '-')}, 详情: {alert}"
+                            print(alert_msg)
+                            logger.info(alert_msg)
+                            # 追加写入系统报告
+                            report_line = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | {alert_msg}\n"
+                            report_path = os.path.join(self.args.output, f"report_{datetime.now().strftime('%Y%m%d')}.txt")
+                            with open(report_path, 'a', encoding='utf-8') as f:
+                                f.write(report_line)
 
                     # 可视化结果
                     vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
@@ -617,6 +629,16 @@ class AllInOneSystem:
         avg_fps = self.frame_count / elapsed if elapsed > 0 else 0
         processed_ratio = self.processed_count / max(1, self.frame_count) * 100
 
+        # 打印识别到的行为和交互信息
+        behavior_info = self.get_recognized_behavior_info()
+        print("识别到的行为:")
+        for behavior in behavior_info['behaviors']:
+                print(f"  - {behavior}")
+        print("识别到的交互:")
+        for interaction in behavior_info['interactions']:
+                print(f"  - {interaction}")
+
+           
         report = "\n==== 系统报告 ====\n"
         report += f"运行时间: {elapsed:.2f} 秒\n"
         report += f"总帧数: {self.frame_count}\n"
@@ -644,6 +666,13 @@ class AllInOneSystem:
             f.write(report)
 
         logger.info(f"报告已保存到: {report_path}")
+
+    def get_recognized_behavior_info(self):
+        """返回已识别的行为和交互信息"""
+        return {
+            'behaviors': getattr(self, 'recognized_behaviors', []),
+            'interactions': getattr(self, 'recognized_interactions', [])
+        }
 
 
 def parse_args():
