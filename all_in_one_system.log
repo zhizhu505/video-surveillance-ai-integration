@@ -19809,3 +19809,191 @@ AttributeError: 'DangerRecognizer' object has no attribute 'alert_count'. Did yo
 
 2025-07-10 11:52:08,960 - AllInOneSystem - INFO - �����ѱ��浽: system_output\report_20250710_115208.txt
 2025-07-10 11:52:08,960 - AllInOneSystem - INFO - ȫ������Ƶ���ϵͳ��ֹͣ
+2025-07-10 20:17:01,260 - AllInOneSystem - INFO - 成功导入MotionFeatureManager
+2025-07-10 20:17:01,279 - AllInOneSystem - INFO - 成功导入DangerRecognizer
+2025-07-10 20:17:03,869 - AllInOneSystem - INFO - 成功导入Flask Web模块
+2025-07-10 20:17:03,875 - AllInOneSystem - WARNING - 未找到必要的AI依赖，AI功能将被禁用
+2025-07-10 20:27:26,076 - AllInOneSystem - INFO - 成功导入MotionFeatureManager
+2025-07-10 20:27:26,077 - AllInOneSystem - INFO - 成功导入DangerRecognizer
+2025-07-10 20:27:26,201 - AllInOneSystem - INFO - 成功导入Flask Web模块
+2025-07-10 20:27:29,528 - AllInOneSystem - INFO - 成功导入AI功能模块
+2025-07-10 20:30:08,231 - AllInOneSystem - INFO - 成功导入MotionFeatureManager
+2025-07-10 20:30:08,232 - AllInOneSystem - INFO - 成功导入DangerRecognizer
+2025-07-10 20:30:08,354 - AllInOneSystem - INFO - 成功导入Flask Web模块
+2025-07-10 20:30:11,670 - AllInOneSystem - INFO - 成功导入AI功能模块
+2025-07-10 20:30:11,671 - MotionFeatureManager - INFO - 初始化运动特征管理器: 光流=True(farneback), 运动历史=False, 背景减除=False, 轮廓=True, 关键点=False, GPU=False
+2025-07-10 20:30:11,672 - DangerRecognizer - INFO - 危险行为识别器已初始化，特征点阈值:80, 变化率阈值:1.5
+2025-07-10 20:30:13,384 - AllInOneSystem - INFO - 成功加载AI模型: yolov8n
+2025-07-10 20:30:13,387 - AllInOneSystem - INFO - Web服务器已启动，访问 http://localhost:5000/
+2025-07-10 20:30:13,387 - AllInOneSystem - INFO - 全功能视频监控系统初始化完成
+2025-07-10 20:30:13,387 - AllInOneSystem - INFO - 开始视频捕获线程
+2025-07-10 20:30:13,388 - AllInOneSystem - INFO - 开始视频处理线程
+2025-07-10 20:30:13,388 - AllInOneSystem - INFO - 全功能视频监控系统已启动
+2025-07-10 20:30:13,401 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.106.238:5000
+2025-07-10 20:30:13,401 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-10 20:30:13,532 - AllInOneSystem - INFO - 视频分辨率: 640x480
+2025-07-10 20:30:21,278 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:21] "GET / HTTP/1.1" 200 -
+2025-07-10 20:30:21,313 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:21] "GET /video_feed HTTP/1.1" 200 -
+2025-07-10 20:30:21,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:21] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:21,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:21] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:21,552 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:21] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2025-07-10 20:30:22,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:22] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:22,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:22] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:22,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:22] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:23,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:23] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:23,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:23] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:23,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:23] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:24,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:24] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:24,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:24] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:24,349 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:24] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:25,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:25] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:25,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:25] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:25,349 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:25] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:26,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:26] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:26,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:26] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:26,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:26] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:27,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:27] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:27,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:27] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:27,349 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:27] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:28,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:28] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:28,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:28] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:28,347 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:28] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:29,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:29] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:29,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:29] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:29,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:29] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:30,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:30] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:30,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:30] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:30,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:30] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:31,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:31] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:31,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:31] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:31,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:31] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:32,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:32] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:32,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:32] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:32,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:32] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:33,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:33] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:33,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:33] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:33,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:33] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:34,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:34] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:34,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:34] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:34,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:34] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:35,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:35] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:35,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:35] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:35,347 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:35] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:36,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:36] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:36,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:36] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:36,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:36] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:37,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:37] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:37,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:37] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:37,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:37] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:38,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:38] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:38,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:38] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:38,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:38] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:39,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:39] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:39,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:39] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:39,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:39] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:40,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:40] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:40,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:40] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:40,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:40] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:41,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:41] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:41,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:41] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:41,347 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:41] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:41,651 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:41] "POST /control HTTP/1.1" 200 -
+2025-07-10 20:30:42,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:42] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:42,348 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:42] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:42,350 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:42] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:43,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:43] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:43,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:43] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:43,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:43] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:44,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:44] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:44,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:44] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:44,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:44] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:45,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:45] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:45,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:45] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:45,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:45] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:46,354 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:46] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:46,355 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:46] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:46,357 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:46] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:47,351 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:47] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:47,354 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:47] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:47,357 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:47] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:48,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:48] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:48,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:48] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:48,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:48] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:49,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:49] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:49,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:49] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:49,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:49] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:50,358 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:50] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:50,360 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:50] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:50,361 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:50] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:51,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:51] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:51,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:51] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:51,347 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:51] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:52,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:52] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:52,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:52] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:52,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:52] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:52,706 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:52] "POST /control HTTP/1.1" 200 -
+2025-07-10 20:30:52,715 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:52] "GET /video_feed?1752150652709 HTTP/1.1" 200 -
+2025-07-10 20:30:53,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:53] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:53,345 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:53] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:53,347 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:53] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:54,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:54] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:54,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:54] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:54,346 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:54] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:54,868 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:54] "POST /control HTTP/1.1" 200 -
+2025-07-10 20:30:54,877 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:54] "GET /video_feed?1752150654872 HTTP/1.1" 200 -
+2025-07-10 20:30:55,342 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:55] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:55,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:55] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:55,347 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:55] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:55,418 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:55] "POST /control HTTP/1.1" 200 -
+2025-07-10 20:30:56,351 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:56] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:56,352 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:56] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:56,354 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:56] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:57,228 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:57] "POST /control HTTP/1.1" 200 -
+2025-07-10 20:30:57,261 - AllInOneSystem - INFO - 视频处理线程结束
+2025-07-10 20:30:57,341 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:57] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:57,343 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:57] "GET /stats HTTP/1.1" 200 -
+2025-07-10 20:30:57,344 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 20:30:57] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 20:30:57,615 - AllInOneSystem - INFO - 视频捕获线程结束
+2025-07-10 20:30:57,616 - AllInOneSystem - INFO - 
+==== 系统报告 ====
+运行时间: 45.95 秒
+总帧数: 700
+处理帧数: 278 (39.7%)
+平均帧率: 15.24 FPS
+告警总数: 20
+
+告警分类统计:
+  - 突然剧烈运动: 8
+  - 大范围异常运动: 12
+
+系统配置:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: None
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.2
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: False
+  - save_alerts: False
+
+2025-07-10 20:30:57,618 - AllInOneSystem - INFO - 报告已保存到: system_output\report_20250710_203057.txt
+2025-07-10 20:30:57,618 - AllInOneSystem - INFO - 全功能视频监控系统已停止
