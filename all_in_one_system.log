@@ -23515,3 +23515,650 @@ NameError: name 'info_items' is not defined
 
 2025-07-10 16:02:18,923 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250710_160218.txt
 2025-07-10 16:02:18,923 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-10 16:44:04,989 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 16:44:04,990 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 16:44:05,209 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 16:44:09,294 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 16:44:17,061 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2025-07-10 16:44:17,340 - absl - INFO - Using C:\Users\86180\AppData\Local\Temp\tfhub_modules to cache modules.
+2025-07-10 16:44:17,510 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\resolver.py:120: The name tf.gfile.MakeDirs is deprecated. Please use tf.io.gfile.makedirs instead.
+
+2025-07-10 16:44:17,525 - absl - INFO - Downloading TF-Hub Module 'https://tfhub.dev/google/yamnet/1'.
+2025-07-10 16:47:34,840 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 16:47:34,840 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 16:47:35,009 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 16:47:39,132 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 16:47:46,378 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2025-07-10 16:47:46,642 - absl - INFO - Using C:\Users\86180\AppData\Local\Temp\tfhub_modules to cache modules.
+2025-07-10 16:47:46,835 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\resolver.py:120: The name tf.gfile.MakeDirs is deprecated. Please use tf.io.gfile.makedirs instead.
+
+2025-07-10 16:47:46,839 - absl - INFO - Downloading TF-Hub Module 'https://tfhub.dev/google/yamnet/1'.
+2025-07-10 16:47:50,751 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 16:47:50,751 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 16:47:50,751 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 16:47:50,751 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 16:47:50,752 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 16:47:50,752 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 16:47:50,755 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-10 16:47:50,755 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5
+2025-07-10 16:47:50,788 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-10 16:47:50,797 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-10 16:47:50,799 - AllInOneSystem - INFO - “Ù∆µº‡øÿœﬂ≥Ã“—∆Ù∂Ø
+2025-07-10 16:47:50,799 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-10 16:47:50,799 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-10 16:47:50,799 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-10 16:47:50,799 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-10 16:47:50,821 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-10 16:47:50,821 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-10 16:47:51,345 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-10 16:47:54,957 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:54] "GET / HTTP/1.1" 200 -
+2025-07-10 16:47:55,004 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:55] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:47:55,005 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:55] "GET /video_feed HTTP/1.1" 200 -
+2025-07-10 16:47:55,006 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:55] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:47:55,010 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:55] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:47:55,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:55] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:47:55,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:55] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:47:55,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:55] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:47:56,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:56] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:47:56,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:56] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:47:56,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:56] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:47:57,996 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:57] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:47:57,998 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:57] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:47:58,000 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:58] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:47:58,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:58] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:47:58,993 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:58] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:47:58,995 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:58] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:47:59,988 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:59] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:47:59,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:59] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:47:59,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:47:59] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:00,989 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:00] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:00,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:00] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:00,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:00] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:01,991 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:01] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:01,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:01] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:01,993 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:01] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:02,988 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:02] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:02,989 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:02] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:02,991 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:02] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:03,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:03] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:03,991 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:03] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:03,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:03] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:04,993 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:04] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:04,995 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:04] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:04,997 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:04] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:05,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:05] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:05,993 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:05] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:05,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:05] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:06,987 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:06] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:06,989 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:06] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:06,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:06] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:07,988 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:07] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:07,989 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:07] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:07,991 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:07] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:08,991 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:08] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:08,993 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:08] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:08,995 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:08] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:09,999 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:09] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:10,000 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:10] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:10,002 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:10] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:10,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:10] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:10,993 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:10] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:10,995 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:10] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:11,999 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:11] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:12,000 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:12] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:12,004 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:12] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:12,988 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:12] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:12,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:12] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:12,993 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:12] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:14,000 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:14] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:14,002 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:14] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:14,003 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:14] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:14,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:14] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:14,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:14] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:14,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:14] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:15,988 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:15] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:15,989 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:15] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:15,990 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:15] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:16,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:16] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:16,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:16] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:16,995 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:16] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:17,989 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:17] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:17,992 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:17] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:17,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:17] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:18,994 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:18] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:18,996 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:18] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:18,999 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:18] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:19,986 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:19] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:19,988 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:19] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:19,989 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:19] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:20,903 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:20] "POST /control HTTP/1.1" 200 -
+2025-07-10 16:48:20,976 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-10 16:48:20,995 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:20] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:48:20,997 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:20] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:48:20,998 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:48:20] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:48:21,522 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-10 16:48:21,524 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 30.77 √Î
+◊‹÷° ˝: 599
+¥¶¿Ì÷° ˝: 307 (51.3%)
+∆Ωæ˘÷°¬ : 19.47 FPS
+∏ÊæØ◊‹ ˝: 0
+
+ ∂±µΩµƒ––Œ™:
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 13)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 26)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 168)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 179)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 190)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 201)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 230)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 251)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 297)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 168)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 9
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 10
+  - “—¥¶¿Ì: 0
+  - Œ¥¥¶¿Ì: 10
+  - ¥¶¿Ì¬ : 0.0%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-10 16:47:55 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:47:56 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:48:07 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:48:08 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:48:09 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:48:10 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:48:13 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:48:14 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:48:19 | Large Area Motion | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: None
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.2
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: False
+  - save_alerts: False
+
+2025-07-10 16:48:21,527 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250710_164821.txt
+2025-07-10 16:48:21,527 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-10 16:49:29,938 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 16:49:29,938 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 16:49:30,110 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 16:49:34,243 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 16:49:42,130 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2025-07-10 16:49:42,406 - absl - INFO - Using C:\Users\86180\AppData\Local\Temp\tfhub_modules to cache modules.
+2025-07-10 16:49:42,618 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\resolver.py:120: The name tf.gfile.MakeDirs is deprecated. Please use tf.io.gfile.makedirs instead.
+
+2025-07-10 16:49:42,632 - absl - INFO - Downloading TF-Hub Module 'https://tfhub.dev/google/yamnet/1'.
+2025-07-10 16:49:47,374 - absl - INFO - Downloaded https://tfhub.dev/google/yamnet/1, Total size: 17.43MB
+2025-07-10 16:49:47,377 - absl - INFO - Downloaded TF-Hub Module 'https://tfhub.dev/google/yamnet/1'.
+2025-07-10 16:49:47,524 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\module_v2.py:126: The name tf.saved_model.load_v2 is deprecated. Please use tf.compat.v2.saved_model.load instead.
+
+2025-07-10 16:49:50,183 - absl - INFO - Fingerprint not found. Saved model loading will continue.
+2025-07-10 16:49:50,183 - absl - INFO - path_and_singleprint metric could not be logged. Saved model loading will continue.
+2025-07-10 16:49:50,192 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 16:49:50,192 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 16:49:50,192 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 16:49:50,192 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 16:49:50,192 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 16:49:50,192 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 16:49:50,196 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-10 16:49:50,198 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5
+2025-07-10 16:49:50,232 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-10 16:49:50,232 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-10 16:49:50,232 - AllInOneSystem - INFO - “Ù∆µº‡øÿœﬂ≥Ã“—∆Ù∂Ø
+2025-07-10 16:49:50,232 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-10 16:49:50,242 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-10 16:49:50,242 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-10 16:49:50,242 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-10 16:49:50,259 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-10 16:49:50,259 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-10 16:49:50,788 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-10 16:49:57,362 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:57] "GET / HTTP/1.1" 200 -
+2025-07-10 16:49:57,409 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:57] "GET /video_feed HTTP/1.1" 200 -
+2025-07-10 16:49:57,411 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:57] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:49:57,414 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:57] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:49:57,415 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:57] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:49:58,400 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:58] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:49:58,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:58] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:49:58,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:58] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:49:59,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:59] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:49:59,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:59] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:49:59,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:49:59] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:00,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:00] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:00,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:00] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:00,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:00] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:01,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:01] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:01,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:01] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:01,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:01] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:02,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:02] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:02,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:02] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:02,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:02] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:03,389 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:03] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:03,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:03] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:03,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:03] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:04,390 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:04] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:04,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:04] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:04,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:04] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:05,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:05] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:05,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:05] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:05,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:05] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:06,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:06] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:06,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:06] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:06,406 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:06] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:07,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:07] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:07,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:07] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:07,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:07] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:08,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:08] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:08,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:08] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:08,408 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:08] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:09,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:09] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:09,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:09] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:09,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:09] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:10,390 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:10] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:10,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:10] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:10,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:10] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:11,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:11] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:11,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:11] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:11,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:11] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:12,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:12] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:12,407 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:12] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:12,409 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:12] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:13,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:13] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:13,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:13] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:13,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:13] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:14,408 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:14] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:14,410 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:14] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:14,413 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:14] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:15,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:15] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:15,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:15] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:15,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:15] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:16,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:16] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:16,406 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:16] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:16,408 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:16] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:17,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:17] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:17,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:17] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:17,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:17] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:18,407 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:18] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:18,410 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:18] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:18,411 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:18] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:19,390 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:19] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:19,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:19] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:19,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:19] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:20,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:20] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:20,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:20] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:20,407 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:20] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:21,390 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:21] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:21,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:21] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:21,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:21] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:22,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:22] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:22,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:22] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:22,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:22] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:23,400 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:23] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:23,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:23] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:23,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:23] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:24,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:24] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:24,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:24] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:24,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:24] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:25,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:25] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:25,407 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:25] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:25,409 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:25] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:26,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:26] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:26,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:26] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:26,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:26] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:27,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:27] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:27,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:27] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:27,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:27] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:28,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:28] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:28,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:28] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:28,406 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:28] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:29,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:29] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:29,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:29] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:29,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:29] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:30,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:30] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:30,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:30] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:30,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:30] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:31,314 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:31] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-10 16:50:31,322 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:31] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:31,324 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:31] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:31,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:31] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:31,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:31] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:31,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:31] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:32,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:32] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:32,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:32] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:32,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:32] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:33,043 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:33] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-10 16:50:33,050 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:33] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:33,051 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:33] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:33,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:33] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:33,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:33] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:33,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:33] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:34,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:34] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:34,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:34] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:34,406 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:34] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:35,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:35] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:35,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:35] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:35,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:35] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:36,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:36] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:36,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:36] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:36,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:36] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:37,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:37] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:37,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:37] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:37,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:37] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:38,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:38] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:38,406 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:38] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:38,408 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:38] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:39,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:39] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:39,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:39] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:39,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:39] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:40,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:40] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:40,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:40] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:40,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:40] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:41,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:41] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:41,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:41] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:41,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:41] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:42,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:42] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:42,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:42] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:42,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:42] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:43,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:43] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:43,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:43] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:43,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:43] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:44,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:44] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:44,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:44] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:44,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:44] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:45,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:45] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:45,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:45] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:45,410 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:45] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:46,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:46] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:46,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:46] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:46,405 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:46] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:47,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:47] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:47,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:47] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:47,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:47] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:48,390 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:48] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:48,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:48] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:48,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:48] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:49,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:49] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:49,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:49] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:49,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:49] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:50,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:50] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:50,400 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:50] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:50,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:50] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:51,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:51] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:51,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:51] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:51,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:51] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:52,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:52] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:52,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:52] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:52,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:52] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:53,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:53] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:53,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:53] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:53,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:53] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:54,397 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:54] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:54,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:54] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:54,408 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:54] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:55,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:55] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:55,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:55] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:55,407 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:55] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:56,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:56] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:56,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:56] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:56,400 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:56] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:57,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:57] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:57,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:57] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:57,407 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:57] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:58,400 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:58] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:58,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:58] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:58,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:58] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:50:59,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:59] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:50:59,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:59] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:50:59,406 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:50:59] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:00,389 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:00] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:00,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:00] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:00,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:00] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:01,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:01] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:01,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:01] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:01,406 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:01] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:02,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:02] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:02,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:02] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:02,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:02] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:03,401 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:03] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:03,403 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:03] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:03,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:03] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:04,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:04] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:04,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:04] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:04,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:04] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:05,399 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:05] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:05,402 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:05] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:05,404 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:05] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:06,393 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:06] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:06,395 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:06] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:06,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:06] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:07,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:07] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:07,396 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:07] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:07,398 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:07] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:07,999 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:07] "POST /control HTTP/1.1" 200 -
+2025-07-10 16:51:08,005 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-10 16:51:08,391 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:08] "GET /stats HTTP/1.1" 200 -
+2025-07-10 16:51:08,392 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:08] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 16:51:08,394 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 16:51:08] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 16:51:08,504 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-10 16:51:08,513 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 78.31 √Î
+◊‹÷° ˝: 1359
+¥¶¿Ì÷° ˝: 685 (50.4%)
+∆Ωæ˘÷°¬ : 17.35 FPS
+∏ÊæØ◊‹ ˝: 0
+
+ ∂±µΩµƒ––Œ™:
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 11)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 22)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 33)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 46)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 57)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 68)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 79)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 93)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 105)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 117)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 128)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 139)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 150)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 161)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 172)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 183)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 194)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 205)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 217)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 229)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 240)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 251)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 262)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 273)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 284)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 296)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 308)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 319)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 332)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 344)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 358)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 369)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 380)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 392)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 409)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 421)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 432)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 443)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 454)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 465)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 476)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 487)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 498)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 509)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 520)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 531)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 542)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 553)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 564)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 575)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 586)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 597)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 608)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 620)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 631)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 642)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 653)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 664)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 675)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 33)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 128)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 150)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 183)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 240)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 284)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 296)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 308)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 319)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 358)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 409)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 421)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 432)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 443)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 509)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 620)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 664)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 59
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 60
+  - “—¥¶¿Ì: 2
+  - Œ¥¥¶¿Ì: 57
+  - ¥¶¿Ì¬ : 3.3%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-10 16:49:54 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:49:55 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:49:56 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:49:57 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:49:58 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:49:59 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:00 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:01 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:02 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:03 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:04 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:05 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:05 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:06 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:07 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:08 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:09 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:10 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:11 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:12 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:13 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:14 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:15 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:16 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:18 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:19 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:21 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:22 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:24 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:26 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:27 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:29 | Large Area Motion | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-10 16:50:31
+  - 2025-07-10 16:50:30 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:32 | Large Area Motion | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-10 16:50:33
+  - 2025-07-10 16:50:34 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:35 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:37 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:38 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:39 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:41 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:42 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:43 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:45 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:46 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:47 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:49 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:50 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:51 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:53 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:54 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:55 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:57 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:50:58 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:51:00 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:51:01 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:51:02 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:51:04 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:51:05 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 16:51:06 | Large Area Motion | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: None
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.2
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: False
+  - save_alerts: False
+
+2025-07-10 16:51:08,518 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250710_165108.txt
+2025-07-10 16:51:08,518 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
