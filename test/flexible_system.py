@@ -1,145 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""
-24小时视频监控告警系统 - 灵活版
-根据可用模块动态启用/禁用功能
-"""
-
-import os
-import sys
-import time
-import logging
-import argparse
-import cv2
-import numpy as np
-import traceback
-from datetime import datetime
-
-# 配置日志
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler("flexible_system.log")
-    ]
-)
-logger = logging.getLogger(__name__)
-
-# 定义可用模块列表
-AVAILABLE_MODULES = {
-    'video_capture': False,
-    'frame_processor': False,
-    'object_detector': False,
-    'object_tracker': False,
-    'motion_manager': False,
-    'behavior_analyzer': False,
-    'rga': False,
-    'vl_model': False,
-    'alert_system': False
-}
-
-def parse_args():
-    """解析命令行参数"""
-    parser = argparse.ArgumentParser(description='24小时视频监控告警系统 - 灵活版')
-    
-    # 视频源参数
-    parser.add_argument('--source', type=str, default='0', help='视频源 (0表示摄像头, 或者是视频文件路径)')
-    parser.add_argument('--width', type=int, default=640, help='视频宽度')
-    parser.add_argument('--height', type=int, default=480, help='视频高度')
-    
-    # 功能启用/禁用
-    parser.add_argument('--use_optical_flow', action='store_true', help='启用光流特征提取')
-    parser.add_argument('--use_motion_history', action='store_true', help='启用运动历史特征提取')
-    parser.add_argument('--use_object_detection', action='store_true', help='启用对象检测')
-    parser.add_argument('--use_behavior', action='store_true', help='启用行为分析')
-    parser.add_argument('--use_alert', action='store_true', help='启用告警系统')
-    
-    # 输出参数
-    parser.add_argument('--output_dir', type=str, default='output', help='输出目录')
-    parser.add_argument('--save_frames', action='store_true', help='保存处理后的帧')
-    parser.add_argument('--save_interval', type=int, default=30, help='保存帧的间隔')
-    parser.add_argument('--display', action='store_true', help='显示实时处理结果')
-    
-    return parser.parse_args()
-
-def check_available_modules():
-    """检查哪些模块可用"""
-    global AVAILABLE_MODULES
-    
-    # 检查视频捕获模块
-    try:
-        from models.video.video_capture import VideoCaptureManager
-        AVAILABLE_MODULES['video_capture'] = True
-        logger.info("视频捕获模块可用")
-    except ImportError:
-        logger.warning("视频捕获模块不可用，将使用OpenCV直接读取视频")
-    
-    # 检查帧处理模块
-    try:
-        from models.frame.frame_processor import FrameProcessor
-        AVAILABLE_MODULES['frame_processor'] = True
-        logger.info("帧处理模块可用")
-    except ImportError:
-        logger.warning("帧处理模块不可用，将跳过帧预处理")
-    
-    # 检查对象检测模块
-    try:
-        from models.detection.object_detector import create_detector
-        AVAILABLE_MODULES['object_detector'] = True
-        logger.info("对象检测模块可用")
-    except ImportError:
-        logger.warning("对象检测模块不可用，将跳过对象检测")
-    
-    # 检查对象追踪模块
-    try:
-        from models.tracking.object_tracker import ObjectTracker
-        AVAILABLE_MODULES['object_tracker'] = True
-        logger.info("对象追踪模块可用")
-    except ImportError:
-        logger.warning("对象追踪模块不可用，将跳过对象追踪")
-    
-    # 检查运动特征管理器
-    try:
-        from models.motion.motion_manager import MotionFeatureManager
-        AVAILABLE_MODULES['motion_manager'] = True
-        logger.info("运动特征管理器可用")
-    except ImportError:
-        logger.warning("运动特征管理器不可用，将跳过运动特征提取")
-    
-    # 检查行为分析器
-    try:
-        from models.behavior.behavior_analyzer import BehaviorAnalyzer
-        AVAILABLE_MODULES['behavior_analyzer'] = True
-        logger.info("行为分析器可用")
-    except ImportError:
-        logger.warning("行为分析器不可用，将跳过行为分析")
-    
-    # 检查RGA
-    try:
-        from models.relation.rga import RelationGraphAnalyzer
-        AVAILABLE_MODULES['rga'] = True
-        logger.info("RGA图关系分析器可用")
-    except ImportError:
-        logger.warning("RGA图关系分析器不可用，将跳过关系分析")
-    
-    # 检查视觉语言模型
-    try:
-        from models.vision_language.vl_model import VisionLanguageModel
-        AVAILABLE_MODULES['vl_model'] = True
-        logger.info("视觉语言模型可用")
-    except ImportError:
-        logger.warning("视觉语言模型不可用，将跳过场景描述")
-    
-    # 检查告警系统
-    try:
-        from models.alert.alert_system import AlertSystem
-        AVAILABLE_MODULES['alert_system'] = True
-        logger.info("告警系统可用")
-    except ImportError:
-        logger.warning("告警系统不可用，将跳过告警处理")
-
+"""主函数"""
 def main():
     """主函数"""
     args = parse_args()
@@ -271,6 +130,15 @@ def main():
             if behavior_analyzer and (tracks or motion_features):
                 behaviors = behavior_analyzer.analyze(tracks, motion_features)
             
+            # 新增：如果识别到行为，在控制台打印信息
+            if behaviors:
+                print("识别到以下行为：")
+                for behavior in behaviors:
+                    obj_id = behavior['object_id']
+                    behavior_type = behavior['type']
+                    confidence = behavior.get('confidence', 1.0)
+                    print(f"对象 ID: {obj_id}, 行为类型: {behavior_type}, 置信度: {confidence:.2f}")
+            
             # 处理告警
             alerts = []
             if alert_system:
@@ -389,6 +257,3 @@ def main():
         # 显示统计信息
         elapsed = time.time() - start_time
         logger.info(f"处理完成: {frame_count} 帧在 {elapsed:.2f} 秒内 (平均 {frame_count/elapsed:.2f} FPS)")
-
-if __name__ == "__main__":
-    main() 

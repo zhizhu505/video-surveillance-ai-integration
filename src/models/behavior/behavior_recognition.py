@@ -115,6 +115,39 @@ class BehaviorRecognizer:
                 behavior_type = BehaviorType.WANDERING
                 confidence = 0.7
             
+            # --- 新增打架检测 ---
+        # 检查所有pair，若两人距离很近且速度都较大，判为FIGHTING
+        for i in range(len(trajectories)):
+            for j in range(i+1, len(trajectories)):
+                traj1 = trajectories[i]
+                traj2 = trajectories[j]
+                if 'position' in traj1 and 'position' in traj2 and 'speeds' in traj1 and 'speeds' in traj2:
+                    pos1 = traj1['position']
+                    pos2 = traj2['position']
+                    dist = np.linalg.norm(np.array(pos1) - np.array(pos2))
+                    speed1 = np.mean(traj1['speeds'][-min(5, len(traj1['speeds'])):])
+                    speed2 = np.mean(traj2['speeds'][-min(5, len(traj2['speeds'])):])
+                    if dist < 60 and speed1 > self.speed_threshold and speed2 > self.speed_threshold:
+                        # 判为打架
+                        behavior1 = Behavior(
+                            object_id=traj1['id'],
+                            behavior_type=BehaviorType.FIGHTING,
+                            confidence=0.8,
+                            position=traj1['position'],
+                            timestamp=traj1['timestamps'][-1] if traj1['timestamps'] else None,
+                            metadata={'class_name': traj1.get('class_name', 'unknown'), 'speed': speed1, 'fighting_with': traj2['id']}
+                        )
+                        behavior2 = Behavior(
+                            object_id=traj2['id'],
+                            behavior_type=BehaviorType.FIGHTING,
+                            confidence=0.8,
+                            position=traj2['position'],
+                            timestamp=traj2['timestamps'][-1] if traj2['timestamps'] else None,
+                            metadata={'class_name': traj2.get('class_name', 'unknown'), 'speed': speed2, 'fighting_with': traj1['id']}
+                        )
+                        behaviors.append(behavior1)
+                        behaviors.append(behavior2)
+        # --- 打架检测结束 ---
             # Create behavior object
             behavior = Behavior(
                 object_id=obj_id,

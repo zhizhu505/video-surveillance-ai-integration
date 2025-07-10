@@ -1,0 +1,17 @@
+{
+    "sources": [
+        {
+            "name": "local_camera",
+            "type": "camera",
+            "id": 0,
+            "enabled": true
+        },
+        {
+            "name": "rtmp_stream",
+            "type": "rtmp",
+            "url": "rtmp://120.46.210.148:1935/live/livestream",
+            "enabled": true
+        }
+    ],
+    "default_source": "rtmp_stream"
+} 

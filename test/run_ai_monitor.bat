@@ -10,8 +10,8 @@ python integrate_danger_detection.py ^
     --height 480 ^
     --process_every 3 ^
     --max_fps 30 ^
-    --feature_threshold 80 ^
-    --area_threshold 0.05 ^
+    --feature_threshold 60 ^  # 降低特征点阈值
+    --area_threshold 0.03 ^   # 降低运动区域阈值
     --alert_cooldown 10 ^
     --min_confidence 0.5 ^
     --alert_region "[(50,50), (590,50), (590,430), (50,430)]" ^
@@ -19,7 +19,7 @@ python integrate_danger_detection.py ^
     --save_alerts ^
     --enable_ai ^
     --vision_model yolov8n ^
-    --ai_interval 20 ^
+    --ai_interval 5 ^  # 减小AI处理间隔
     --scene_analysis
 
-pause 
+pause

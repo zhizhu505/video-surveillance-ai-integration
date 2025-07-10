@@ -123,11 +123,7 @@ class MotionFeatureManager:
         
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         features['gray'] = gray
-        frame_h, frame_w = gray.shape
-        frame_area = frame_h * frame_w
-        motion_pixels = 0  # 统计“显著运动”像素数
-        motion_vector_list = []  # 统计“显著运动”向量
-
+        
         # 提取光流
         if self.use_optical_flow and self.prev_gray is not None:
             start_time = time.time()
@@ -150,10 +146,10 @@ class MotionFeatureManager:
                         fx, fy = flow[y, x]
                         if mag[y, x] > 1.0:  # 只保留显著运动
                             motion_vectors.append((x, y, fx, fy, mag[y, x]))
-                # 统计“幅值 > 1” 的像素点数
-                motion_pixels = int((mag > 1.0).sum())
-                motion_vector_list = motion_vectors  # 保存给后面统一处理
                 features['motion_vectors'] = motion_vectors
+                
+                # 调试输出
+                print(f"[光流Farneback] 帧: {self.frame_count}, motion_vectors: {len(motion_vectors)}, mean_mag: {features['flow_mean_magnitude']:.2f}, max_mag: {features['flow_max_magnitude']:.2f}")
                 
             elif self.optical_flow_method == 'sparse':
                 if self.prev_points is None:
@@ -185,6 +181,9 @@ class MotionFeatureManager:
                             features['flow_max_magnitude'] = np.max(magnitudes)
                         
                         features['motion_vectors'] = motion_vectors
+                        
+                        # 调试输出
+                        print(f"[光流Sparse] 帧: {self.frame_count}, motion_vectors: {len(motion_vectors)}, mean_mag: {features.get('flow_mean_magnitude', 0):.2f}, max_mag: {features.get('flow_max_magnitude', 0):.2f}")
                         
                         # 更新点
                         self.prev_points = good_new.reshape(-1, 1, 2)
@@ -302,29 +301,10 @@ class MotionFeatureManager:
                 features['keypoint_std_pos'] = std_pt
             
             features['keypoint_extraction_time'] = time.time() - start_time
-
-        # === 打架检测所需统计 ===
-        # 1) 整帧平均光流幅值
-        if self.use_optical_flow and 'flow_magnitude' in features:
-            features['avg_magnitude'] = float(np.mean(features['flow_magnitude']))
-        else:
-            features['avg_magnitude'] = 0.0
-
-        # 2) 垂直位移（给摔倒用，留着无妨）
-        if 'motion_vectors' in features and features['motion_vectors']:
-            dy_vals = [v[3] for v in features['motion_vectors']]  # v=(x,y,dx,dy,mag)
-            features['vertical_motion'] = float(np.mean(dy_vals))
-        else:
-            features['vertical_motion'] = 0.0
-
+        
         # 更新前一帧
-        self.prev_gray = gray
-        # ---------- 统一补充 DangerRecognizer 需要的字段 ----------
-        if 'keypoints_count' not in features:
-            features['keypoints_count'] = len(motion_vector_list)
-
-        if 'motion_area' not in features:
-            features['motion_area'] = motion_pixels / float(frame_area) if frame_area else 0.0
+        self.prev_gray = gray.copy()
+        
         return features
     
     def visualize_features(self, frame, features):

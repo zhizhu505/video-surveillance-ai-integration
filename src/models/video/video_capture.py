@@ -3,6 +3,14 @@ import logging
 import time
 import numpy as np
 from datetime import datetime
+import sounddevice as sd
+import numpy as np
+import tensorflow as tf
+import librosa
+import queue
+import threading
+import time
+import sys
 
 
 class VideoCaptureManager:

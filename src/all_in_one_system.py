@@ -11,13 +11,11 @@ import sys
 import time
 import logging
 import argparse
-from collections import deque
-
 import cv2
 import numpy as np
 import threading
 import json
-from queue import Queue
+from queue import Queue, Empty  # 修复Queue.Empty导入
 from datetime import datetime
 import traceback
 
@@ -72,6 +70,14 @@ except ImportError:
     HAS_AI = False
     logger.warning("未找到必要的AI依赖，AI功能将被禁用")
 
+try:
+    import audio_monitor
+    HAS_AUDIO_MONITOR = True
+    logger.info("成功导入audio_monitor音频监控模块")
+except ImportError as e:
+    HAS_AUDIO_MONITOR = False
+    logger.warning(f"未找到audio_monitor，声学检测功能将被禁用: {e}")
+
 
 class AllInOneSystem:
     """全功能视频监控系统 - 整合所有模块"""
@@ -80,6 +86,10 @@ class AllInOneSystem:
         """初始化系统"""
         self.args = args
 
+        # 加载流媒体源配置
+        self.stream_config = self._load_stream_config()
+        self.current_source = self.stream_config.get('default_source', 'local_camera')
+        
         # 创建输出目录
         os.makedirs(args.output, exist_ok=True)
 
@@ -95,6 +105,19 @@ class AllInOneSystem:
         self.alerts = []  # 当前触发的告警列表
         self.alert_count = 0  # 累积告警次数
         self.start_time = time.time()  # 启动时间戳，用于计算运行时长
+        self.recognized_behaviors = []  # 存储识别到的行为信息
+        self.recognized_interactions = []  # 存储识别到的交互信息
+        self.recent_alerts = []  # 记录最近10条告警
+        # 新增：全历史告警列表
+        self.all_alerts = []  # 保存所有历史告警
+        
+        # 新增：告警处理相关
+        self.alert_handling_stats = {
+            'total_alerts': 0,
+            'handled_alerts': 0,
+            'unhandled_alerts': 0
+        }  # 告警处理统计
+        self.alert_lock = threading.Lock()  # 告警数据锁
 
         # 线程和队列设置
         self.frame_queue = Queue(maxsize=30)  # 存储「捕获线程 → 处理线程」的帧（缓冲队列）
@@ -108,7 +131,6 @@ class AllInOneSystem:
             optical_flow_method='farneback',
             use_gpu=args.use_gpu
         )
-        self.recent_alerts = deque(maxlen=100)
 
         # 初始化危险行为识别器
         danger_config = {
@@ -117,11 +139,14 @@ class AllInOneSystem:
             'alert_cooldown': args.alert_cooldown,
             'save_alerts': args.save_alerts,
             'alert_dir': os.path.join(args.output, 'alerts'),
-            'min_confidence': args.min_confidence
+            'min_confidence': args.min_confidence,
+            # 新增：危险区域停留检测配置
+            'distance_threshold_m': getattr(args, 'distance_threshold', 50),
+            'dwell_time_threshold_s': getattr(args, 'dwell_time_threshold', 1.0),
+            'fps': args.max_fps
         }
         # 实例化危险检测器
         self.danger_recognizer = DangerRecognizer(danger_config)
-        self.recent_alerts = deque(maxlen=100)  # 仅在内存保存最新 100 条
 
         # 如果指定了警戒区域，添加它，也是从命令行传参
         if args.alert_region:
@@ -155,24 +180,72 @@ class AllInOneSystem:
             self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, args.height))
             logger.info(f"视频将录制到: {output_path}")
 
+        # 自动启动音频监控线程（如可用）
+        self.audio_thread = None
+        if getattr(args, 'enable_audio_monitor', False) and HAS_AUDIO_MONITOR:
+            self.audio_thread = threading.Thread(target=audio_monitor.audio_monitor_callback, args=(self.add_audio_alert,))
+            self.audio_thread.daemon = True
+            self.audio_thread.start()
+            logger.info("音频监控线程已启动")
+        else:
+            logger.info("未启用音频监控")
+
         logger.info("全功能视频监控系统初始化完成")
+
+    def _load_stream_config(self):
+        """加载流媒体源配置"""
+        config_path = os.path.join(os.path.dirname(__file__), 'config', 'stream_sources.json')
+        try:
+            with open(config_path, 'r', encoding='utf-8') as f:
+                config = json.load(f)
+            return config
+        except Exception as e:
+            logger.error(f"加载流媒体配置失败: {str(e)}")
+            return {"sources": [{"name": "local_camera", "type": "camera", "id": 0, "enabled": True}],
+                    "default_source": "local_camera"}
+
+    def _get_video_source(self):
+        """获取视频源"""
+        sources = self.stream_config.get('sources', [])
+        current_source = None
+        
+        # 查找当前选择的源
+        logger.info(f"当前选择的视频源名称: {self.current_source}")
+        logger.info(f"可用的视频源列表: {sources}")
+        
+        for source in sources:
+            if source['name'] == self.current_source and source['enabled']:
+                current_source = source
+                break
+        
+        if not current_source:
+            logger.warning(f"未找到可用的视频源 {self.current_source}，使用默认本地摄像头")
+            return 0
+
+        if current_source['type'] == 'camera':
+            logger.info(f"使用本地摄像头: ID={current_source['id']}")
+            return current_source['id']
+        elif current_source['type'] in ['rtsp', 'rtmp']:
+            logger.info(f"使用流媒体源: {current_source['type'].upper()}={current_source['url']}")
+            return current_source['url']
+        else:
+            logger.error(f"不支持的视频源类型: {current_source['type']}")
+            return 0
 
     def init_web_server(self):
         """初始化Web服务器"""
-        self.app = Flask(__name__, template_folder='../templates')  # 指定 HTML 模板文件夹位置
+        self.app = Flask(__name__, template_folder='../templates')
 
         @self.app.route('/')
         def index():
             return render_template('index.html')
 
-        # 视频流路由，当浏览器访问 http://localhost:5000/video_feed 时，服务器会持续返回「视频帧
         @self.app.route('/video_feed')
         def video_feed():
             """视频流路由"""
             return Response(self.generate_frames(),
-                            mimetype='multipart/x-mixed-replace; boundary=frame')
+                          mimetype='multipart/x-mixed-replace; boundary=frame')
 
-        # 系统状态API，当浏览器或前端脚本访问 http://localhost:5000/stats 时，返回一段 JSON 格式 的数据
         @self.app.route('/stats')
         def stats():
             """统计信息API"""
@@ -183,10 +256,78 @@ class AllInOneSystem:
                 'processed_count': self.processed_count,
                 'alert_count': self.alert_count,
                 'running_time': f"{elapsed:.1f}秒",
-                'status': 'Running' if self.running else 'Stopped'
+                'status': 'Running' if self.running else 'Stopped',
+                'resolution': f"{self.processed_frame.shape[1]}x{self.processed_frame.shape[0]}" if self.processed_frame is not None else "N/A"
             })
 
-        # 提供一个JSON接口，返回当前系统的各种实时统计信息
+        @self.app.route('/sources')
+        def get_sources():
+            """获取所有可用的视频源"""
+            return jsonify({
+                'sources': self.stream_config.get('sources', []),
+                'current_source': self.current_source
+            })
+
+        @self.app.route('/sources/<source_name>', methods=['POST'])
+        def switch_source(source_name):
+            """切换视频源"""
+            if self.switch_source(source_name):
+                return jsonify({'status': 'success', 'message': f'已切换到视频源: {source_name}'})
+            else:
+                return jsonify({'status': 'error', 'message': '切换视频源失败'}), 400
+
+        @self.app.route('/alerts')
+        def alerts():
+            # 返回最近10条告警详情
+            return jsonify(self.recent_alerts[-10:][::-1])
+
+        @self.app.route('/alerts/stats')
+        def alert_stats():
+            # 返回告警处理统计
+            return jsonify(self.alert_handling_stats)
+
+        @self.app.route('/alerts/handle', methods=['POST'])
+        def handle_alert():
+            # 处理告警（标记为已处理）
+            data = request.json
+            alert_id = data.get('alert_id')
+            
+            with self.alert_lock:
+                # 查找并更新告警状态
+                for alert in self.all_alerts:
+                    if alert.get('id') == alert_id:
+                        if not alert.get('handled', False):
+                            alert['handled'] = True
+                            alert['handled_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            self.alert_handling_stats['handled_alerts'] += 1
+                            self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
+                            return jsonify({'status': 'success', 'message': 'Alert marked as handled'})
+                        else:
+                            return jsonify({'status': 'info', 'message': 'Alert already handled'})
+                
+                return jsonify({'status': 'error', 'message': 'Alert not found'})
+
+        @self.app.route('/alerts/unhandle', methods=['POST'])
+        def unhandle_alert():
+            # 取消处理告警（标记为未处理）
+            data = request.json
+            alert_id = data.get('alert_id')
+            
+            with self.alert_lock:
+                # 查找并更新告警状态
+                for alert in self.all_alerts:
+                    if alert.get('id') == alert_id:
+                        if alert.get('handled', False):
+                            alert['handled'] = False
+                            alert.pop('handled_time', None)
+                            self.alert_handling_stats['handled_alerts'] = max(0, self.alert_handling_stats['handled_alerts'] - 1)
+                            self.alert_handling_stats['unhandled_alerts'] += 1
+                            return jsonify({'status': 'success', 'message': 'Alert marked as unhandled'})
+                        else:
+                            return jsonify({'status': 'info', 'message': 'Alert already unhandled'})
+                
+                return jsonify({'status': 'error', 'message': 'Alert not found'})
+
         @self.app.route('/control', methods=['POST'])
         def control():
             """控制API"""
@@ -202,10 +343,6 @@ class AllInOneSystem:
                 return jsonify({'status': 'success', 'message': f'System {"paused" if self.paused else "resumed"}'})
             return jsonify({'status': 'error', 'message': f'Unknown action: {action}'})
 
-        @self.app.route('/alerts')
-        def alerts_api():
-            return jsonify(list(self.recent_alerts)[::-1])
-
         def run_web_server():
             """在单独的线程中运行Web服务器"""
             self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
@@ -216,16 +353,54 @@ class AllInOneSystem:
         web_thread.start()
         logger.info(f"Web服务器已启动，访问 http://localhost:{self.args.web_port}/")
 
-    # 生成实时视频流给网页端
     def generate_frames(self):
         """生成帧序列用于Web流"""
         while True:
-            if self.processed_frame is not None:
-                ret, buffer = cv2.imencode('.jpg', self.processed_frame, [cv2.IMWRITE_JPEG_QUALITY, 80])
-                frame = buffer.tobytes()
-                yield (b'--frame\r\n'
-                       b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-            time.sleep(0.03)  # 约30 FPS
+            try:
+                if not self.running:
+                    time.sleep(0.1)
+                    continue
+
+                if self.processed_frame is not None:
+                    try:
+                        # 确保帧是BGR格式
+                        frame_to_send = self.processed_frame.copy()  # 创建副本避免竞态条件
+                        if len(frame_to_send.shape) == 2:  # 如果是灰度图
+                            frame_to_send = cv2.cvtColor(frame_to_send, cv2.COLOR_GRAY2BGR)
+                        
+                        # 调整方向（如果需要）
+                        if frame_to_send.shape[0] > frame_to_send.shape[1]:  # 如果是竖屏
+                            frame_to_send = cv2.rotate(frame_to_send, cv2.ROTATE_90_CLOCKWISE)
+                        
+                        # 调整尺寸以适应显示
+                        target_height = 720  # 设置目标高度
+                        aspect_ratio = frame_to_send.shape[1] / frame_to_send.shape[0]
+                        target_width = int(target_height * aspect_ratio)
+                        frame_to_send = cv2.resize(frame_to_send, (target_width, target_height))
+                        
+                        # 压缩图像以减少带宽使用
+                        encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), 80]
+                        ret, buffer = cv2.imencode('.jpg', frame_to_send, encode_param)
+                        if ret:
+                            frame = buffer.tobytes()
+                            yield (b'--frame\r\n'
+                                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+                        else:
+                            logger.warning("无法编码视频帧")
+                            time.sleep(0.1)
+                    except Exception as e:
+                        logger.error(f"处理帧时发生错误: {str(e)}")
+                        logger.error(traceback.format_exc())
+                        time.sleep(0.1)
+                else:
+                    time.sleep(0.1)  # 如果没有可用帧，等待一下
+                
+                # 控制帧率
+                time.sleep(1/30)  # 限制到30FPS
+            except Exception as e:
+                logger.error(f"生成帧时发生错误: {str(e)}")
+                logger.error(traceback.format_exc())
+                time.sleep(0.1)
 
     def start(self):
         """启动系统"""
@@ -281,115 +456,80 @@ class AllInOneSystem:
 
     def capture_thread_func(self):
         """视频捕获线程"""
-        logger.info("开始视频捕获线程")
-
-        # 打开视频源
-        if self.args.source.isdigit():
-            source = int(self.args.source)
-        else:
-            source = self.args.source
-
-        cap = cv2.VideoCapture(source)
-        if not cap.isOpened():
-            logger.error(f"无法打开视频源: {source}")
-            self.running = False
-            return
-
-        # 设置分辨率
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.args.width)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.args.height)
-
-        # 获取实际分辨率
-        actual_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-        actual_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-        logger.info(f"视频分辨率: {actual_width}x{actual_height}")
-
-        # 设置摄像头参数（仅用于本地摄像头）
-        if source == 0 or (isinstance(source, int) and source >= 0):
-            # 尝试设置MJPG格式（如果支持）
-            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
-            # 尝试设置缓冲区大小最小
-            cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
-
-        # 计算最大帧率
-        max_fps = self.args.max_fps
-        min_frame_time = 1.0 / max_fps
-
-        frame_count = 0
-        last_time = time.time()
-
-        try:
-            while self.running:
-                # 处理暂停状态
-                if self.paused:
-                    time.sleep(0.1)
+        logger.info("启动视频捕获线程")
+        
+        while self.running:
+            try:
+                # 获取视频源
+                source = self._get_video_source()
+                logger.info(f"尝试连接视频源: {source}")
+                
+                cap = cv2.VideoCapture(source)
+                if not cap.isOpened():
+                    logger.error(f"无法打开视频源: {source}")
+                    time.sleep(5)  # 等待一段时间后重试
                     continue
 
-                # 限制帧率
-                current_time = time.time()
-                delta = current_time - last_time
-                if delta < min_frame_time:
-                    time.sleep(min_frame_time - delta)
+                logger.info("成功连接到视频源")
+                
+                # 设置分辨率
+                cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.args.width)
+                cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.args.height)
+                
+                # 获取实际分辨率
+                actual_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                actual_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+                logger.info(f"视频分辨率: {actual_width}x{actual_height}")
 
-                # 读取帧
-                ret, frame = cap.read()
-                if not ret:
-                    if isinstance(source, str) and not source.isdigit():
-                        # 视频文件结束
-                        logger.info("视频文件播放完毕")
-                        if self.args.loop_video:
-                            # 重新开始视频
-                            cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
-                            continue
-                        else:
-                            self.running = False
-                            break
-                    else:
-                        # 摄像头出错，尝试重新连接
-                        logger.warning("视频帧获取失败，尝试重新连接...")
-                        time.sleep(0.5)
-                        cap.release()
-                        cap = cv2.VideoCapture(source)
-                        if not cap.isOpened():
-                            logger.error("重新连接失败")
-                            self.running = False
-                            break
+                while self.running:
+                    if self.paused:
+                        time.sleep(0.1)
                         continue
 
-                # 更新时间和计数
-                last_time = time.time()
-                frame_count += 1
-                self.frame_count = frame_count
-                self.current_frame = frame
+                    ret, frame = cap.read()
+                    if not ret:
+                        logger.warning("读取视频帧失败，尝试重新连接...")
+                        break
 
-                # 降低分辨率（如果启用）
-                if self.args.process_scale < 1.0:
-                    h, w = frame.shape[:2]
-                    new_width = int(w * self.args.process_scale)
-                    new_height = int(h * self.args.process_scale)
-                    process_frame = cv2.resize(frame, (new_width, new_height))
-                else:
-                    process_frame = frame
+                    # 计算帧率控制的等待时间
+                    if self.args.max_fps > 0:
+                        elapsed = time.time() - self.last_frame_time
+                        wait_time = 1.0/self.args.max_fps - elapsed
+                        if wait_time > 0:
+                            time.sleep(wait_time)
 
-                # 将帧放入队列
-                if not self.frame_queue.full():
-                    self.frame_queue.put(
-                        (frame_count, process_frame, frame.copy() if process_frame is not frame else None, last_time))
-                else:
-                    # 如果队列满了，移除最旧的帧
-                    try:
-                        self.frame_queue.get_nowait()
-                        self.frame_queue.put((frame_count, process_frame,
-                                              frame.copy() if process_frame is not frame else None, last_time))
-                    except:
-                        pass
+                    # 更新时间戳和帧计数
+                    current_time = time.time()
+                    self.last_frame_time = current_time
+                    self.frame_count += 1
 
-        except Exception as e:
-            logger.error(f"视频捕获线程出错: {str(e)}")
-            logger.error(traceback.format_exc())
-        finally:
-            cap.release()
-            logger.info("视频捕获线程结束")
+                    # 降低分辨率（如果启用）
+                    if self.args.process_scale < 1.0:
+                        h, w = frame.shape[:2]
+                        new_width = int(w * self.args.process_scale)
+                        new_height = int(h * self.args.process_scale)
+                        process_frame = cv2.resize(frame, (new_width, new_height))
+                    else:
+                        process_frame = frame
+
+                    # 将帧放入队列
+                    if not self.frame_queue.full():
+                        frame_data = (self.frame_count, process_frame, frame.copy(), current_time)
+                        self.frame_queue.put(frame_data)
+                        if self.frame_count % 100 == 0:  # 每100帧打印一次状态
+                            logger.info(f"已捕获 {self.frame_count} 帧")
+                    else:
+                        logger.warning("帧队列已满，丢弃当前帧")
+
+                cap.release()
+                logger.info("视频源连接已断开，准备重新连接")
+                
+            except Exception as e:
+                logger.error(f"视频捕获异常: {str(e)}")
+                logger.error(f"异常详情: {traceback.format_exc()}")
+                time.sleep(5)  # 发生异常时等待一段时间后重试
+
+        logger.info("视频捕获线程结束")
 
     def process_thread_func(self):
         """视频处理线程"""
@@ -397,87 +537,127 @@ class AllInOneSystem:
 
         prev_frame = None
         processed_count = 0
-        process_every = self.args.process_every  # 每N帧处理一次
+        process_every = self.args.process_every
         last_ai_frame = 0
 
         try:
             while self.running:
-                # 处理暂停状态
                 if self.paused:
                     time.sleep(0.1)
                     continue
 
-                # 从队列中获取帧
                 try:
+                    # 从队列中获取帧
                     frame_data = self.frame_queue.get(timeout=1.0)
-                except:
-                    continue
+                    
+                    # 解包帧数据
+                    frame_id, process_frame, original_frame, timestamp = frame_data
+                    
+                    # 验证帧数据
+                    if not isinstance(process_frame, np.ndarray) or not isinstance(original_frame, np.ndarray):
+                        logger.error("无效的帧数据格式")
+                        continue
+                    
+                    # 仅处理每N帧
+                    if frame_id % process_every == 0:
+                        processed_count += 1
+                        self.processed_count = processed_count
+                        if processed_count % 100 == 0:  # 每100帧打印一次状态
+                            logger.info(f"已处理 {processed_count} 帧")
+                        
+                        # 提取运动特征
+                        features = self.motion_manager.extract_features(process_frame, prev_frame)
 
-                frame_id, process_frame, original_frame, timestamp = frame_data
+                        # AI对象检测（如果启用）
+                        object_detections = None
+                        if self.ai_model is not None and (frame_id - last_ai_frame) >= self.args.ai_interval:
+                            try:
+                                results = self.ai_model(process_frame)
+                                object_detections = self._parse_ai_results(results)
+                                last_ai_frame = frame_id
+                            except Exception as e:
+                                logger.error(f"AI处理出错: {str(e)}")
 
-                # 仅处理每N帧
-                if frame_id % process_every == 0:
-                    processed_count += 1
-                    self.processed_count = processed_count
+                        # 检测危险行为
+                        alerts = self.danger_recognizer.process_frame(process_frame, features, object_detections)
 
-                    # 提取运动特征
-                    features = self.motion_manager.extract_features(process_frame, prev_frame)
+                        # 可视化结果
+                        vis_frame = self.visualize_frame(original_frame, process_frame, features, alerts, object_detections)
+                        prev_frame = process_frame.copy()
 
-                    # AI对象检测（如果启用）
-                    object_detections = None
-                    if self.ai_model is not None and (frame_id - last_ai_frame) >= self.args.ai_interval:
-                        try:
-                            results = self.ai_model(process_frame)
-                            object_detections = self._parse_ai_results(results)
-                            last_ai_frame = frame_id
-                        except Exception as e:
-                            logger.error(f"AI处理出错: {str(e)}")
+                        # 保存处理后的帧用于显示
+                        self.processed_frame = vis_frame.copy()
 
-                    # 检测危险行为
-                    alerts = self.danger_recognizer.process_frame(process_frame, features, object_detections)
+                        # 更新告警信息
+                        self._update_alerts(alerts, object_detections)
 
-                    # 更新告警统计
-                    if alerts:
-                        self.alerts = alerts
-                        self.alert_count += len(alerts)
-                        self.recent_alerts.extend(alerts)
-
-                    # 可视化结果
-                    vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
-                                                     object_detections)
-                    prev_frame = process_frame.copy()
-                else:
-                    # 对于跳过处理的帧，仍然要可视化，但不进行特征提取
-                    vis_frame = self.visualize_frame(original_frame or process_frame, None, None, None, None)
-
-                # 保存处理后的帧
-                self.processed_frame = vis_frame
-
-                # 计算FPS
-                elapsed = time.time() - self.start_time
-                self.fps = self.frame_count / elapsed if elapsed > 0 else 0
-
-                # 录制视频
-                if self.video_writer is not None:
-                    # 确保尺寸匹配
-                    if vis_frame.shape[1] != self.args.width or vis_frame.shape[0] != self.args.height:
-                        vis_frame_resized = cv2.resize(vis_frame, (self.args.width, self.args.height))
-                        self.video_writer.write(vis_frame_resized)
                     else:
-                        self.video_writer.write(vis_frame)
+                        # 对于未处理的帧，仍然需要更新显示
+                        self.processed_frame = original_frame.copy()
 
-                # 清理帧队列以保持低延迟
-                while self.frame_queue.qsize() > 5:
-                    try:
-                        self.frame_queue.get_nowait()
-                    except:
-                        break
+                    # 计算FPS
+                    elapsed = time.time() - self.start_time
+                    self.fps = self.frame_count / elapsed if elapsed > 0 else 0
+
+                    # 录制视频（如果启用）
+                    if self.video_writer is not None and self.processed_frame is not None:
+                        if self.processed_frame.shape[1] != self.args.width or self.processed_frame.shape[0] != self.args.height:
+                            resized_frame = cv2.resize(self.processed_frame, (self.args.width, self.args.height))
+                            self.video_writer.write(resized_frame)
+                        else:
+                            self.video_writer.write(self.processed_frame)
+
+                except Empty:
+                    continue
+                except Exception as e:
+                    logger.error(f"处理帧时发生错误: {str(e)}")
+                    logger.error(traceback.format_exc())
+                    continue
 
         except Exception as e:
             logger.error(f"视频处理线程出错: {str(e)}")
             logger.error(traceback.format_exc())
         finally:
             logger.info("视频处理线程结束")
+
+    def _update_alerts(self, alerts, object_detections):
+        """更新告警信息"""
+        for alert in alerts:
+            alert_info = {
+                'id': f"alert_{self.alert_count}_{int(time.time())}",
+                'type': alert.get('type', ''),
+                'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
+                'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
+                'desc': alert.get('desc', ''),
+                'handled': False,
+                'handled_time': None,
+                'person_id': alert.get('person_id', ''),
+                'person_class': alert.get('person_class', '')
+            }
+            
+            with self.alert_lock:
+                self.all_alerts.append(alert_info)
+                self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
+                self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
+                self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
+                self.recent_alerts = self.all_alerts[-10:]
+
+            # 追加行为信息
+            behavior_info = f"{alert.get('type', '未知')} (置信度: {alert.get('confidence', 0):.2f}, 帧号: {alert.get('frame', '-')})"
+            if behavior_info not in self.recognized_behaviors:
+                self.recognized_behaviors.append(behavior_info)
+
+            # 追加交互信息
+            if object_detections and len(object_detections) > 1:
+                interaction_info = f"多对象交互检测 (对象数: {len(object_detections)}, 帧号: {alert.get('frame', '-')})"
+                if interaction_info not in self.recognized_interactions:
+                    self.recognized_interactions.append(interaction_info)
+            if alert.get('type') == '入侵警告区域':
+                region_name = alert.get('region_name', '未知区域')
+                interaction_info = f"区域入侵交互 ({region_name}, 帧号: {alert.get('frame', '-')})"
+                if interaction_info not in self.recognized_interactions:
+                    self.recognized_interactions.append(interaction_info)
 
     def _parse_ai_results(self, results):
         """解析AI检测结果"""
@@ -496,105 +676,69 @@ class AllInOneSystem:
                     })
         return detections
 
-    def visualize_frame(self, original_frame,
-                        process_frame=None,
-                        features=None,
-                        alerts=None,
-                        detections=None):
-        """可视化处理结果（主渲染）"""
+    def visualize_frame(self, original_frame, process_frame=None, features=None, alerts=None, detections=None):
+        """可视化处理结果"""
         if original_frame is None:
             return np.zeros((480, 640, 3), dtype=np.uint8)
 
         vis_frame = original_frame.copy()
 
-        # ─── 1. minimal UI ───
+        # 如果启用简洁模式，则跳过复杂的可视化
         if self.args.minimal_ui:
+            # 仅显示简单的状态信息
             self._add_minimal_info(vis_frame)
             return vis_frame
 
-        # ─── 2. 运动特征 ───
+        # 可视化特征（如果有）
         if features and process_frame is not None:
             try:
-                vis_frame = self.motion_manager.visualize_features(
-                    vis_frame, features)
+                # 绘制特征
+                vis_frame = self.motion_manager.visualize_features(vis_frame, features)
             except Exception as e:
-                logger.error(f"可视化特征出错: {e}")
+                logger.error(f"可视化特征出错: {str(e)}")
 
-        # ─── 3. AI 检测框：只有该框内光流显著才涂红 ───
-        if detections:
-            flow_mag = features.get('flow_magnitude')  # Farneback 光流幅值矩阵
-            flow_thresh = 1.2  # 在动阈值，可调大/小
-
+        # 可视化危险行为告警（如果有）
+        if alerts:
+            try:
+                # 使用危险识别器的可视化功能，传递AI检测结果
+                vis_frame = self.danger_recognizer.visualize(vis_frame, alerts, features, detections=detections)
+            except Exception as e:
+                logger.error(f"可视化告警出错: {str(e)}")
+        # 如果没有告警但有AI检测结果，仍然显示检测框
+        elif detections:
             for det in detections:
                 try:
                     x1, y1, x2, y2 = det['bbox']
                     cls = det['class']
                     conf = det['confidence']
 
-                    # 默认绿色
-                    color = (0, 255, 0)
-
-                    # 判断局部运动量
-                    if flow_mag is not None:
-                        x1c, y1c = max(0, x1), max(0, y1)
-                        x2c, y2c = min(flow_mag.shape[1] - 1, x2), min(flow_mag.shape[0] - 1, y2)
-                        roi_mag = flow_mag[y1c:y2c, x1c:x2c]
-
-                        if roi_mag.size > 0 and roi_mag.mean() >= flow_thresh:
-                            color = (0, 0, 255)  # 该对象确实在剧烈运动
-
+                    color = (0, 255, 0)  # 绿色 - 正常对象
                     cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, 2)
-                    cv2.putText(vis_frame, f"{cls} {conf:.2f}",
-                                (x1, y1 - 10),
+                    cv2.putText(vis_frame, f"{cls} {conf:.2f}", (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                 except Exception as e:
-                    logger.error(f"可视化检测结果出错: {e}")
+                    logger.error(f"可视化检测结果出错: {str(e)}")
 
-        # ─── 4. 危险可视化（首帧或持续期） ───
-        if alerts or self.danger_recognizer.currently_alerting:
-            try:
-                vis_frame = self.danger_recognizer.visualize(
-                    vis_frame, alerts, features)
-            except Exception as e:
-                logger.error(f"可视化告警出错: {e}")
-
-        # ─── 5. 系统状态文本 ───
+        # 添加系统状态信息
         self._add_system_info(vis_frame)
+
         return vis_frame
 
     def _add_system_info(self, frame):
-        """只添加文字，无背景，靠右上角"""
+        """添加系统状态信息到帧"""
         h, w = frame.shape[:2]
 
-        info_items = [
-            f"FPS: {self.fps:.1f}",
-            f"Frames: {self.frame_count}",
-            f"Processed: {self.processed_count}",
-            f"Alerts: {self.alert_count}",
-            f"Uptime: {int(time.time() - self.start_time)} s"
-        ]
-
-        # 文本颜色
-        text_color = (0, 255, 255)  # 黄色系，突出
-
-        for i, info in enumerate(info_items):
-            (text_w, text_h), _ = cv2.getTextSize(info, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
-            x = w - text_w - 10
-            y = 30 + i * 25
-            cv2.putText(frame, info, (x, y),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 2)
-
-        # 模式文字
-        mode_text = "Mode: "
-        if self.args.enable_ai and self.ai_model is not None:
-            mode_text += "AI+"
-        mode_text += "Motion"
-
-        (text_w, text_h), _ = cv2.getTextSize(mode_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
-        x = w - text_w - 10
-        y = 30 + len(info_items) * 25
-        cv2.putText(frame, mode_text, (x, y),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+        # 不再绘制任何右上角系统状态文字
+        # info_items = [
+        #     f"FPS: {self.fps:.1f}",
+        #     f"Frames: {self.frame_count}",
+        #     f"Processed: {self.processed_count}",
+        #     f"Uptime: {int(time.time() - self.start_time)} s"
+        # ]
+        # for i, info in enumerate(info_items):
+        #     color = (255, 255, 255)
+        #     cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
+        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
@@ -653,6 +797,17 @@ class AllInOneSystem:
         avg_fps = self.frame_count / elapsed if elapsed > 0 else 0
         processed_ratio = self.processed_count / max(1, self.frame_count) * 100
 
+        # 获取识别到的行为和交互信息
+        behavior_info = self.get_recognized_behavior_info()
+        
+        # 打印识别到的行为和交互信息
+        print("识别到的行为:")
+        for behavior in behavior_info['behaviors']:
+                print(f"  - {behavior}")
+        print("识别到的交互:")
+        for interaction in behavior_info['interactions']:
+                print(f"  - {interaction}")
+
         report = "\n==== 系统报告 ====\n"
         report += f"运行时间: {elapsed:.2f} 秒\n"
         report += f"总帧数: {self.frame_count}\n"
@@ -660,12 +815,46 @@ class AllInOneSystem:
         report += f"平均帧率: {avg_fps:.2f} FPS\n"
         report += f"告警总数: {self.alert_count}\n"
 
+        # 添加识别到的行为信息到报告
+        report += "\n识别到的行为:\n"
+        if behavior_info['behaviors']:
+            for behavior in behavior_info['behaviors']:
+                report += f"  - {behavior}\n"
+        else:
+            report += "  - 无\n"
+            
+        # 添加识别到的交互信息到报告
+        report += "\n识别到的交互:\n"
+        if behavior_info['interactions']:
+            for interaction in behavior_info['interactions']:
+                report += f"  - {interaction}\n"
+        else:
+            report += "  - 无\n"
+
         # 添加告警分类统计
         alert_stats = self.danger_recognizer.get_alert_stats()
         report += "\n告警分类统计:\n"
         for alert_type, count in alert_stats.items():
             if count > 0:
                 report += f"  - {alert_type}: {count}\n"
+
+        # 新增：告警处理统计
+        report += "\n告警处理统计:\n"
+        report += f"  - 总告警数: {self.alert_handling_stats['total_alerts']}\n"
+        report += f"  - 已处理: {self.alert_handling_stats['handled_alerts']}\n"
+        report += f"  - 未处理: {self.alert_handling_stats['unhandled_alerts']}\n"
+        report += f"  - 处理率: {(self.alert_handling_stats['handled_alerts'] / max(1, self.alert_handling_stats['total_alerts']) * 100):.1f}%\n"
+
+        # 新增：详细告警处理记录
+        report += "\n详细告警处理记录:\n"
+        with self.alert_lock:
+            for alert in self.all_alerts:
+                status = "已处理" if alert.get('handled', False) else "未处理"
+                handled_time = alert.get('handled_time', 'N/A')
+                report += f"  - {alert.get('time', 'N/A')} | {alert.get('type', 'N/A')} | {status}"
+                if alert.get('handled', False):
+                    report += f" | 处理时间: {handled_time}"
+                report += "\n"
 
         # 添加系统配置信息
         report += "\n系统配置:\n"
@@ -680,6 +869,44 @@ class AllInOneSystem:
             f.write(report)
 
         logger.info(f"报告已保存到: {report_path}")
+
+    def get_recognized_behavior_info(self):
+        """返回已识别的行为和交互信息"""
+        return {
+            'behaviors': getattr(self, 'recognized_behaviors', []),
+            'interactions': getattr(self, 'recognized_interactions', [])
+        }
+
+    def add_audio_alert(self, label, score):
+        """供音频监控模块调用，推送声学异常告警"""
+        alert_info = {
+            'id': f"audio_alert_{int(time.time())}",
+            'type': '声学异常',
+            'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'confidence': float(score),
+            'frame': '',
+            'desc': f"检测到异常声音: {label}",
+            'handled': False,
+            'handled_time': None,
+            'person_id': '',
+            'person_class': ''
+        }
+        with self.alert_lock:
+            self.all_alerts.append(alert_info)
+            self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
+            self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
+            self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
+            self.recent_alerts = self.all_alerts[-10:]
+
+    def switch_source(self, source_name):
+        """切换视频源"""
+        if source_name not in [s['name'] for s in self.stream_config.get('sources', [])]:
+            logger.error(f"未找到视频源: {source_name}")
+            return False
+            
+        self.current_source = source_name
+        logger.info(f"切换到视频源: {source_name}")
+        return True
 
 
 def parse_args():
@@ -707,6 +934,9 @@ def parse_args():
     parser.add_argument('--min_confidence', type=float, default=0.5, help='最小置信度')
     parser.add_argument('--alert_region', type=str,
                         help='警戒区域, 格式为坐标点列表, 例如: "[(100,100), (300,100), (300,300), (100,300)]"')
+    # 新增：危险区域停留检测参数
+    parser.add_argument('--distance_threshold', type=int, default=50, help='距离危险区域边界的阈值（像素）')
+    parser.add_argument('--dwell_time_threshold', type=float, default=1.0, help='危险区域停留时间阈值（秒）')
 
     # AI参数
     parser.add_argument('--enable_ai', action='store_true', help='启用AI功能')
@@ -722,6 +952,7 @@ def parse_args():
     parser.add_argument('--output', type=str, default='system_output', help='输出目录')
     parser.add_argument('--record', action='store_true', help='记录视频')
     parser.add_argument('--save_alerts', action='store_true', help='保存告警帧')
+    parser.add_argument('--enable_audio_monitor', action='store_true', help='启用音频监控（声学异常检测）')
 
     return parser.parse_args()
 

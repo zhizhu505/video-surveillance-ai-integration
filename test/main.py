@@ -190,6 +190,18 @@ class VideoAnalysisSystem:
             motion_features,
             self.trajectory_manager.get_interaction_detector()
         )
+
+        # Behavior recognition
+        behaviors, interactions = self.behavior_recognizer.analyze(
+            trajectories, 
+            motion_features,
+            self.trajectory_manager.get_interaction_detector()
+        )
+
+        # 保存识别到的行为信息
+        self.recognized_behaviors.extend([str(behavior) for behavior in behaviors])
+        self.recognized_behaviors.extend([str(interaction) for interaction in interactions])
+
         
         # Conditional visual language processing
         scene_graph = None
