@@ -1,0 +1,36 @@
+
+==== 系统报告 ====
+运行时间: 16.89 秒
+总帧数: 420
+处理帧数: 129 (30.7%)
+平均帧率: 24.87 FPS
+告警总数: 18
+
+告警分类统计:
+  - 入侵警告区域: 18
+
+系统配置:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 3
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 20
+  - area_threshold: 0.01
+  - alert_cooldown: 3
+  - min_confidence: 0.5
+  - alert_region: [(100,100),(500,100),(500,400),(100,400)]
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 20
+  - ai_confidence: 0.4
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: False
+  - save_alerts: False

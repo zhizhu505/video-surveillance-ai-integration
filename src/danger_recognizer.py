@@ -14,7 +14,6 @@ from datetime import datetime
 from threading import Lock
 
 logger = logging.getLogger("DangerRecognizer")
-
 class DangerRecognizer:
     """危险行为识别器 - 用于检测和识别视频中的危险行为"""
     
@@ -25,6 +24,7 @@ class DangerRecognizer:
         'abnormal_pattern': '异常移动模式',
         'intrusion': '入侵警告区域',
         'loitering': '可疑徘徊',
+        'violent_motion': '打架',
     }
     
     def __init__(self, config=None):
@@ -56,6 +56,10 @@ class DangerRecognizer:
             os.makedirs(self.config['alert_dir'], exist_ok=True)
         
         # 初始化状态
+        self.currently_alerting = False
+        self.safe_frames = 0
+        self.safe_reset = 5  # 连续 5 帧安全才算真正结束
+
         self.history = []
         self.current_frame = 0
         self.last_alert_frame = 0
@@ -66,8 +70,9 @@ class DangerRecognizer:
         
         # 添加用于ROI区域的属性
         self.alert_regions = []  # 告警区域列表
-        
-        logger.info(f"危险行为识别器已初始化，特征点阈值:{self.config['feature_count_threshold']}, " + 
+        self.config['violent_mag_threshold'] = 8
+
+        logger.info(f"危险行为识别器已初始化，特征点阈值:{self.config['feature_count_threshold']}, " +
                    f"变化率阈值:{self.config['feature_change_ratio']}")
     
     def add_alert_region(self, region, name="警戒区"):
@@ -85,57 +90,66 @@ class DangerRecognizer:
         })
         logger.info(f"已添加告警区域: {name}")
         return len(self.alert_regions) - 1  # 返回区域ID
-    
+
+    # === DangerRecognizer 补丁 begin ==================================
     def process_frame(self, frame, features, object_detections=None):
-        """处理视频帧，分析是否存在危险行为
-        
-        Args:
-            frame: 当前视频帧
-            features: 从运动特征管理器获取的特征列表
-            object_detections: 可选的物体检测结果列表
-            
-        Returns:
-            alerts: 检测到的告警列表
+        """
+        每帧调用：把上一模块给的运动特征 → 危险告警
+        兼容 features 为 字典 / 对象列表 两种格式
         """
         self.current_frame += 1
-        frame_shape = frame.shape if frame is not None else (480, 640, 3)
-        
-        # 提取当前帧的运动统计
-        motion_stats = self._extract_motion_stats(features, (frame_shape[1], frame_shape[0]))
-        
-        # 更新特征计数
-        feature_count = len(features) if features else 0
+
+        # ---------- 1. 解析特征 ----------
+        if isinstance(features, dict):  # 新版字典格式
+            feature_count = features.get('keypoints_count', 0)
+            motion_area = features.get('motion_area', 0)
+            avg_mag = features.get('avg_magnitude', 0)
+        else:  # 旧版对象列表
+            feature_count = len(features) if features else 0
+            stats = self._extract_motion_stats(
+                features, (frame.shape[1], frame.shape[0]))
+            motion_area = stats['motion_area']
+            avg_mag = stats['avg_magnitude']
+
+        # ---------- 2. 更新 debug 信息 ----------
         self.debug_info = {
             'frame': self.current_frame,
             'feature_count': feature_count,
-            'avg_magnitude': motion_stats['avg_magnitude'],
-            'max_magnitude': motion_stats['max_magnitude'],
-            'motion_area': motion_stats['motion_area'],
+            'motion_area': motion_area,
+            'avg_magnitude': avg_mag,
         }
-        
-        # 更新历史记录
-        self.history.append(motion_stats)
+
+        # ---------- 3. 写入历史 ----------
+        self.history.append({
+            'avg_magnitude': avg_mag,
+            'motion_area': motion_area,
+            'vertical_motion': 0  # 若需要垂直位移可在此填入
+        })
         if len(self.history) > self.config['history_length']:
             self.history.pop(0)
-        
-        # 分析危险行为
-        alerts = self._analyze_danger(frame, features, object_detections)
-        
-        # 更新统计信息
-        with self.alert_lock:
-            for alert in alerts:
-                if alert['type'] in self.alerts_count:
-                    self.alerts_count[alert['type']] += 1
-                
-                # 保存告警帧
+
+        # ---------- 4. 真正的危险分析 ----------
+        alerts = self._analyze_danger(
+            frame, features, object_detections, feature_count, motion_area)
+
+        # ★★★ 在此统一补充时间戳，确保前端显示的是“发生时刻”而非刷新时刻
+        current_ts = time.time()  # 秒级 UNIX 时间
+        for a in alerts:
+            a['timestamp'] = current_ts
+
+        # ---------- 5. 统计 & 保存告警帧（首帧才执行） ----------
+        if alerts:
+            with self.alert_lock:
+                for a in alerts:
+                    self.alerts_count[a['type']] += 1
                 if self.config['save_alerts'] and frame is not None:
-                    self._save_alert_frame(frame, alert)
-        
-        # 更新上一帧的特征计数
+                    self._save_alert_frame(frame, alerts[0])
+
         self.last_features_count = feature_count
-        
         return alerts
-    
+
+    # === DangerRecognizer 补丁 end ====================================
+
     def _extract_motion_stats(self, features, frame_size):
         """从特征中提取运动统计
         
@@ -147,7 +161,7 @@ class DangerRecognizer:
             stats: 统计信息字典
         """
         frame_area = frame_size[0] * frame_size[1]
-        stats = {
+        '''stats = {
             'timestamp': time.time(),
             'avg_magnitude': 0,
             'max_magnitude': 0,
@@ -155,7 +169,29 @@ class DangerRecognizer:
             'motion_area': 0,
             'vertical_motion': 0,
             'feature_count': len(features) if features else 0,
-        }
+        }'''
+        if isinstance(features, dict):  # 字典格式
+            stats = {
+                'timestamp': time.time(),
+                'avg_magnitude': features.get('avg_magnitude', 0),
+                'max_magnitude': features.get('max_magnitude', 0),
+                'motion_directions': {},  # 如需方向可自行追加
+                'motion_area': features.get('motion_area', 0),
+                'vertical_motion': 0,
+                'feature_count': features.get('keypoints_count', 0),
+            }
+            # 这里直接把 motion_area 等字段取出来即可
+            return stats  # 字典模式直接返回，不再走下面的“列表循环”
+        else:  # 旧的“列表特征”逻辑保持
+            stats = {
+                'timestamp': time.time(),
+                'avg_magnitude': 0,
+                'max_magnitude': 0,
+                'motion_directions': {},
+                'motion_area': 0,
+                'vertical_motion': 0,
+                'feature_count': len(features) if features else 0,
+            }
         
         if not features:
             return stats
@@ -205,129 +241,66 @@ class DangerRecognizer:
         stats['vertical_motion'] = vertical_motion / max(1, len(features))
         
         return stats
-    
-    def _analyze_danger(self, frame, features, object_detections=None):
-        """分析危险行为
-        
-        Args:
-            frame: 当前视频帧
-            features: 特征列表
-            object_detections: 物体检测结果
-            
-        Returns:
-            alerts: 告警列表
+
+    def _analyze_danger(self, frame, features, object_detections,
+                        feature_count, motion_area):
         """
-        if len(self.history) < 3:
-            return []
-        
+        只在“进入危险期的首帧”返回 alerts；
+        连续危险帧 → 仅维持 currently_alerting 标志，不重复计数。
+        """
         alerts = []
-        feature_count = len(features) if features else 0
-        
-        # 检查冷却时间
-        if self.current_frame - self.last_alert_frame <= self.config['alert_cooldown']:
-            return []
-        
-        # 1. 特征数量检测
+
+        # ───── ① 基本阈值：特征点数 & 大面积运动 ─────
         if feature_count > self.config['feature_count_threshold']:
-            confidence = min(1.0, feature_count / (self.config['feature_count_threshold'] * 3))
-            if confidence >= self.config['min_confidence']:
-                alerts.append({
-                    'type': self.DANGER_TYPES['sudden_motion'],
-                    'confidence': confidence,
-                    'frame': self.current_frame,
-                    'feature_count': feature_count,
-                    'threshold': self.config['feature_count_threshold'],
-                })
-        
-        # 2. 特征变化率检测
-        if self.last_features_count > 0:
-            feature_change_ratio = feature_count / max(1, self.last_features_count)
-            if (feature_change_ratio > self.config['feature_change_ratio'] and 
-                feature_count > self.config['feature_count_threshold'] / 2):
-                
-                confidence = min(1.0, (feature_change_ratio - 1) / self.config['feature_change_ratio'])
-                if confidence >= self.config['min_confidence']:
-                    alerts.append({
-                        'type': self.DANGER_TYPES['sudden_motion'],
-                        'confidence': confidence,
-                        'frame': self.current_frame,
-                        'change_ratio': feature_change_ratio,
-                        'threshold': self.config['feature_change_ratio'],
-                    })
-        
-        # 3. 运动幅度检测
-        current = self.history[-1]['avg_magnitude']
-        if len(self.history) >= 5:
-            prev_avg = sum(h['avg_magnitude'] for h in self.history[-6:-1]) / 5
-            magnitude_ratio = current / max(0.1, prev_avg)
-            
-            if (magnitude_ratio > 1.2 and 
-                current > self.config['motion_magnitude_threshold']):
-                
-                confidence = min(1.0, current / (self.config['motion_magnitude_threshold'] * 2))
-                if confidence >= self.config['min_confidence']:
-                    alerts.append({
-                        'type': self.DANGER_TYPES['sudden_motion'],
-                        'confidence': confidence,
-                        'frame': self.current_frame,
-                        'magnitude': current,
-                        'threshold': self.config['motion_magnitude_threshold'],
-                    })
-        
-        # 4. 大面积运动检测
-        motion_area = self.history[-1]['motion_area']
+            alerts.append({
+                'type': self.DANGER_TYPES['sudden_motion'],
+                'confidence': min(1.0,
+                                  feature_count / (self.config['feature_count_threshold'] * 2))
+            })
+
         if motion_area > self.config['motion_area_threshold']:
-            confidence = min(1.0, motion_area / self.config['motion_area_threshold'])
-            if confidence >= self.config['min_confidence']:
-                alerts.append({
-                    'type': self.DANGER_TYPES['large_area_motion'],
-                    'confidence': confidence,
-                    'frame': self.current_frame,
-                    'area': motion_area,
-                    'threshold': self.config['motion_area_threshold'],
-                })
-        
-        # 5. 检测警戒区域入侵
-        if object_detections and self.alert_regions:
-            for obj in object_detections:
-                if 'bbox' in obj:  # 确保对象有边界框
-                    x1, y1, x2, y2 = obj['bbox']
-                    center_x = (x1 + x2) // 2
-                    center_y = (y1 + y2) // 2
-                    
-                    for region_idx, region in enumerate(self.alert_regions):
-                        if cv2.pointPolygonTest(region['points'], (center_x, center_y), False) >= 0:
-                            # 目标在警戒区域内
-                            alerts.append({
-                                'type': self.DANGER_TYPES['intrusion'],
-                                'confidence': obj.get('confidence', 0.8),
-                                'frame': self.current_frame,
-                                'object': obj.get('class', 'unknown'),
-                                'region': region_idx,
-                                'region_name': region['name'],
-                            })
-        
-        # 6. 摔倒检测 (简化版)
-        if len(self.history) >= 10:
-            vertical_motion = sum(h['vertical_motion'] for h in self.history[-10:-5])
-            if vertical_motion > self.config['fall_motion_threshold']:
-                recent_vertical = sum(h['vertical_motion'] for h in self.history[-3:])
-                
-                if abs(recent_vertical) < 5:  # 快速下降后静止
-                    alerts.append({
-                        'type': self.DANGER_TYPES['fall'],
-                        'confidence': 0.7,
-                        'frame': self.current_frame,
-                        'motion': vertical_motion,
-                        'threshold': self.config['fall_motion_threshold'],
-                    })
-        
-        # 如果有告警，更新最后告警帧
-        if alerts:
-            self.last_alert_frame = self.current_frame
-        
-        return alerts
-    
+            alerts.append({
+                'type': self.DANGER_TYPES['large_area_motion'],
+                'confidence': min(1.0,
+                                  motion_area / self.config['motion_area_threshold'])
+            })
+
+        # ───── ② 打架 / 剧烈运动（规则版）─────
+        person_cnt = sum(1 for d in (object_detections or []) if d['class'] == 'person')
+        avg_mag = features.get('avg_magnitude', 0.0)  # 在 MotionFeatureManager 中统计
+
+        if person_cnt >= 2 and avg_mag > self.config['violent_mag_threshold']:
+            alerts.append({
+                'type': self.DANGER_TYPES['violent_motion'],
+                'confidence': min(1.0, avg_mag /
+                                  (self.config['violent_mag_threshold'] * 2)),
+                'person_cnt': person_cnt,
+                'avg_mag': avg_mag,
+            })
+
+        # ───── ③ 连续动作只计一次 ─────
+        danger_now = bool(alerts)
+
+        if danger_now and not self.currently_alerting:
+            # 首帧进入危险期 → 允许上层计数
+            self.currently_alerting = True
+            self.safe_frames = 0
+            return alerts
+
+        elif danger_now and self.currently_alerting:
+            # 已在危险期 → 本帧不计数
+            return []
+
+        else:
+            # 安全帧处理
+            if self.currently_alerting:
+                self.safe_frames += 1
+                if self.safe_frames >= self.safe_reset:
+                    # 连续安全 enough 帧，结束本次告警期
+                    self.currently_alerting = False
+                    self.safe_frames = 0
+            return []
+
     def _save_alert_frame(self, frame, alert):
         """保存告警帧
         
@@ -364,61 +337,62 @@ class DangerRecognizer:
         # 保存图像
         cv2.imwrite(filepath, vis_frame)
         logger.info(f"已保存告警帧: {filepath}")
-    
+
     def visualize(self, frame, alerts=None, features=None, show_debug=True):
-        """可视化危险行为检测结果
-        
-        Args:
-            frame: 当前视频帧
-            alerts: 告警列表
-            features: 特征列表
-            show_debug: 是否显示调试信息
-            
-        Returns:
-            vis_frame: 可视化后的视频帧
+        """
+        可视化危险检测结果
+        - alerts 非空  → 首帧，画红框+详细文字
+        - currently_alerting 为 True 且 alerts 空 → 连续帧，保留红框+简洁 'ALERT'
         """
         if frame is None:
             return None
-        
+
         vis_frame = frame.copy()
-        
-        # 绘制警戒区域
+
+        # ---------- ROI ----------
         for region in self.alert_regions:
-            cv2.polylines(vis_frame, [region['points']], True, region['color'], region['thickness'])
-            # 添加区域名称
-            x, y = region['points'].mean(axis=0).astype(int)
-            cv2.putText(vis_frame, region['name'], (x, y), 
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, region['color'], 1)
-        
-        # 绘制告警信息
-        if alerts:
-            # 添加红色边框
-            cv2.rectangle(vis_frame, (0, 0), (vis_frame.shape[1], vis_frame.shape[0]), (0, 0, 255), 3)
-            
-            # 显示告警文本
+            cv2.polylines(vis_frame, [region['points']], True,
+                          region['color'], region['thickness'])
+            cx, cy = region['points'].mean(axis=0).astype(int)
+            cv2.putText(vis_frame, region['name'], (cx, cy),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, region['color'], 1)
+
+        # ---------- 红框 ----------
+        #if alerts or self.currently_alerting:
+            #cv2.rectangle(vis_frame, (0, 0),
+                          #(vis_frame.shape[1] - 1, vis_frame.shape[0] - 1),
+                          #(0, 0, 255), 3)
+
+        # ---------- 告警文字 ----------
+        if alerts:  # 首帧
             for i, alert in enumerate(alerts):
-                alert_text = f"{alert['type']} ({alert['confidence']:.2f})"
-                cv2.putText(vis_frame, alert_text, (10, vis_frame.shape[0] - 30 - i*30), 
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-        
-        # 显示调试信息
+                txt = f"{alert['type']} ({alert['confidence']:.2f})"
+                cv2.putText(vis_frame, txt,
+                            (10, vis_frame.shape[0] - 30 - i * 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        elif self.currently_alerting:  # 连续帧
+            cv2.putText(vis_frame, "ALERT",
+                        (10, vis_frame.shape[0] - 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+
+        # ---------- 调试 ----------
         if show_debug:
-            y_offset = 30
-            for key, value in self.debug_info.items():
-                text = f"{key}: {value:.2f}" if isinstance(value, float) else f"{key}: {value}"
-                cv2.putText(vis_frame, text, (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-                y_offset += 20
-            
-            # 显示告警统计
-            y_offset = 30
-            for i, (alert_type, count) in enumerate(self.alerts_count.items()):
-                if count > 0:
-                    cv2.putText(vis_frame, f"{alert_type}: {count}", (vis_frame.shape[1] - 180, y_offset), 
-                              cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
-                    y_offset += 20
-        
+            y = 30
+            for k, v in self.debug_info.items():
+                txt = f"{k}: {v:.3f}" if isinstance(v, float) else f"{k}: {v}"
+                cv2.putText(vis_frame, txt, (10, y),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+                y += 20
+            y = 30
+            for t, c in self.alerts_count.items():
+                if c > 0:
+                    cv2.putText(vis_frame, f"{t}: {c}",
+                                (vis_frame.shape[1] - 180, y),
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
+                    y += 20
+
         return vis_frame
-    
+
     def get_alert_stats(self):
         """获取告警统计
         

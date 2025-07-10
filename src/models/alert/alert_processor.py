@@ -21,6 +21,7 @@ class Alert:
     
     def __init__(self, rule_name, description, severity="低", frame=None, metadata=None):
         """初始化告警事件"""
+
         self.rule_name = rule_name
         self.description = description
         self.severity = severity

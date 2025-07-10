@@ -11,6 +11,8 @@ import sys
 import time
 import logging
 import argparse
+from collections import deque
+
 import cv2
 import numpy as np
 import threading
@@ -106,6 +108,7 @@ class AllInOneSystem:
             optical_flow_method='farneback',
             use_gpu=args.use_gpu
         )
+        self.recent_alerts = deque(maxlen=100)
 
         # 初始化危险行为识别器
         danger_config = {
@@ -118,6 +121,7 @@ class AllInOneSystem:
         }
         # 实例化危险检测器
         self.danger_recognizer = DangerRecognizer(danger_config)
+        self.recent_alerts = deque(maxlen=100)  # 仅在内存保存最新 100 条
 
         # 如果指定了警戒区域，添加它，也是从命令行传参
         if args.alert_region:
@@ -161,12 +165,14 @@ class AllInOneSystem:
         def index():
             return render_template('index.html')
 
+        # 视频流路由，当浏览器访问 http://localhost:5000/video_feed 时，服务器会持续返回「视频帧
         @self.app.route('/video_feed')
         def video_feed():
             """视频流路由"""
             return Response(self.generate_frames(),
                             mimetype='multipart/x-mixed-replace; boundary=frame')
 
+        # 系统状态API，当浏览器或前端脚本访问 http://localhost:5000/stats 时，返回一段 JSON 格式 的数据
         @self.app.route('/stats')
         def stats():
             """统计信息API"""
@@ -180,6 +186,7 @@ class AllInOneSystem:
                 'status': 'Running' if self.running else 'Stopped'
             })
 
+        # 提供一个JSON接口，返回当前系统的各种实时统计信息
         @self.app.route('/control', methods=['POST'])
         def control():
             """控制API"""
@@ -195,6 +202,10 @@ class AllInOneSystem:
                 return jsonify({'status': 'success', 'message': f'System {"paused" if self.paused else "resumed"}'})
             return jsonify({'status': 'error', 'message': f'Unknown action: {action}'})
 
+        @self.app.route('/alerts')
+        def alerts_api():
+            return jsonify(list(self.recent_alerts)[::-1])
+
         def run_web_server():
             """在单独的线程中运行Web服务器"""
             self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
@@ -205,6 +216,7 @@ class AllInOneSystem:
         web_thread.start()
         logger.info(f"Web服务器已启动，访问 http://localhost:{self.args.web_port}/")
 
+    # 生成实时视频流给网页端
     def generate_frames(self):
         """生成帧序列用于Web流"""
         while True:
@@ -428,6 +440,7 @@ class AllInOneSystem:
                     if alerts:
                         self.alerts = alerts
                         self.alert_count += len(alerts)
+                        self.recent_alerts.extend(alerts)
 
                     # 可视化结果
                     vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
@@ -483,63 +496,76 @@ class AllInOneSystem:
                     })
         return detections
 
-    def visualize_frame(self, original_frame, process_frame=None, features=None, alerts=None, detections=None):
-        """可视化处理结果"""
+    def visualize_frame(self, original_frame,
+                        process_frame=None,
+                        features=None,
+                        alerts=None,
+                        detections=None):
+        """可视化处理结果（主渲染）"""
         if original_frame is None:
             return np.zeros((480, 640, 3), dtype=np.uint8)
 
         vis_frame = original_frame.copy()
 
-        # 如果启用简洁模式，则跳过复杂的可视化
+        # ─── 1. minimal UI ───
         if self.args.minimal_ui:
-            # 仅显示简单的状态信息
             self._add_minimal_info(vis_frame)
             return vis_frame
 
-        # 可视化特征（如果有）
+        # ─── 2. 运动特征 ───
         if features and process_frame is not None:
             try:
-                # 绘制特征
-                vis_frame = self.motion_manager.visualize_features(vis_frame, features)
+                vis_frame = self.motion_manager.visualize_features(
+                    vis_frame, features)
             except Exception as e:
-                logger.error(f"可视化特征出错: {str(e)}")
+                logger.error(f"可视化特征出错: {e}")
 
-        # 可视化AI检测结果（如果有）
+        # ─── 3. AI 检测框：只有该框内光流显著才涂红 ───
         if detections:
+            flow_mag = features.get('flow_magnitude')  # Farneback 光流幅值矩阵
+            flow_thresh = 1.2  # 在动阈值，可调大/小
+
             for det in detections:
                 try:
                     x1, y1, x2, y2 = det['bbox']
                     cls = det['class']
                     conf = det['confidence']
 
-                    color = (0, 255, 0)  # 绿色
+                    # 默认绿色
+                    color = (0, 255, 0)
+
+                    # 判断局部运动量
+                    if flow_mag is not None:
+                        x1c, y1c = max(0, x1), max(0, y1)
+                        x2c, y2c = min(flow_mag.shape[1] - 1, x2), min(flow_mag.shape[0] - 1, y2)
+                        roi_mag = flow_mag[y1c:y2c, x1c:x2c]
+
+                        if roi_mag.size > 0 and roi_mag.mean() >= flow_thresh:
+                            color = (0, 0, 255)  # 该对象确实在剧烈运动
+
                     cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, 2)
-                    cv2.putText(vis_frame, f"{cls} {conf:.2f}", (x1, y1 - 10),
+                    cv2.putText(vis_frame, f"{cls} {conf:.2f}",
+                                (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                 except Exception as e:
-                    logger.error(f"可视化检测结果出错: {str(e)}")
+                    logger.error(f"可视化检测结果出错: {e}")
 
-        # 可视化危险行为告警（如果有）
-        if alerts:
+        # ─── 4. 危险可视化（首帧或持续期） ───
+        if alerts or self.danger_recognizer.currently_alerting:
             try:
-                # 使用危险识别器的可视化功能
-                vis_frame = self.danger_recognizer.visualize(vis_frame, alerts, features)
+                vis_frame = self.danger_recognizer.visualize(
+                    vis_frame, alerts, features)
             except Exception as e:
-                logger.error(f"可视化告警出错: {str(e)}")
+                logger.error(f"可视化告警出错: {e}")
 
-        # 添加系统状态信息
+        # ─── 5. 系统状态文本 ───
         self._add_system_info(vis_frame)
-
         return vis_frame
 
     def _add_system_info(self, frame):
-        """添加系统状态信息到帧"""
+        """只添加文字，无背景，靠右上角"""
         h, w = frame.shape[:2]
 
-        # 绘制系统信息背景
-        cv2.rectangle(frame, (w - 240, 0), (w, 120), (0, 0, 0, 0.5), -1)
-
-        # 显示基本信息
         info_items = [
             f"FPS: {self.fps:.1f}",
             f"Frames: {self.frame_count}",
@@ -548,17 +574,27 @@ class AllInOneSystem:
             f"Uptime: {int(time.time() - self.start_time)} s"
         ]
 
-        for i, info in enumerate(info_items):
-            cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+        # 文本颜色
+        text_color = (0, 255, 255)  # 黄色系，突出
 
-        # 显示当前模式
+        for i, info in enumerate(info_items):
+            (text_w, text_h), _ = cv2.getTextSize(info, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+            x = w - text_w - 10
+            y = 30 + i * 25
+            cv2.putText(frame, info, (x, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, text_color, 2)
+
+        # 模式文字
         mode_text = "Mode: "
         if self.args.enable_ai and self.ai_model is not None:
             mode_text += "AI+"
         mode_text += "Motion"
-        cv2.putText(frame, mode_text, (w - 230, 25 * (len(info_items) + 1)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (100, 255, 100), 1)
+
+        (text_w, text_h), _ = cv2.getTextSize(mode_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+        x = w - text_w - 10
+        y = 30 + len(info_items) * 25
+        cv2.putText(frame, mode_text, (x, y),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
