@@ -96,7 +96,16 @@ class AllInOneSystem:
         self.recognized_behaviors = []  # 存储识别到的行为信息
         self.recognized_interactions = []  # 存储识别到的交互信息
         self.recent_alerts = []  # 记录最近10条告警
-
+        # 新增：全历史告警列表
+        self.all_alerts = []  # 保存所有历史告警
+        
+        # 新增：告警处理相关
+        self.alert_handling_stats = {
+            'total_alerts': 0,
+            'handled_alerts': 0,
+            'unhandled_alerts': 0
+        }  # 告警处理统计
+        self.alert_lock = threading.Lock()  # 告警数据锁
 
         # 线程和队列设置
         self.frame_queue = Queue(maxsize=30)  # 存储「捕获线程 → 处理线程」的帧（缓冲队列）
@@ -188,6 +197,53 @@ class AllInOneSystem:
         def alerts():
             # 返回最近10条告警详情
             return jsonify(self.recent_alerts[-10:][::-1])
+
+        @self.app.route('/alerts/stats')
+        def alert_stats():
+            # 返回告警处理统计
+            return jsonify(self.alert_handling_stats)
+
+        @self.app.route('/alerts/handle', methods=['POST'])
+        def handle_alert():
+            # 处理告警（标记为已处理）
+            data = request.json
+            alert_id = data.get('alert_id')
+            
+            with self.alert_lock:
+                # 查找并更新告警状态
+                for alert in self.all_alerts:
+                    if alert.get('id') == alert_id:
+                        if not alert.get('handled', False):
+                            alert['handled'] = True
+                            alert['handled_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            self.alert_handling_stats['handled_alerts'] += 1
+                            self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
+                            return jsonify({'status': 'success', 'message': 'Alert marked as handled'})
+                        else:
+                            return jsonify({'status': 'info', 'message': 'Alert already handled'})
+                
+                return jsonify({'status': 'error', 'message': 'Alert not found'})
+
+        @self.app.route('/alerts/unhandle', methods=['POST'])
+        def unhandle_alert():
+            # 取消处理告警（标记为未处理）
+            data = request.json
+            alert_id = data.get('alert_id')
+            
+            with self.alert_lock:
+                # 查找并更新告警状态
+                for alert in self.all_alerts:
+                    if alert.get('id') == alert_id:
+                        if alert.get('handled', False):
+                            alert['handled'] = False
+                            alert.pop('handled_time', None)
+                            self.alert_handling_stats['handled_alerts'] = max(0, self.alert_handling_stats['handled_alerts'] - 1)
+                            self.alert_handling_stats['unhandled_alerts'] += 1
+                            return jsonify({'status': 'success', 'message': 'Alert marked as unhandled'})
+                        else:
+                            return jsonify({'status': 'info', 'message': 'Alert already unhandled'})
+                
+                return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/control', methods=['POST'])
         def control():
@@ -433,40 +489,26 @@ class AllInOneSystem:
                     # 检测危险行为
                     alerts = self.danger_recognizer.process_frame(process_frame, features, object_detections)
 
-                    # 更新告警统计
-                    if alerts:
-                        self.alerts = alerts
-                        self.alert_count += len(alerts)
-                        # 打印并保存每条危险行为
-                        for alert in alerts:
-                            alert_msg = f"[危险行为] 类型: {alert.get('type', '未知')} 置信度: {alert.get('confidence', 0):.2f} 帧号: {alert.get('frame', '-')}, 详情: {alert}"
-                            print(alert_msg)
-                            logger.info(alert_msg)
-                            
-                            # 将告警信息添加到识别到的行为列表中
-                            behavior_info = f"{alert.get('type', '未知')} (置信度: {alert.get('confidence', 0):.2f}, 帧号: {alert.get('frame', '-')})"
-                            if behavior_info not in self.recognized_behaviors:
-                                self.recognized_behaviors.append(behavior_info)
-                            
-                            # 检测可能的交互行为
-                            if object_detections and len(object_detections) > 1:
-                                # 如果有多个对象，检测它们之间的交互
-                                interaction_info = f"多对象交互检测 (对象数: {len(object_detections)}, 帧号: {alert.get('frame', '-')})"
-                                if interaction_info not in self.recognized_interactions:
-                                    self.recognized_interactions.append(interaction_info)
-                            
-                            # 检测与警戒区域的交互
-                            if alert.get('type') == '入侵警告区域':
-                                region_name = alert.get('region_name', '未知区域')
-                                interaction_info = f"区域入侵交互 ({region_name}, 帧号: {alert.get('frame', '-')})"
-                                if interaction_info not in self.recognized_interactions:
-                                    self.recognized_interactions.append(interaction_info)
-                            
-                            # 追加写入系统报告
-                            report_line = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | {alert_msg}\n"
-                            report_path = os.path.join(self.args.output, f"report_{datetime.now().strftime('%Y%m%d')}.txt")
-                            with open(report_path, 'a', encoding='utf-8') as f:
-                                f.write(report_line)
+                    # 更新all_alerts和recent_alerts
+                    for alert in alerts:
+                        alert_info = {
+                            'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
+                            'type': alert.get('type', ''),
+                            'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
+                            'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
+                            'desc': alert.get('desc', ''),
+                            'handled': False,  # 默认未处理
+                            'handled_time': None  # 处理时间
+                        }
+                        
+                        with self.alert_lock:
+                            self.all_alerts.append(alert_info)
+                            self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
+                            self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
+                            self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
+                            # recent_alerts只保留最新10条
+                            self.recent_alerts = self.all_alerts[-10:]
 
                     # 可视化结果
                     vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
@@ -476,15 +518,42 @@ class AllInOneSystem:
                     # 更新recent_alerts
                     for alert in alerts:
                         alert_info = {
+                            'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
                             'type': alert.get('type', ''),
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                             'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
                             'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
                             'desc': alert.get('desc', ''),
+                            'handled': False,  # 默认未处理
+                            'handled_time': None  # 处理时间
                         }
-                        self.recent_alerts.append(alert_info)
-                        if len(self.recent_alerts) > 10:
-                            self.recent_alerts.pop(0)
+                        
+                        with self.alert_lock:
+                            self.recent_alerts.append(alert_info)
+                            self.alert_handling_stats['total_alerts'] += 1
+                            self.alert_handling_stats['unhandled_alerts'] += 1
+                            
+                            if len(self.recent_alerts) > 10:
+                                removed_alert = self.recent_alerts.pop(0)
+                                # 如果移除的告警未处理，减少未处理计数
+                                if not removed_alert.get('handled', False):
+                                    self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
+
+                        # 追加行为信息
+                        behavior_info = f"{alert.get('type', '未知')} (置信度: {alert.get('confidence', 0):.2f}, 帧号: {alert.get('frame', '-')})"
+                        if behavior_info not in self.recognized_behaviors:
+                            self.recognized_behaviors.append(behavior_info)
+
+                        # 追加交互信息（如有）
+                        if object_detections and len(object_detections) > 1:
+                            interaction_info = f"多对象交互检测 (对象数: {len(object_detections)}, 帧号: {alert.get('frame', '-')})"
+                            if interaction_info not in self.recognized_interactions:
+                                self.recognized_interactions.append(interaction_info)
+                        if alert.get('type') == '入侵警告区域':
+                            region_name = alert.get('region_name', '未知区域')
+                            interaction_info = f"区域入侵交互 ({region_name}, 帧号: {alert.get('frame', '-')})"
+                            if interaction_info not in self.recognized_interactions:
+                                self.recognized_interactions.append(interaction_info)
 
                 else:
                     # 对于跳过处理的帧，仍然要可视化，但不进行特征提取
@@ -709,6 +778,24 @@ class AllInOneSystem:
         for alert_type, count in alert_stats.items():
             if count > 0:
                 report += f"  - {alert_type}: {count}\n"
+
+        # 新增：告警处理统计
+        report += "\n告警处理统计:\n"
+        report += f"  - 总告警数: {self.alert_handling_stats['total_alerts']}\n"
+        report += f"  - 已处理: {self.alert_handling_stats['handled_alerts']}\n"
+        report += f"  - 未处理: {self.alert_handling_stats['unhandled_alerts']}\n"
+        report += f"  - 处理率: {(self.alert_handling_stats['handled_alerts'] / max(1, self.alert_handling_stats['total_alerts']) * 100):.1f}%\n"
+
+        # 新增：详细告警处理记录
+        report += "\n详细告警处理记录:\n"
+        with self.alert_lock:
+            for alert in self.all_alerts:
+                status = "已处理" if alert.get('handled', False) else "未处理"
+                handled_time = alert.get('handled_time', 'N/A')
+                report += f"  - {alert.get('time', 'N/A')} | {alert.get('type', 'N/A')} | {status}"
+                if alert.get('handled', False):
+                    report += f" | 处理时间: {handled_time}"
+                report += "\n"
 
         # 添加系统配置信息
         report += "\n系统配置:\n"
