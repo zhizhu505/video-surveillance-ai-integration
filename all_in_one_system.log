@@ -24573,3 +24573,337 @@ NameError: name 'info_items' is not defined
 
 2025-07-10 17:38:01,126 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250710_173801.txt
 2025-07-10 17:38:01,127 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-10 17:42:13,662 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 17:42:13,664 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 17:42:13,839 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 17:42:17,876 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 17:42:25,040 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2025-07-10 17:42:25,296 - absl - INFO - Using C:\Users\86180\AppData\Local\Temp\tfhub_modules to cache modules.
+2025-07-10 17:42:25,485 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\resolver.py:120: The name tf.gfile.MakeDirs is deprecated. Please use tf.io.gfile.makedirs instead.
+
+2025-07-10 17:42:25,567 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\module_v2.py:126: The name tf.saved_model.load_v2 is deprecated. Please use tf.compat.v2.saved_model.load instead.
+
+2025-07-10 17:42:27,918 - absl - INFO - Fingerprint not found. Saved model loading will continue.
+2025-07-10 17:42:27,918 - absl - INFO - path_and_singleprint metric could not be logged. Saved model loading will continue.
+2025-07-10 17:42:27,930 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 17:42:27,930 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 17:42:27,930 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 17:42:27,930 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 17:42:27,930 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 17:42:27,930 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 17:42:27,934 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-10 17:42:27,936 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-10 17:42:27,936 - DangerRecognizer - INFO - “—ÃÌº”∏ÊæØ«¯”Ú: æØΩ‰«¯
+2025-07-10 17:42:27,974 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-10 17:42:27,979 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-10 17:42:27,986 - AllInOneSystem - INFO -  ”∆µΩ´¬º÷∆µΩ: system_output\output_20250710_174227.avi
+2025-07-10 17:42:27,987 - AllInOneSystem - INFO - “Ù∆µº‡øÿœﬂ≥Ã“—∆Ù∂Ø
+2025-07-10 17:42:27,987 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-10 17:42:27,988 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-10 17:42:27,988 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-10 17:42:27,988 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-10 17:42:28,011 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-10 17:42:28,011 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-10 17:42:28,532 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-10 17:42:32,120 - DangerRecognizer - INFO - ∂‘œÛ person_-7221628469078841007 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:32,120 - DangerRecognizer - INFO - ∂‘œÛ person_-8444198325767587324 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:32,124 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_12_20250710_174232.jpg
+2025-07-10 17:42:32,127 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_12_20250710_174232.jpg
+2025-07-10 17:42:33,172 - DangerRecognizer - INFO - ∂‘œÛ person_-1362878461600890494 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:33,172 - DangerRecognizer - INFO - ∂‘œÛ person_416728491363757594 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:33,175 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_24_20250710_174233.jpg
+2025-07-10 17:42:33,178 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_24_20250710_174233.jpg
+2025-07-10 17:42:33,981 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:33] "GET / HTTP/1.1" 200 -
+2025-07-10 17:42:34,027 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:34] "GET /video_feed HTTP/1.1" 200 -
+2025-07-10 17:42:34,031 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:34] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:34,034 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:34] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:34,036 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:34] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:34,185 - DangerRecognizer - INFO - ∂‘œÛ person_-4401197419510055189 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:34,185 - DangerRecognizer - INFO - ∂‘œÛ person_2769094160126051814 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:34,188 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250710_174234.jpg
+2025-07-10 17:42:34,191 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250710_174234.jpg
+2025-07-10 17:42:35,012 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:35] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:35,014 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:35] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:35,016 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:35] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:35,426 - DangerRecognizer - INFO - ∂‘œÛ person_7048519252013772999 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:35,426 - DangerRecognizer - INFO - ∂‘œÛ person_4709502206343618338 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:35,429 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_47_20250710_174235.jpg
+2025-07-10 17:42:35,432 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_47_20250710_174235.jpg
+2025-07-10 17:42:35,435 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_47_20250710_174235.jpg
+2025-07-10 17:42:36,009 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:36] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:36,017 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:36] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:36,019 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:36] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:36,475 - DangerRecognizer - INFO - ∂‘œÛ person_4341506600712626212 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:36,475 - DangerRecognizer - INFO - ∂‘œÛ person_6976239784496495564 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:36,478 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_59_20250710_174236.jpg
+2025-07-10 17:42:36,482 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250710_174236.jpg
+2025-07-10 17:42:36,484 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250710_174236.jpg
+2025-07-10 17:42:36,488 - AllInOneSystem - ERROR - ø… ”ªØ∏ÊæØ≥ˆ¥Ì: local variable 'x1' referenced before assignment
+2025-07-10 17:42:37,011 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:37] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:37,012 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:37] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:37,015 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:37] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:37,528 - DangerRecognizer - INFO - ∂‘œÛ person_1250457564179142936 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:37,528 - DangerRecognizer - INFO - ∂‘œÛ person_-8024737875375465452 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:37,532 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_71_20250710_174237.jpg
+2025-07-10 17:42:37,535 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250710_174237.jpg
+2025-07-10 17:42:37,537 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250710_174237.jpg
+2025-07-10 17:42:37,540 - AllInOneSystem - ERROR - ø… ”ªØ∏ÊæØ≥ˆ¥Ì: local variable 'x1' referenced before assignment
+2025-07-10 17:42:38,017 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:38] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:38,020 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:38] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:38,022 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:38] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:38,471 - DangerRecognizer - INFO - ∂‘œÛ person_5630826905335184997 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:38,471 - DangerRecognizer - INFO - ∂‘œÛ person_-1042966114815159426 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:38,475 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250710_174238.jpg
+2025-07-10 17:42:38,478 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250710_174238.jpg
+2025-07-10 17:42:39,022 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:39] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:39,024 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:39] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:39,026 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:39] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:39,347 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_93_20250710_174239.jpg
+2025-07-10 17:42:39,591 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:39] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-10 17:42:39,607 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:39] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:39,608 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:39] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:40,011 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:40] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:40,012 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:40] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:40,013 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:40] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:40,212 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_104_20250710_174240.jpg
+2025-07-10 17:42:40,716 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:40] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-10 17:42:40,724 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:40] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:40,725 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:40] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:41,020 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:41] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:41,021 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:41] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:41,023 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:41] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:41,124 - DangerRecognizer - INFO - Œ£œ’«¯”ÚÕ£¡Ù∏ÊæØ: ∂‘œÛ person_5630826905335184997 ‘⁄«¯”Ú 0 Õ£¡Ù 2.65√Î
+2025-07-10 17:42:41,125 - DangerRecognizer - INFO - ∂‘œÛ person_-6730909801620395097 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:41,128 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Danger Zone Dwell_115_20250710_174241.jpg
+2025-07-10 17:42:41,131 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_115_20250710_174241.jpg
+2025-07-10 17:42:41,133 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_115_20250710_174241.jpg
+2025-07-10 17:42:42,009 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:42] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:42,010 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:42] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:42,011 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:42] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:42,118 - DangerRecognizer - INFO - ∂‘œÛ person_3669527369091062562 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:42,119 - DangerRecognizer - INFO - ∂‘œÛ person_5920104244308497099 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:42,122 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_127_20250710_174242.jpg
+2025-07-10 17:42:42,125 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_127_20250710_174242.jpg
+2025-07-10 17:42:43,011 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:43] "GET /stats HTTP/1.1" 200 -
+2025-07-10 17:42:43,013 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:43] "GET /alerts HTTP/1.1" 200 -
+2025-07-10 17:42:43,014 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:43] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-10 17:42:43,113 - DangerRecognizer - INFO - ∂‘œÛ person_2115815495068892740 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:43,113 - DangerRecognizer - INFO - ∂‘œÛ person_-2590726855956964506 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-10 17:42:43,116 - werkzeug - INFO - 127.0.0.1 - - [10/Jul/2025 17:42:43] "POST /control HTTP/1.1" 200 -
+2025-07-10 17:42:43,116 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_139_20250710_174243.jpg
+2025-07-10 17:42:43,120 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_139_20250710_174243.jpg
+2025-07-10 17:42:43,126 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-10 17:42:43,696 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-10 17:42:43,699 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 15.76 √Î
+◊‹÷° ˝: 299
+¥¶¿Ì÷° ˝: 139 (46.5%)
+∆Ωæ˘÷°¬ : 18.97 FPS
+∏ÊæØ◊‹ ˝: 0
+
+ ∂±µΩµƒ––Œ™:
+  - Intrusion Alert (÷√–≈∂»: 0.90, ÷°∫≈: 12)
+  - Intrusion Alert (÷√–≈∂»: 0.53, ÷°∫≈: 12)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 24)
+  - Intrusion Alert (÷√–≈∂»: 0.52, ÷°∫≈: 24)
+  - Intrusion Alert (÷√–≈∂»: 0.90, ÷°∫≈: 35)
+  - Intrusion Alert (÷√–≈∂»: 0.57, ÷°∫≈: 35)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 47)
+  - Intrusion Alert (÷√–≈∂»: 0.90, ÷°∫≈: 47)
+  - Intrusion Alert (÷√–≈∂»: 0.55, ÷°∫≈: 47)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 59)
+  - Intrusion Alert (÷√–≈∂»: 0.91, ÷°∫≈: 59)
+  - Intrusion Alert (÷√–≈∂»: 0.55, ÷°∫≈: 59)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.91, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.57, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.91, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.58, ÷°∫≈: 82)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 93)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 104)
+  - Danger Zone Dwell (÷√–≈∂»: 0.90, ÷°∫≈: 115)
+  - Intrusion Alert (÷√–≈∂»: 0.91, ÷°∫≈: 115)
+  - Intrusion Alert (÷√–≈∂»: 0.54, ÷°∫≈: 115)
+  - Intrusion Alert (÷√–≈∂»: 0.91, ÷°∫≈: 127)
+  - Intrusion Alert (÷√–≈∂»: 0.54, ÷°∫≈: 127)
+  - Intrusion Alert (÷√–≈∂»: 0.90, ÷°∫≈: 139)
+  - Intrusion Alert (÷√–≈∂»: 0.55, ÷°∫≈: 139)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 12)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 8, ÷°∫≈: 24)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 8, ÷°∫≈: 35)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 47)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 10, ÷°∫≈: 59)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 9, ÷°∫≈: 71)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 9, ÷°∫≈: 82)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 9, ÷°∫≈: 115)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 9, ÷°∫≈: 127)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 8, ÷°∫≈: 139)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 5
+  - Intrusion Alert: 20
+  - Danger Zone Dwell: 1
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 28
+  - “—¥¶¿Ì: 2
+  - Œ¥¥¶¿Ì: 25
+  - ¥¶¿Ì¬ : 7.1%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-10 17:42:32 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:32 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:33 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:33 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:34 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:34 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:35 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:35 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:35 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:36 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:36 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:36 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:37 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:37 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:37 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:38 | Intrusion Alert | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-10 17:42:39
+  - 2025-07-10 17:42:38 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:39 | Large Area Motion | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-10 17:42:40
+  - 2025-07-10 17:42:40 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:41 | Danger Zone Dwell | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:41 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:41 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:42 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:42 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:43 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-10 17:42:43 | Intrusion Alert | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: [(10,10), (260,10), (260,380), (10,380)]
+  - distance_threshold: 50
+  - dwell_time_threshold: 1.0
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.4
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: True
+  - save_alerts: True
+
+2025-07-10 17:42:43,702 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250710_174243.txt
+2025-07-10 17:42:43,702 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-10 17:46:00,626 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 17:46:00,626 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 17:46:00,810 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 17:46:04,900 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 17:46:12,498 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+2025-07-10 17:46:12,759 - absl - INFO - Using C:\Users\86180\AppData\Local\Temp\tfhub_modules to cache modules.
+2025-07-10 17:46:12,974 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\resolver.py:120: The name tf.gfile.MakeDirs is deprecated. Please use tf.io.gfile.makedirs instead.
+
+2025-07-10 17:46:13,087 - tensorflow - WARNING - From C:\Users\86180\AppData\Local\Programs\Python\Python310\lib\site-packages\tensorflow_hub\module_v2.py:126: The name tf.saved_model.load_v2 is deprecated. Please use tf.compat.v2.saved_model.load instead.
+
+2025-07-10 17:46:15,474 - absl - INFO - Fingerprint not found. Saved model loading will continue.
+2025-07-10 17:46:15,475 - absl - INFO - path_and_singleprint metric could not be logged. Saved model loading will continue.
+2025-07-10 17:46:15,494 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-10 17:46:15,494 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-10 17:46:15,494 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-10 17:46:15,494 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-10 17:46:15,494 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 17:46:15,496 - AllInOneSystem - INFO - ≥…π¶µº»Îaudio_monitor“Ù∆µº‡øÿƒ£øÈ
+2025-07-10 17:46:15,499 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-10 17:46:15,499 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-10 17:46:15,539 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-10 17:46:15,549 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-10 17:46:15,549 - AllInOneSystem - INFO - Œ¥∆Ù”√“Ù∆µº‡øÿ
+2025-07-10 17:46:15,550 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-10 17:46:15,552 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-10 17:46:15,553 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-10 17:46:15,553 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-10 17:46:15,579 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-10 17:46:15,580 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-10 17:46:16,101 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-10 17:46:18,867 - AllInOneSystem - INFO - ”√ªß÷–∂œ
+2025-07-10 17:46:19,089 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-10 17:46:19,259 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-10 17:46:19,260 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 3.76 √Î
+◊‹÷° ˝: 44
+¥¶¿Ì÷° ˝: 5 (11.4%)
+∆Ωæ˘÷°¬ : 11.70 FPS
+∏ÊæØ◊‹ ˝: 0
+
+ ∂±µΩµƒ––Œ™:
+  - Œﬁ
+
+ ∂±µΩµƒΩªª•:
+  - Œﬁ
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 0
+  - “—¥¶¿Ì: 0
+  - Œ¥¥¶¿Ì: 0
+  - ¥¶¿Ì¬ : 0.0%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: None
+  - distance_threshold: 50
+  - dwell_time_threshold: 1.0
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.2
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: False
+  - save_alerts: False
+  - enable_audio_monitor: False
+
+2025-07-10 17:46:19,263 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250710_174619.txt
+2025-07-10 17:46:19,263 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π

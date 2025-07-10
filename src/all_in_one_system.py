@@ -178,11 +178,13 @@ class AllInOneSystem:
 
         # 自动启动音频监控线程（如可用）
         self.audio_thread = None
-        if HAS_AUDIO_MONITOR:
+        if getattr(args, 'enable_audio_monitor', False) and HAS_AUDIO_MONITOR:
             self.audio_thread = threading.Thread(target=audio_monitor.audio_monitor_callback, args=(self.add_audio_alert,))
             self.audio_thread.daemon = True
             self.audio_thread.start()
             logger.info("音频监控线程已启动")
+        else:
+            logger.info("未启用音频监控")
 
         logger.info("全功能视频监控系统初始化完成")
 
@@ -895,6 +897,7 @@ def parse_args():
     parser.add_argument('--output', type=str, default='system_output', help='输出目录')
     parser.add_argument('--record', action='store_true', help='记录视频')
     parser.add_argument('--save_alerts', action='store_true', help='保存告警帧')
+    parser.add_argument('--enable_audio_monitor', action='store_true', help='启用音频监控（声学异常检测）')
 
     return parser.parse_args()
 
