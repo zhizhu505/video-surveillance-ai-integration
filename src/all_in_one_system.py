@@ -127,7 +127,11 @@ class AllInOneSystem:
             'alert_cooldown': args.alert_cooldown,
             'save_alerts': args.save_alerts,
             'alert_dir': os.path.join(args.output, 'alerts'),
-            'min_confidence': args.min_confidence
+            'min_confidence': args.min_confidence,
+            # 新增：危险区域停留检测配置
+            'distance_threshold_m': getattr(args, 'distance_threshold', 50),
+            'dwell_time_threshold_s': getattr(args, 'dwell_time_threshold', 1.0),
+            'fps': args.max_fps
         }
         # 实例化危险检测器
         self.danger_recognizer = DangerRecognizer(danger_config)
@@ -844,6 +848,9 @@ def parse_args():
     parser.add_argument('--min_confidence', type=float, default=0.5, help='最小置信度')
     parser.add_argument('--alert_region', type=str,
                         help='警戒区域, 格式为坐标点列表, 例如: "[(100,100), (300,100), (300,300), (100,300)]"')
+    # 新增：危险区域停留检测参数
+    parser.add_argument('--distance_threshold', type=int, default=50, help='距离危险区域边界的阈值（像素）')
+    parser.add_argument('--dwell_time_threshold', type=float, default=1.0, help='危险区域停留时间阈值（秒）')
 
     # AI参数
     parser.add_argument('--enable_ai', action='store_true', help='启用AI功能')

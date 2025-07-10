@@ -25,6 +25,7 @@ class DangerRecognizer:
         'abnormal_pattern': 'Abnormal Pattern',
         'intrusion': 'Intrusion Alert',
         'loitering': 'Loitering',
+        'danger_zone_dwell': 'Danger Zone Dwell',  # 新增：危险区域停留告警
     }
     
     def __init__(self, config=None):
@@ -46,6 +47,10 @@ class DangerRecognizer:
             'alert_dir': 'alerts',
             'min_confidence': 0.6,              # 置信度提高到0.6
             'alert_highlight_duration': 30,     # 红框显示持续时间（帧数）
+            # 新增：危险区域停留检测配置
+            'distance_threshold_m': 50,         # 距离区域边界的阈值（像素）
+            'dwell_time_threshold_s': 1.0,      # 停留时间阈值（秒）
+            'fps': 30,                          # 帧率，用于计算时间
         }
         
         # 更新用户配置
@@ -73,8 +78,19 @@ class DangerRecognizer:
         self.alerted_objects = {}  # 格式: {object_id: {'frame': frame_num, 'alert_type': type, 'bbox': bbox}}
         self.next_object_id = 0
         
+        # 新增：危险区域停留检测相关
+        self.danger_zone_trackers = {}  # 格式: {object_id: {'start_time': time, 'start_frame': frame, 'region_id': id, 'bbox': bbox}}
+        self.dwell_alert_cooldown = {}  # 格式: {object_id: last_alert_frame} 防止重复告警
+        
+        # 新增：多目标跟踪
+        self.tracked_persons = {}  # {id: {'bbox': [x1, y1, x2, y2], 'last_seen': frame_idx}}
+        self.next_person_id = 1
+        self.tracking_max_distance = 50  # 最大中心点距离，判定为同一人
+        self.tracking_max_missing = 30   # 最大丢失帧数
+        
         logger.info(f"危险行为识别器已初始化，特征点阈值:{self.config['feature_count_threshold']}, " + 
-                   f"变化率阈值:{self.config['feature_change_ratio']}")
+                   f"变化率阈值:{self.config['feature_change_ratio']}, " +
+                   f"危险区域停留阈值:{self.config['dwell_time_threshold_s']}秒")
     
     def add_alert_region(self, region, name="警戒区"):
         """添加告警区域
@@ -86,11 +102,185 @@ class DangerRecognizer:
         self.alert_regions.append({
             'points': np.array(region, dtype=np.int32),
             'name': name,
-            'color': (0, 0, 255),
+            'color': (0, 0, 255),  # 红色
             'thickness': 2
         })
         logger.info(f"已添加告警区域: {name}")
         return len(self.alert_regions) - 1  # 返回区域ID
+    
+    def _calculate_distance_to_region(self, bbox, region_points):
+        """计算边界框到危险区域的距离
+        
+        Args:
+            bbox: [x1, y1, x2, y2] 边界框坐标
+            region_points: 危险区域的多边形点
+            
+        Returns:
+            distance: 最小距离（像素）
+        """
+        x1, y1, x2, y2 = bbox
+        
+        # 计算边界框的四个角点和中心点
+        corners = [
+            (x1, y1), (x2, y1), (x2, y2), (x1, y2),  # 四个角点
+            ((x1 + x2) // 2, (y1 + y2) // 2)  # 中心点
+        ]
+        
+        min_distance = float('inf')
+        
+        for corner in corners:
+            # 计算点到多边形的最小距离
+            distance = cv2.pointPolygonTest(region_points, corner, True)
+            if abs(distance) < abs(min_distance):
+                min_distance = distance
+        
+        return abs(min_distance)
+    
+    def _check_bbox_intersection(self, bbox, region_points):
+        """检查边界框是否与危险区域有重合
+        
+        Args:
+            bbox: [x1, y1, x2, y2] 边界框坐标
+            region_points: 危险区域的多边形点
+            
+        Returns:
+            bool: 是否有重合
+        """
+        x1, y1, x2, y2 = bbox
+        
+        # 检查边界框的四个角点是否在区域内
+        corners = [(x1, y1), (x2, y1), (x2, y2), (x1, y2)]
+        
+        for corner in corners:
+            if cv2.pointPolygonTest(region_points, corner, False) >= 0:
+                return True
+        
+        # 检查边界框的中心点是否在区域内
+        center_x = (x1 + x2) // 2
+        center_y = (y1 + y2) // 2
+        if cv2.pointPolygonTest(region_points, (center_x, center_y), False) >= 0:
+            return True
+        
+        # 检查边界框的边是否与区域相交（简化检查）
+        # 这里使用边界框的四个边与区域的重叠检查
+        bbox_rect = [x1, y1, x2, y2]
+        region_rect = cv2.boundingRect(region_points)
+        
+        # 检查两个矩形是否重叠
+        if (bbox_rect[0] < region_rect[0] + region_rect[2] and
+            bbox_rect[0] + bbox_rect[2] > region_rect[0] and
+            bbox_rect[1] < region_rect[1] + region_rect[3] and
+            bbox_rect[1] + bbox_rect[3] > region_rect[1]):
+            return True
+        
+        return False
+    
+    def _track_danger_zone_dwell(self, object_detections):
+        """跟踪危险区域停留时间
+        
+        Args:
+            object_detections: 对象检测结果列表
+            
+        Returns:
+            alerts: 停留时间告警列表
+        """
+        alerts = []
+        current_time = time.time()
+        current_frame = self.current_frame
+        
+        # 打印所有危险区域坐标
+        print("[调试] 当前危险区域设置:")
+        for i, region in enumerate(self.alert_regions):
+            print(f"  区域{i}: {region['points'].tolist()}")
+        
+        # 检查每个检测到的对象
+        for obj in object_detections:
+            if 'bbox' not in obj or str(obj.get('class', '')).lower() != 'person':
+                continue
+            
+            bbox = obj['bbox']
+            print(f"[调试] 检测到person方框: {bbox}")
+            object_id = f"{obj.get('class', 'person')}_{hash(tuple(bbox))}"
+            
+            # 检查是否在危险区域内
+            in_danger_zone = False
+            region_id = None
+            
+            for i, region in enumerate(self.alert_regions):
+                # 检查边界框是否与危险区域有重合
+                is_overlap = self._check_bbox_intersection(bbox, region['points'])
+                print(f"[调试] 检查person方框 {bbox} 与区域{i} 是否重合: {is_overlap}")
+                if is_overlap:
+                    in_danger_zone = True
+                    region_id = i
+                    # 只要有重合就输出一次告警
+                    print(f"[告警] person方框 {bbox} 已进入危险区域{i}！")
+                    break
+            
+            if in_danger_zone:
+                # 对象在危险区域内，开始或继续计时
+                if object_id not in self.danger_zone_trackers:
+                    # 新进入危险区域，开始计时
+                    self.danger_zone_trackers[object_id] = {
+                        'start_time': current_time,
+                        'start_frame': current_frame,
+                        'region_id': region_id,
+                        'bbox': bbox.copy()
+                    }
+                    logger.info(f"对象 {object_id} 进入危险区域 {region_id}")
+                else:
+                    # 已在危险区域内，检查停留时间
+                    dwell_time = current_time - self.danger_zone_trackers[object_id]['start_time']
+                    
+                    # 检查是否超过停留时间阈值
+                    if (dwell_time >= self.config['dwell_time_threshold_s'] and 
+                        object_id not in self.dwell_alert_cooldown):
+                        
+                        # 触发告警
+                        # 修复：region_id 作为索引时类型安全
+                        if isinstance(region_id, int) and 0 <= region_id < len(self.alert_regions):
+                            region_name = self.alert_regions[region_id]['name']
+                        else:
+                            region_name = str(region_id)
+                        alert = {
+                            'type': self.DANGER_TYPES['danger_zone_dwell'],
+                            'confidence': 0.9,  # 高置信度
+                            'frame': current_frame,
+                            'object_id': object_id,
+                            'region_id': region_id,
+                            'region_name': region_name,
+                            'dwell_time': dwell_time,
+                            'threshold': self.config['dwell_time_threshold_s'],
+                            'bbox': bbox
+                        }
+                        alerts.append(alert)
+                        
+                        # 设置冷却时间，防止重复告警
+                        self.dwell_alert_cooldown[object_id] = current_frame
+                        
+                        logger.info(f"危险区域停留告警: 对象 {object_id} 在区域 {region_id} 停留 {dwell_time:.2f}秒")
+            else:
+                # 对象不在危险区域内，清除跟踪
+                if object_id in self.danger_zone_trackers:
+                    dwell_time = current_time - self.danger_zone_trackers[object_id]['start_time']
+                    logger.info(f"对象 {object_id} 离开危险区域，停留时间: {dwell_time:.2f}秒")
+                    del self.danger_zone_trackers[object_id]
+                
+                # 清除冷却时间
+                if object_id in self.dwell_alert_cooldown:
+                    del self.dwell_alert_cooldown[object_id]
+        
+        # 清理过期的冷却时间记录
+        cooldown_duration = 30  # 30帧的冷却时间
+        expired_objects = []
+        for obj_id, last_frame in self.dwell_alert_cooldown.items():
+            if current_frame - last_frame > cooldown_duration:
+                expired_objects.append(obj_id)
+        
+        for obj_id in expired_objects:
+            del self.dwell_alert_cooldown[obj_id]
+        
+        return alerts
     
     def process_frame(self, frame, features, object_detections=None):
         """处理视频帧，分析是否存在危险行为
@@ -179,7 +369,7 @@ class DangerRecognizer:
         # 优先用光流幅度
         if isinstance(features, dict) and 'flow_mean_magnitude' in features:
             stats['avg_magnitude'] = features['flow_mean_magnitude']
-            stats['max_magnitude'] = features['flow_max_magnitude']
+            stats['max_magnitude'] = features.get('flow_max_magnitude', features['flow_mean_magnitude'])
             # 用motion_vectors数量估算运动面积
             if 'motion_vectors' in features:
                 # 16为采样步长，motion_vectors数量*采样面积
@@ -388,8 +578,13 @@ class DangerRecognizer:
         else:
             print(f"[调试] 大面积运动检测: 当前面积={motion_area:.4f} 未超过阈值={self.config['motion_area_threshold']:.4f}")
         
-        # 5. 检测警戒区域入侵
+        # 5. 检测警戒区域入侵和停留时间
         if object_detections and self.alert_regions:
+            # 5.1 检测危险区域停留时间
+            dwell_alerts = self._track_danger_zone_dwell(object_detections)
+            alerts.extend(dwell_alerts)
+            
+            # 5.2 检测警戒区域入侵（原有的中心点检测）
             for obj in object_detections:
                 if 'bbox' in obj:  # 确保对象有边界框
                     x1, y1, x2, y2 = obj['bbox']
@@ -506,6 +701,42 @@ class DangerRecognizer:
         cv2.imwrite(filepath, vis_frame)
         logger.info(f"已保存告警帧: {filepath}")
     
+    def update_person_tracking(self, detections):
+        # 只处理person
+        persons = [det for det in detections if str(det.get('class', '')).lower() == 'person']
+        updated_ids = set()
+        for det in persons:
+            bbox = det['bbox']
+            cx = (bbox[0] + bbox[2]) // 2
+            cy = (bbox[1] + bbox[3]) // 2
+            matched_id = None
+            min_dist = float('inf')
+            # 匹配已有ID
+            for pid, info in self.tracked_persons.items():
+                prev_bbox = info['bbox']
+                pcx = (prev_bbox[0] + prev_bbox[2]) // 2
+                pcy = (prev_bbox[1] + prev_bbox[3]) // 2
+                dist = ((cx - pcx) ** 2 + (cy - pcy) ** 2) ** 0.5
+                if dist < self.tracking_max_distance and dist < min_dist:
+                    min_dist = dist
+                    matched_id = pid
+            if matched_id is not None:
+                # 更新已有ID
+                self.tracked_persons[matched_id] = {'bbox': bbox, 'last_seen': self.current_frame}
+                det['person_id'] = matched_id
+                updated_ids.add(matched_id)
+            else:
+                # 分配新ID
+                pid = self.next_person_id
+                self.next_person_id += 1
+                self.tracked_persons[pid] = {'bbox': bbox, 'last_seen': self.current_frame}
+                det['person_id'] = pid
+                updated_ids.add(pid)
+        # 清理长时间未出现的ID
+        to_del = [pid for pid, info in self.tracked_persons.items() if self.current_frame - info['last_seen'] > self.tracking_max_missing]
+        for pid in to_del:
+            del self.tracked_persons[pid]
+
     def visualize(self, frame, alerts=None, features=None, show_debug=True, detections=None):
         """可视化危险行为检测结果
         
@@ -523,13 +754,30 @@ class DangerRecognizer:
         
         vis_frame = frame.copy()
         
-        # 绘制警戒区域
+        # 绘制警戒区域 - 始终显示为蓝色
         for region in self.alert_regions:
-            cv2.polylines(vis_frame, [region['points']], True, region['color'], region['thickness'])
+            region_color = (255, 0, 0)  # 蓝色
+            cv2.polylines(vis_frame, [region['points']], True, region_color, region['thickness'])
             # 添加区域名称
             x, y = region['points'].mean(axis=0).astype(int)
             cv2.putText(vis_frame, region['name'], (x, y), 
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, region['color'], 1)
+                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, region_color, 1)
+        
+        # 显示危险区域停留时间信息
+        if self.danger_zone_trackers:
+            y_offset = 60  # 从顶部开始显示
+            for obj_id, tracker in self.danger_zone_trackers.items():
+                dwell_time = time.time() - tracker['start_time']
+                region_id = tracker['region_id']
+                # 修正：region_id 可能为 None 或超出范围，需检查
+                if isinstance(region_id, int) and 0 <= region_id < len(self.alert_regions):
+                    region_name = self.alert_regions[region_id]['name']
+                else:
+                    region_name = str(region_id)
+                text = f"停留时间: {dwell_time:.1f}s - {region_name}"
+                cv2.putText(vis_frame, text, (10, y_offset), 
+                          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+                y_offset += 20
         
         # 智能告警可视化
         if alerts:
@@ -544,37 +792,38 @@ class DangerRecognizer:
 
         # 优化：使用告警对象跟踪来精确显示红框
         if detections:
+            self.update_person_tracking(detections)
             for det in detections:
-                x1, y1, x2, y2 = det['bbox']
-                cls = det['class']
-                conf = det['confidence']
-                
-                # 检查该对象是否处于告警状态
-                is_alerted = self.is_object_alerted(det)
-                # 新增：如果当前有大面积运动告警，且是person，也标红
-                if not is_alerted and alerts:
-                    if any(alert.get('type') == self.DANGER_TYPES['large_area_motion'] for alert in alerts):
-                        if str(cls).lower() == 'person':
-                            is_alerted = True
-                
-                if str(cls).lower() == 'person':
-                    # 只有处于告警状态的person才显示红框
-                    if is_alerted:
-                        color = (0, 0, 255)  # 红色 - 告警状态
-                        thickness = 3
-                        # 添加告警标识
-                        cv2.putText(vis_frame, "ALERT", (x1, y1 - 25),
+                if str(det.get('class', '')).lower() == 'person':
+                    x1, y1, x2, y2 = det['bbox']
+                    pid = det.get('person_id', -1)
+                    color = (0, 255, 0)  # 绿色 - 告警状态或危险区域
+                    thickness = 3
+                    # 添加告警标识
+                    if pid != -1: # 只有当有ID时才显示
+                        cv2.putText(vis_frame, f"ID:{pid}", (x1, y1 - 25),
                                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    # 在危险区域内或处于告警状态的person显示红框
+                    if pid != -1: # 只有当有ID时才检查
+                        is_alerted = self.is_object_alerted(det)
+                        in_danger_zone = False
+                        if self.alert_regions:
+                            for region in self.alert_regions:
+                                if self._check_bbox_intersection(det['bbox'], region['points']):
+                                    in_danger_zone = True
+                                    break
+                        if is_alerted or in_danger_zone:
+                            cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, thickness)
+                        else:
+                            cv2.rectangle(vis_frame, (x1, y1), (x2, y2), (0, 255, 0), thickness) # 正常状态
                     else:
-                        color = (0, 255, 0)  # 绿色 - 正常状态
-                        thickness = 2
+                        cv2.rectangle(vis_frame, (x1, y1), (x2, y2), (0, 255, 0), thickness) # 没有ID的person
                 else:
                     color = (0, 255, 0)  # 绿色 - 非person对象
                     thickness = 2
-                
-                cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, thickness)
-                cv2.putText(vis_frame, f"{cls} {conf:.2f}", (x1, y1 - 10),
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, thickness)
+                    cv2.putText(vis_frame, f"{det.get('class', 'unknown')} {det.get('confidence', 0.8):.2f}", (x1, y1 - 10),
+                              cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         
         # 显示调试信息
         if show_debug:
@@ -623,6 +872,12 @@ class DangerRecognizer:
             # 清理告警对象跟踪
             self.alerted_objects = {}
             self.next_object_id = 0
+            # 清理危险区域停留跟踪
+            self.danger_zone_trackers = {}
+            self.dwell_alert_cooldown = {}
+            # 清理多目标跟踪
+            self.tracked_persons = {}
+            self.next_person_id = 1
             logger.info("危险行为识别器已重置")
 
     def _cleanup_expired_alerts(self):
@@ -669,6 +924,12 @@ class DangerRecognizer:
             
             elif alert_type == self.DANGER_TYPES['fall']:
                 # 摔倒检测：标记所有person（因为摔倒检测是基于整体运动）
+                for det in object_detections:
+                    if str(det.get('class', '')).lower() == 'person':
+                        self._add_alerted_object(det, alert_type)
+            
+            elif alert_type == self.DANGER_TYPES['danger_zone_dwell']:
+                # 危险区域停留告警：标记所有person
                 for det in object_detections:
                     if str(det.get('class', '')).lower() == 'person':
                         self._add_alerted_object(det, alert_type)
@@ -760,6 +1021,7 @@ if __name__ == "__main__":
     vis_frame = recognizer.visualize(frame, alerts, features)
     
     # 显示结果
-    cv2.imshow("Test", vis_frame)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows() 
+    if vis_frame is not None:
+        cv2.imshow("Test", vis_frame)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows() 
