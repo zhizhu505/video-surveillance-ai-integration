@@ -94,6 +94,8 @@ class AllInOneSystem:
         self.alert_count = 0  # 累积告警次数
         self.start_time = time.time()  # 启动时间戳，用于计算运行时长
         self.recognized_behaviors = []  # 存储识别到的行为信息
+        self.recognized_interactions = []  # 存储识别到的交互信息
+        self.recent_alerts = []  # 记录最近10条告警
 
 
         # 线程和队列设置
@@ -181,6 +183,11 @@ class AllInOneSystem:
                 'running_time': f"{elapsed:.1f}秒",
                 'status': 'Running' if self.running else 'Stopped'
             })
+
+        @self.app.route('/alerts')
+        def alerts():
+            # 返回最近10条告警详情
+            return jsonify(self.recent_alerts[-10:][::-1])
 
         @self.app.route('/control', methods=['POST'])
         def control():
@@ -435,6 +442,26 @@ class AllInOneSystem:
                             alert_msg = f"[危险行为] 类型: {alert.get('type', '未知')} 置信度: {alert.get('confidence', 0):.2f} 帧号: {alert.get('frame', '-')}, 详情: {alert}"
                             print(alert_msg)
                             logger.info(alert_msg)
+                            
+                            # 将告警信息添加到识别到的行为列表中
+                            behavior_info = f"{alert.get('type', '未知')} (置信度: {alert.get('confidence', 0):.2f}, 帧号: {alert.get('frame', '-')})"
+                            if behavior_info not in self.recognized_behaviors:
+                                self.recognized_behaviors.append(behavior_info)
+                            
+                            # 检测可能的交互行为
+                            if object_detections and len(object_detections) > 1:
+                                # 如果有多个对象，检测它们之间的交互
+                                interaction_info = f"多对象交互检测 (对象数: {len(object_detections)}, 帧号: {alert.get('frame', '-')})"
+                                if interaction_info not in self.recognized_interactions:
+                                    self.recognized_interactions.append(interaction_info)
+                            
+                            # 检测与警戒区域的交互
+                            if alert.get('type') == '入侵警告区域':
+                                region_name = alert.get('region_name', '未知区域')
+                                interaction_info = f"区域入侵交互 ({region_name}, 帧号: {alert.get('frame', '-')})"
+                                if interaction_info not in self.recognized_interactions:
+                                    self.recognized_interactions.append(interaction_info)
+                            
                             # 追加写入系统报告
                             report_line = f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | {alert_msg}\n"
                             report_path = os.path.join(self.args.output, f"report_{datetime.now().strftime('%Y%m%d')}.txt")
@@ -445,6 +472,20 @@ class AllInOneSystem:
                     vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
                                                      object_detections)
                     prev_frame = process_frame.copy()
+
+                    # 更新recent_alerts
+                    for alert in alerts:
+                        alert_info = {
+                            'type': alert.get('type', ''),
+                            'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                            'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
+                            'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
+                            'desc': alert.get('desc', ''),
+                        }
+                        self.recent_alerts.append(alert_info)
+                        if len(self.recent_alerts) > 10:
+                            self.recent_alerts.pop(0)
+
                 else:
                     # 对于跳过处理的帧，仍然要可视化，但不进行特征提取
                     vis_frame = self.visualize_frame(original_frame or process_frame, None, None, None, None)
@@ -516,28 +557,27 @@ class AllInOneSystem:
             except Exception as e:
                 logger.error(f"可视化特征出错: {str(e)}")
 
-        # 可视化AI检测结果（如果有）
-        if detections:
+        # 可视化危险行为告警（如果有）
+        if alerts:
+            try:
+                # 使用危险识别器的可视化功能，传递AI检测结果
+                vis_frame = self.danger_recognizer.visualize(vis_frame, alerts, features, detections=detections)
+            except Exception as e:
+                logger.error(f"可视化告警出错: {str(e)}")
+        # 如果没有告警但有AI检测结果，仍然显示检测框
+        elif detections:
             for det in detections:
                 try:
                     x1, y1, x2, y2 = det['bbox']
                     cls = det['class']
                     conf = det['confidence']
 
-                    color = (0, 255, 0)  # 绿色
+                    color = (0, 255, 0)  # 绿色 - 正常对象
                     cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, 2)
                     cv2.putText(vis_frame, f"{cls} {conf:.2f}", (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                 except Exception as e:
                     logger.error(f"可视化检测结果出错: {str(e)}")
-
-        # 可视化危险行为告警（如果有）
-        if alerts:
-            try:
-                # 使用危险识别器的可视化功能
-                vis_frame = self.danger_recognizer.visualize(vis_frame, alerts, features)
-            except Exception as e:
-                logger.error(f"可视化告警出错: {str(e)}")
 
         # 添加系统状态信息
         self._add_system_info(vis_frame)
@@ -549,7 +589,6 @@ class AllInOneSystem:
         h, w = frame.shape[:2]
 
         # 绘制系统信息背景
-        cv2.rectangle(frame, (w - 240, 0), (w, 120), (0, 0, 0, 0.5), -1)
 
         # 显示基本信息
         info_items = [
@@ -561,8 +600,9 @@ class AllInOneSystem:
         ]
 
         for i, info in enumerate(info_items):
+            color = (0, 255, 255) if "Alerts" in info else (255, 255, 255)
             cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
         # 显示当前模式
         mode_text = "Mode: "
@@ -570,7 +610,7 @@ class AllInOneSystem:
             mode_text += "AI+"
         mode_text += "Motion"
         cv2.putText(frame, mode_text, (w - 230, 25 * (len(info_items) + 1)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (100, 255, 100), 1)
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
@@ -629,8 +669,10 @@ class AllInOneSystem:
         avg_fps = self.frame_count / elapsed if elapsed > 0 else 0
         processed_ratio = self.processed_count / max(1, self.frame_count) * 100
 
-        # 打印识别到的行为和交互信息
+        # 获取识别到的行为和交互信息
         behavior_info = self.get_recognized_behavior_info()
+        
+        # 打印识别到的行为和交互信息
         print("识别到的行为:")
         for behavior in behavior_info['behaviors']:
                 print(f"  - {behavior}")
@@ -638,13 +680,28 @@ class AllInOneSystem:
         for interaction in behavior_info['interactions']:
                 print(f"  - {interaction}")
 
-           
         report = "\n==== 系统报告 ====\n"
         report += f"运行时间: {elapsed:.2f} 秒\n"
         report += f"总帧数: {self.frame_count}\n"
         report += f"处理帧数: {self.processed_count} ({processed_ratio:.1f}%)\n"
         report += f"平均帧率: {avg_fps:.2f} FPS\n"
         report += f"告警总数: {self.alert_count}\n"
+
+        # 添加识别到的行为信息到报告
+        report += "\n识别到的行为:\n"
+        if behavior_info['behaviors']:
+            for behavior in behavior_info['behaviors']:
+                report += f"  - {behavior}\n"
+        else:
+            report += "  - 无\n"
+            
+        # 添加识别到的交互信息到报告
+        report += "\n识别到的交互:\n"
+        if behavior_info['interactions']:
+            for interaction in behavior_info['interactions']:
+                report += f"  - {interaction}\n"
+        else:
+            report += "  - 无\n"
 
         # 添加告警分类统计
         alert_stats = self.danger_recognizer.get_alert_stats()

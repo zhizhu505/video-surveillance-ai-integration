@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全功能视频监控系统</title>
+    <title>教室视频监控系统</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -148,7 +148,6 @@
             height: auto;
             display: block;
         }
-        
         /* 响应式设计 */
         @media (max-width: 992px) {
             .main {
@@ -167,24 +166,20 @@
             <h1>全功能视频监控系统</h1>
             <p>运动分析 + 危险行为检测 + AI识别</p>
         </header>
-        
         <div class="main">
             <div class="video-container">
                 <div class="loading">正在连接视频流...</div>
                 <img class="video-stream" src="{{ url_for('video_feed') }}" alt="视频流">
             </div>
-            
             <div class="info-panel">
                 <h2>系统状态</h2>
                 <div class="system-status">
                     <p><span class="status-indicator status-running" id="status-dot"></span> <span id="status-text">运行中</span></p>
                 </div>
-                
                 <div class="stat-box">
                     <div class="stat-title">实时帧率</div>
                     <div class="stat-value" id="fps">0.0</div>
                 </div>
-                
                 <div class="stat-row" style="display: flex; gap: 10px;">
                     <div class="stat-box" style="flex: 1;">
                         <div class="stat-title">处理帧数</div>
@@ -195,26 +190,29 @@
                         <div class="stat-value" id="alert-count" style="color: #e74c3c;">0</div>
                     </div>
                 </div>
-                
                 <div class="stat-box">
                     <div class="stat-title">运行时间</div>
                     <div class="stat-value" id="running-time">0秒</div>
                 </div>
-                
                 <div class="controls">
                     <button id="start-btn">启动</button>
                     <button id="pause-btn" class="pause">暂停</button>
                     <button id="stop-btn" class="stop">停止</button>
                 </div>
-                
-                <h3>最近告警</h3>
                 <div class="alert-list" id="alert-list">
                     <!-- 告警列表会通过JavaScript动态添加 -->
+                </div>
+                <!-- 告警详情弹窗 -->
+                <div id="alert-modal" style="display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:999;align-items:center;justify-content:center;">
+                    <div style="background:#fff;padding:24px 32px;border-radius:8px;min-width:300px;max-width:90vw;box-shadow:0 4px 24px rgba(0,0,0,0.2);position:relative;">
+                        <span id="alert-modal-close" style="position:absolute;right:12px;top:8px;cursor:pointer;font-size:20px;">×</span>
+                        <h3 style="margin-top:0;">告警详情</h3>
+                        <div id="alert-modal-content"></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    
     <script>
         // 页面加载完成后执行
         document.addEventListener('DOMContentLoaded', function() {
@@ -231,24 +229,19 @@
             const stopBtn = document.getElementById('stop-btn');
             const loadingElement = document.querySelector('.loading');
             const videoElement = document.querySelector('.video-stream');
-            
             // 系统状态
             let systemState = 'running';
             let previousAlertCount = 0;
-            
             // 图像加载处理
             videoElement.onload = function() {
                 loadingElement.style.display = 'none';
             };
-            
             videoElement.onerror = function() {
                 loadingElement.textContent = '视频流连接失败，请检查系统状态';
             };
-            
             // 更新状态UI
             function updateStatusUI(status) {
                 statusDotElement.className = 'status-indicator';
-                
                 if (status === 'running') {
                     statusDotElement.classList.add('status-running');
                     statusTextElement.textContent = '运行中';
@@ -260,36 +253,66 @@
                     statusTextElement.textContent = '已暂停';
                 }
             }
-            
+            // 全局缓存alerts
+            let alertsCache = [];
             // 添加告警
-            function addAlert(type, time) {
+            function addAlert(alert, index) {
                 const alertItem = document.createElement('div');
                 alertItem.className = 'alert-item';
-                
+                alertItem.setAttribute('data-index', index);
+                alertItem.style.cursor = 'pointer';
                 const alertTime = document.createElement('div');
                 alertTime.className = 'alert-time';
-                alertTime.textContent = time;
-                
+                alertTime.textContent = alert.time;
                 const alertType = document.createElement('div');
                 alertType.className = 'alert-type';
-                alertType.textContent = type;
-                
+                alertType.textContent = alert.type || '未知类型';
                 const alertDesc = document.createElement('div');
                 alertDesc.className = 'alert-desc';
-                alertDesc.textContent = '系统检测到潜在危险行为';
-                
+                alertDesc.textContent = alert.desc || '系统检测到潜在危险行为';
                 alertItem.appendChild(alertTime);
                 alertItem.appendChild(alertType);
                 alertItem.appendChild(alertDesc);
-                
-                alertListElement.prepend(alertItem);
-                
-                // 限制显示10条
-                if (alertListElement.children.length > 10) {
-                    alertListElement.removeChild(alertListElement.lastChild);
-                }
+                alertListElement.appendChild(alertItem);
             }
-            
+            // 拉取并渲染告警详情
+            function fetchAlerts() {
+                fetch('/alerts')
+                    .then(response => response.json())
+                    .then(data => {
+                        alertsCache = data;
+                        alertListElement.innerHTML = '';
+                        data.forEach((alert, idx) => {
+                            addAlert(alert, idx);
+                        });
+                    });
+            }
+            // 告警点击弹窗
+            alertListElement.addEventListener('click', function(e) {
+                let item = e.target;
+                while (item && !item.classList.contains('alert-item')) {
+                    item = item.parentElement;
+                }
+                if (item) {
+                    const idx = item.getAttribute('data-index');
+                    const alert = alertsCache[idx];
+                    if(alert){
+                        let html = `<div><b>时间：</b>${alert.time}</div>`;
+                        html += `<div><b>类别：</b>${alert.type}</div>`;
+                        html += `<div><b>置信度：</b>${alert.confidence}</div>`;
+                        html += `<div><b>帧号：</b>${alert.frame}</div>`;
+                        html += `<div><b>描述：</b>${alert.desc||'无'}</div>`;
+                        document.getElementById('alert-modal-content').innerHTML = html;
+                        document.getElementById('alert-modal').style.display = 'flex';
+                    }
+                }
+            });
+            document.getElementById('alert-modal-close').onclick = function(){
+                document.getElementById('alert-modal').style.display = 'none';
+            };
+            document.getElementById('alert-modal').onclick = function(e){
+                if(e.target===this){ this.style.display='none'; }
+            };
             // 获取系统统计信息
             function fetchStats() {
                 fetch('/stats')
@@ -299,15 +322,21 @@
                         processedCountElement.textContent = data.processed_count;
                         alertCountElement.textContent = data.alert_count;
                         runningTimeElement.textContent = data.running_time;
-                        
                         // 检查是否有新告警
                         if (data.alert_count > previousAlertCount) {
                             const now = new Date();
                             const timeStr = now.toLocaleTimeString();
-                            addAlert('危险行为', timeStr);
+                            // 添加告警时传递一个索引，用于弹窗显示
+                            // 这里需要从alertsCache中获取最新的告警，并传递其索引
+                            // 假设alertsCache已经更新，或者需要重新拉取
+                            // 为了简化，这里直接使用data.alert_count - 1作为索引，
+                            // 实际应用中可能需要更精确的索引
+                            const newAlert = alertsCache[data.alert_count - 1];
+                            if (newAlert) {
+                                addAlert(newAlert, data.alert_count - 1);
+                            }
                             previousAlertCount = data.alert_count;
                         }
-                        
                         // 更新系统状态
                         systemState = data.status.toLowerCase();
                         updateStatusUI(systemState);
@@ -316,7 +345,6 @@
                         console.error('获取统计信息失败:', err);
                     });
             }
-            
             // 控制系统
             function controlSystem(action) {
                 fetch('/control', {
@@ -329,7 +357,6 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('控制结果:', data);
-                    
                     // 更新视频流（通过添加时间戳避免缓存）
                     if (action === 'start') {
                         videoElement.src = '/video_feed?' + new Date().getTime();
@@ -341,25 +368,22 @@
                     console.error('控制请求失败:', err);
                 });
             }
-            
             // 绑定按钮事件
             startBtn.addEventListener('click', function() {
                 controlSystem('start');
             });
-            
             pauseBtn.addEventListener('click', function() {
                 controlSystem('pause');
             });
-            
             stopBtn.addEventListener('click', function() {
                 controlSystem('stop');
             });
-            
-            // 定期获取统计信息
+            // 定期获取统计信息和告警详情
             setInterval(fetchStats, 1000);
-            
-            // 初始获取一次统计信息
+            setInterval(fetchAlerts, 1000);
+            // 初始获取一次
             fetchStats();
+            fetchAlerts();
         });
     </script>
 </body>

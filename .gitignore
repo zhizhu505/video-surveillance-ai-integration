@@ -107,4 +107,4 @@ results/
 !config.json
 
 # 警告：不要提交大于100MB的文件
-# 参考：https://git-lfs.github.com/
+# 参考：https://git-lfs.github.com/ java -jar bfg.jar --strip-blobs-bigger-than 100M
