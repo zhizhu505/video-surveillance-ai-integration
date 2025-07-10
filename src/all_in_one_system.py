@@ -499,7 +499,9 @@ class AllInOneSystem:
                             'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
                             'desc': alert.get('desc', ''),
                             'handled': False,  # 默认未处理
-                            'handled_time': None  # 处理时间
+                            'handled_time': None,  # 处理时间
+                            'person_id': alert.get('person_id', ''),  # 新增：person id
+                            'person_class': alert.get('person_class', '')  # 新增：person类别
                         }
                         
                         with self.alert_lock:
@@ -525,7 +527,9 @@ class AllInOneSystem:
                             'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
                             'desc': alert.get('desc', ''),
                             'handled': False,  # 默认未处理
-                            'handled_time': None  # 处理时间
+                            'handled_time': None,  # 处理时间
+                            'person_id': alert.get('person_id', ''),  # 新增：person id
+                            'person_class': alert.get('person_class', '')  # 新增：person类别
                         }
                         
                         with self.alert_lock:
@@ -657,29 +661,17 @@ class AllInOneSystem:
         """添加系统状态信息到帧"""
         h, w = frame.shape[:2]
 
-        # 绘制系统信息背景
-
-        # 显示基本信息
-        info_items = [
-            f"FPS: {self.fps:.1f}",
-            f"Frames: {self.frame_count}",
-            f"Processed: {self.processed_count}",
-            f"Alerts: {self.alert_count}",
-            f"Uptime: {int(time.time() - self.start_time)} s"
-        ]
-
-        for i, info in enumerate(info_items):
-            color = (0, 255, 255) if "Alerts" in info else (255, 255, 255)
-            cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
-
-        # 显示当前模式
-        mode_text = "Mode: "
-        if self.args.enable_ai and self.ai_model is not None:
-            mode_text += "AI+"
-        mode_text += "Motion"
-        cv2.putText(frame, mode_text, (w - 230, 25 * (len(info_items) + 1)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
+        # 不再绘制任何右上角系统状态文字
+        # info_items = [
+        #     f"FPS: {self.fps:.1f}",
+        #     f"Frames: {self.frame_count}",
+        #     f"Processed: {self.processed_count}",
+        #     f"Uptime: {int(time.time() - self.start_time)} s"
+        # ]
+        # for i, info in enumerate(info_items):
+        #     color = (255, 255, 255)
+        #     cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
+        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
