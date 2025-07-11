@@ -18,6 +18,7 @@ import json
 from queue import Queue
 from datetime import datetime
 import traceback
+import collections
 
 # 配置日志
 logging.basicConfig(
@@ -103,7 +104,7 @@ class AllInOneSystem:
         self.start_time = time.time()  # 启动时间戳，用于计算运行时长
         self.recognized_behaviors = []  # 存储识别到的行为信息
         self.recognized_interactions = []  # 存储识别到的交互信息
-        self.recent_alerts = []  # 记录最近10条告警
+        self.recent_alerts = collections.deque(maxlen=1000)  # 记录最近1000条告警
         # 新增：全历史告警列表
         self.all_alerts = []  # 保存所有历史告警
         
@@ -218,31 +219,41 @@ class AllInOneSystem:
 
         @self.app.route('/alerts')
         def alerts():
-            # 过滤掉 Intrusion Alert 类型的告警
-            alerts_data = []
-            for alert in self.recent_alerts[-10:][::-1]:
-                if alert.get('type', '') == 'Intrusion Alert':
-                    continue
-                alert_data = {
-                    'id': alert.get('id', ''),
-                    'type': alert.get('type', ''),
-                    'danger_level': alert.get('danger_level', 'medium'),
-                    'time': alert.get('time', ''),
-                    'confidence': alert.get('confidence', 0),
-                    'frame': alert.get('frame', 0),
-                    'desc': alert.get('desc', ''),
-                    'handled': alert.get('handled', False),
-                    'handled_time': alert.get('handled_time', None),
-                    'person_id': alert.get('person_id', ''),
-                    'person_class': alert.get('person_class', '')
-                }
-                alerts_data.append(alert_data)
-            return jsonify(alerts_data)
+            # 过滤掉 Intrusion Alert 和 Large Area Motion，取全历史最新10条有效告警
+            with self.alert_lock:
+                filtered_alerts = [alert for alert in self.all_alerts[::-1]
+                                   if alert.get('type', '') not in ['Intrusion Alert', 'Large Area Motion']]
+                alerts_data = []
+                for alert in filtered_alerts[:10]:
+                    alert_data = {
+                        'id': alert.get('id', ''),
+                        'type': alert.get('type', ''),
+                        'danger_level': alert.get('danger_level', 'medium'),
+                        'time': alert.get('time', ''),
+                        'confidence': alert.get('confidence', 0),
+                        'frame': alert.get('frame', 0),
+                        'desc': alert.get('desc', ''),
+                        'handled': alert.get('handled', False),
+                        'handled_time': alert.get('handled_time', None),
+                        'person_id': alert.get('person_id', ''),
+                        'person_class': alert.get('person_class', '')
+                    }
+                    alerts_data.append(alert_data)
+                return jsonify(alerts_data)
 
         @self.app.route('/alerts/stats')
         def alert_stats():
-            # 返回告警处理统计
-            return jsonify(self.alert_handling_stats)
+            # 统计时也过滤掉 Intrusion Alert 和 Large Area Motion，基于 all_alerts
+            with self.alert_lock:
+                filtered_alerts = [a for a in self.all_alerts if a.get('type', '') not in ['Intrusion Alert', 'Large Area Motion']]
+                total = len(filtered_alerts)
+                handled = sum(1 for a in filtered_alerts if a.get('handled', False))
+                unhandled = total - handled
+            return jsonify({
+                'total_alerts': total,
+                'handled_alerts': handled,
+                'unhandled_alerts': unhandled
+            })
 
         @self.app.route('/alerts/handle', methods=['POST'])
         def handle_alert():
@@ -552,7 +563,7 @@ class AllInOneSystem:
                             self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
                             self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
                             # recent_alerts只保留最新10条
-                            self.recent_alerts = self.all_alerts[-10:]
+                            self.recent_alerts.append(alert_info)
 
                     # 可视化结果
                     vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
@@ -581,7 +592,7 @@ class AllInOneSystem:
                             self.alert_handling_stats['unhandled_alerts'] += 1
                             
                             if len(self.recent_alerts) > 10:
-                                removed_alert = self.recent_alerts.pop(0)
+                                removed_alert = self.recent_alerts.popleft()
                                 # 如果移除的告警未处理，减少未处理计数
                                 if not removed_alert.get('handled', False):
                                     self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
@@ -872,7 +883,7 @@ class AllInOneSystem:
             self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
             self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
             self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
-            self.recent_alerts = self.all_alerts[-10:]
+            self.recent_alerts.append(alert_info)
 
 
 def parse_args():
