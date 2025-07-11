@@ -116,49 +116,39 @@
         }
         /* 危险等级颜色 */
         .alert-item.danger-low {
-            border-left-color: #27ae60;
-            background-color: #e8f5e8;
+            border-left-color: #ffd600; /* 黄色 */
+            background-color: #fffde7;
         }
         .alert-item.danger-medium {
-            border-left-color: #f39c12;
-            background-color: #fef9e7;
+            border-left-color: #2196f3; /* 蓝色 */
+            background-color: #e3f2fd;
         }
         .alert-item.danger-high {
-            border-left-color: #e74c3c;
+            border-left-color: #e74c3c; /* 红色 */
             background-color: #fdf2f2;
         }
-        .alert-item.danger-low.handled {
-            border-left-color: #27ae60;
-            background-color: #e8f5e8;
+        .alert-item.handled {
+            border-left-color: #27ae60 !important; /* 绿色 */
+            background-color: #e8f5e8 !important;
         }
-        .alert-item.danger-medium.handled {
-            border-left-color: #f39c12;
-            background-color: #fef9e7;
-        }
+        .alert-item.danger-low.handled,
+        .alert-item.danger-medium.handled,
         .alert-item.danger-high.handled {
-            border-left-color: #e74c3c;
-            background-color: #fdf2f2;
-        }
-        .alert-time {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-        .alert-type {
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        .alert-item.handled .alert-type {
-            color: #27ae60;
+            border-left-color: #27ae60 !important;
+            background-color: #e8f5e8 !important;
         }
         /* 危险等级文字颜色 */
         .alert-item.danger-low .alert-type {
-            color: #27ae60;
+            color: #ffd600;
         }
         .alert-item.danger-medium .alert-type {
-            color: #f39c12;
+            color: #2196f3;
         }
         .alert-item.danger-high .alert-type {
             color: #e74c3c;
+        }
+        .alert-item.handled .alert-type {
+            color: #27ae60 !important;
         }
         .alert-desc {
             margin-top: 5px;
@@ -512,11 +502,13 @@
                                 'high': '高危险'
                             };
                             const levelColor = {
-                                'low': '#27ae60',
-                                'medium': '#f39c12',
-                                'high': '#e74c3c'
+                                'low': '#ffd600', // 黄色
+                                'medium': '#2196f3', // 蓝色
+                                'high': '#e74c3c' // 红色
                             };
-                            html += `<div><b>危险等级：</b><span style="color: ${levelColor[alert.danger_level]};">${levelText[alert.danger_level]}</span></div>`;
+                            // 若已处理，显示绿色
+                            let color = alert.handled ? '#27ae60' : levelColor[alert.danger_level];
+                            html += `<div><b>危险等级：</b><span style=\"color: ${color};\">${levelText[alert.danger_level]}</span></div>`;
                         }
                         
                         html += `<div><b>置信度：</b>${alert.confidence}</div>`;

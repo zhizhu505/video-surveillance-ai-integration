@@ -25572,3 +25572,1868 @@ TypeError: Object of type float32 is not JSON serializable
 
 2025-07-11 16:02:11,706 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250711_160211.txt
 2025-07-11 16:02:11,706 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-11 16:09:07,512 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-11 16:09:07,528 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-11 16:09:07,742 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-11 16:09:12,103 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-11 16:09:12,506 - AllInOneSystem - WARNING - Œ¥’“µΩaudio_monitor£¨…˘—ßºÏ≤‚π¶ƒ‹Ω´±ªΩ˚”√: No module named 'tensorflow'
+2025-07-11 16:09:12,511 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-11 16:09:12,511 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-11 16:09:12,512 - DangerRecognizer - INFO - “—ÃÌº”∏ÊæØ«¯”Ú: æØΩ‰«¯
+2025-07-11 16:09:12,644 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-11 16:09:12,648 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-11 16:09:12,653 - AllInOneSystem - INFO -  ”∆µΩ´¬º÷∆µΩ: system_output\output_20250711_160912.avi
+2025-07-11 16:09:12,653 - AllInOneSystem - INFO - Œ¥∆Ù”√“Ù∆µº‡øÿ
+2025-07-11 16:09:12,653 - AllInOneSystem - INFO - ΩÃ “ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-11 16:09:12,654 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-11 16:09:12,655 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-11 16:09:12,655 - AllInOneSystem - INFO - ΩÃ “ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-11 16:09:12,668 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-11 16:09:12,668 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 16:09:12,922 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-11 16:09:15,628 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:15] "GET / HTTP/1.1" 200 -
+2025-07-11 16:09:15,677 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:15] "GET /video_feed HTTP/1.1" 200 -
+2025-07-11 16:09:15,679 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:15] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:15,681 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:15] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:15,684 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:15] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:16,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:16] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:16,665 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:16] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:16,668 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:16] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:16,878 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_11_20250711_160916.jpg
+2025-07-11 16:09:17,656 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:17] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:17,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:17] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:17,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:17] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:17,882 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_22_20250711_160917.jpg
+2025-07-11 16:09:18,316 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:18] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:18,316 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:18] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:18,320 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:18] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:18,660 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:18] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:18,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:18] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:18,663 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:18] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:18,831 - DangerRecognizer - INFO - ∂‘œÛ person_6753403064309837801 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:18,831 - DangerRecognizer - INFO - ∂‘œÛ person_-7057104895796346357 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:18,833 - DangerRecognizer - INFO - ∂‘œÛ person_1354167332762576497 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:18,836 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_33_20250711_160918.jpg
+2025-07-11 16:09:18,838 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_33_20250711_160918.jpg
+2025-07-11 16:09:18,843 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_33_20250711_160918.jpg
+2025-07-11 16:09:19,660 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:19] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:19,661 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:19] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:19,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:19] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:19,839 - DangerRecognizer - INFO - ∂‘œÛ person_4131491552084596609 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:19,839 - DangerRecognizer - INFO - ∂‘œÛ person_4073113108758254864 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:19,839 - DangerRecognizer - INFO - ∂‘œÛ person_-5172166873202691367 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:19,842 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_45_20250711_160919.jpg
+2025-07-11 16:09:19,845 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_45_20250711_160919.jpg
+2025-07-11 16:09:19,848 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_45_20250711_160919.jpg
+2025-07-11 16:09:20,664 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:20] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:20,665 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:20] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:20,666 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:20] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:20,791 - DangerRecognizer - INFO - ∂‘œÛ person_-2533769133546635623 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:20,792 - DangerRecognizer - INFO - ∂‘œÛ person_-979796888873703279 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:20,792 - DangerRecognizer - INFO - ∂‘œÛ person_7006234603141940654 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:20,796 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_56_20250711_160920.jpg
+2025-07-11 16:09:20,797 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_56_20250711_160920.jpg
+2025-07-11 16:09:20,799 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_56_20250711_160920.jpg
+2025-07-11 16:09:21,655 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:21] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:21,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:21] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:21,658 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:21] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:21,775 - DangerRecognizer - INFO - ∂‘œÛ person_7331345610978081609 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:21,775 - DangerRecognizer - INFO - ∂‘œÛ person_3280736926401881926 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:21,776 - DangerRecognizer - INFO - ∂‘œÛ person_716678114570103778 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:21,779 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_67_20250711_160921.jpg
+2025-07-11 16:09:21,782 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_67_20250711_160921.jpg
+2025-07-11 16:09:21,785 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_67_20250711_160921.jpg
+2025-07-11 16:09:22,665 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:22] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:22,666 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:22] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:22,667 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:22] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:22,736 - DangerRecognizer - INFO - ∂‘œÛ person_110825679387219546 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:22,741 - DangerRecognizer - INFO - ∂‘œÛ person_-4038906416451315522 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:22,741 - DangerRecognizer - INFO - ∂‘œÛ person_206957857036658911 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:22,745 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_78_20250711_160922.jpg
+2025-07-11 16:09:22,748 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_78_20250711_160922.jpg
+2025-07-11 16:09:22,751 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_78_20250711_160922.jpg
+2025-07-11 16:09:22,754 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_78_20250711_160922.jpg
+2025-07-11 16:09:23,670 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:23] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:23,671 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:23] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:23,671 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:23] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:23,749 - DangerRecognizer - INFO - ∂‘œÛ person_-3398254733218711185 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:23,749 - DangerRecognizer - INFO - ∂‘œÛ person_-8491855632286162511 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:23,749 - DangerRecognizer - INFO - ∂‘œÛ person_-8619137320271825583 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:23,754 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_89_20250711_160923.jpg
+2025-07-11 16:09:23,756 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_89_20250711_160923.jpg
+2025-07-11 16:09:23,759 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_89_20250711_160923.jpg
+2025-07-11 16:09:23,762 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_89_20250711_160923.jpg
+2025-07-11 16:09:24,655 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:24] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:24,656 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:24] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:24,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:24] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:24,739 - DangerRecognizer - INFO - ∂‘œÛ person_5801544555830927247 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:24,739 - DangerRecognizer - INFO - ∂‘œÛ person_-3959783758569222937 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:24,739 - DangerRecognizer - INFO - ∂‘œÛ person_-7256341769244644172 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:24,745 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_100_20250711_160924.jpg
+2025-07-11 16:09:24,748 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_100_20250711_160924.jpg
+2025-07-11 16:09:24,751 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_100_20250711_160924.jpg
+2025-07-11 16:09:24,753 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_100_20250711_160924.jpg
+2025-07-11 16:09:25,660 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:25] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:25,661 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:25] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:25,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:25] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:25,789 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_111_20250711_160925.jpg
+2025-07-11 16:09:26,654 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:26] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:26,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:26] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:26,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:26] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:26,780 - DangerRecognizer - INFO - ∂‘œÛ person_-3945385856723633778 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:26,780 - DangerRecognizer - INFO - ∂‘œÛ person_-7007009936561551533 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:26,781 - DangerRecognizer - INFO - ∂‘œÛ person_1164331071126840769 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:26,781 - DangerRecognizer - INFO - ∂‘œÛ person_2210079549871979194 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:26,784 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_122_20250711_160926.jpg
+2025-07-11 16:09:26,789 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_122_20250711_160926.jpg
+2025-07-11 16:09:26,792 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_122_20250711_160926.jpg
+2025-07-11 16:09:26,796 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_122_20250711_160926.jpg
+2025-07-11 16:09:27,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:27] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:27,658 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:27] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:27,660 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:27] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:27,726 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_133_20250711_160927.jpg
+2025-07-11 16:09:28,658 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:28] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:28,659 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:28] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:28,660 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:28] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:28,679 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_144_20250711_160928.jpg
+2025-07-11 16:09:29,660 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:29] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:29,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:29] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:29,663 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:29] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:29,679 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_156_20250711_160929.jpg
+2025-07-11 16:09:30,589 - DangerRecognizer - INFO - ∂‘œÛ person_1360580965759185488 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:30,589 - DangerRecognizer - INFO - ∂‘œÛ person_5289675980482271488 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:30,593 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_167_20250711_160930.jpg
+2025-07-11 16:09:30,596 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_167_20250711_160930.jpg
+2025-07-11 16:09:30,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:30] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:30,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:30] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:30,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:30] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:31,605 - DangerRecognizer - INFO - ∂‘œÛ person_6498493067872907031 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:31,605 - DangerRecognizer - INFO - ∂‘œÛ person_5377508322567437629 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:31,608 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_179_20250711_160931.jpg
+2025-07-11 16:09:31,611 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_179_20250711_160931.jpg
+2025-07-11 16:09:31,661 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:31] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:31,662 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:31] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:31,663 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:31] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:32,614 - DangerRecognizer - INFO - ∂‘œÛ person_6151760258758086655 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:32,615 - DangerRecognizer - INFO - ∂‘œÛ person_-586358549680095031 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:32,618 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_191_20250711_160932.jpg
+2025-07-11 16:09:32,620 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_191_20250711_160932.jpg
+2025-07-11 16:09:32,667 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:32] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:32,668 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:32] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:32,669 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:32] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:33,629 - DangerRecognizer - INFO - ∂‘œÛ person_-4333794185596417851 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:33,629 - DangerRecognizer - INFO - ∂‘œÛ person_-8383507512820048499 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:33,632 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_203_20250711_160933.jpg
+2025-07-11 16:09:33,636 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_203_20250711_160933.jpg
+2025-07-11 16:09:33,657 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:33] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:33,658 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:33] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:33,658 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:33] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:34,618 - DangerRecognizer - INFO - ∂‘œÛ person_358843853080953932 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:34,618 - DangerRecognizer - INFO - ∂‘œÛ person_372923877584376842 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:09:34,621 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_215_20250711_160934.jpg
+2025-07-11 16:09:34,624 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_215_20250711_160934.jpg
+2025-07-11 16:09:34,668 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:34] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:34,669 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:34] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:34,670 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:34] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:34,872 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:34] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:09:34,878 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-11 16:09:35,670 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:35] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:09:35,671 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:35] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:09:35,672 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:09:35] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:09:35,687 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-11 16:09:35,834 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 23.32 √Î
+◊‹÷° ˝: 462
+¥¶¿Ì÷° ˝: 218 (47.2%)
+∆Ωæ˘÷°¬ : 19.81 FPS
+
+ ∂±µΩµƒ––Œ™:
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 11)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 22)
+  - Intrusion Alert (÷√–≈∂»: 0.70, ÷°∫≈: 33)
+  - Intrusion Alert (÷√–≈∂»: 0.68, ÷°∫≈: 33)
+  - Intrusion Alert (÷√–≈∂»: 0.56, ÷°∫≈: 33)
+  - Intrusion Alert (÷√–≈∂»: 0.68, ÷°∫≈: 45)
+  - Intrusion Alert (÷√–≈∂»: 0.67, ÷°∫≈: 45)
+  - Intrusion Alert (÷√–≈∂»: 0.61, ÷°∫≈: 45)
+  - Intrusion Alert (÷√–≈∂»: 0.75, ÷°∫≈: 56)
+  - Intrusion Alert (÷√–≈∂»: 0.67, ÷°∫≈: 56)
+  - Intrusion Alert (÷√–≈∂»: 0.59, ÷°∫≈: 56)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 67)
+  - Intrusion Alert (÷√–≈∂»: 0.68, ÷°∫≈: 67)
+  - Intrusion Alert (÷√–≈∂»: 0.51, ÷°∫≈: 67)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 78)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 78)
+  - Intrusion Alert (÷√–≈∂»: 0.73, ÷°∫≈: 78)
+  - Intrusion Alert (÷√–≈∂»: 0.64, ÷°∫≈: 78)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 89)
+  - Intrusion Alert (÷√–≈∂»: 0.77, ÷°∫≈: 89)
+  - Intrusion Alert (÷√–≈∂»: 0.70, ÷°∫≈: 89)
+  - Intrusion Alert (÷√–≈∂»: 0.56, ÷°∫≈: 89)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 100)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 100)
+  - Intrusion Alert (÷√–≈∂»: 0.72, ÷°∫≈: 100)
+  - Intrusion Alert (÷√–≈∂»: 0.50, ÷°∫≈: 100)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 111)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 122)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 122)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 122)
+  - Intrusion Alert (÷√–≈∂»: 0.52, ÷°∫≈: 122)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 133)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 144)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 156)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 167)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 167)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 179)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 179)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 191)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 191)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 203)
+  - Intrusion Alert (÷√–≈∂»: 0.78, ÷°∫≈: 203)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 215)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 215)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 33)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 45)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 56)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 67)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 78)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 89)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 100)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 122)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 167)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 179)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 191)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 203)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 215)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 10
+  - Intrusion Alert: 34
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 44
+  - “—¥¶¿Ì: 0
+  - Œ¥¥¶¿Ì: 44
+  - ¥¶¿Ì¬ : 0.0%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-11 16:09:16 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:17 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:18 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:18 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:18 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:19 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:19 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:19 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:21 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:21 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:21 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:22 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:22 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:22 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:22 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:23 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:23 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:23 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:23 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:24 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:24 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:24 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:24 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:25 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:26 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:26 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:26 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:26 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:27 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:28 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:29 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:30 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:30 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:31 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:31 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:32 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:32 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:33 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:33 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:34 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:09:34 | Intrusion Alert | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: [(10,10), (260,10), (260,380), (10,380)]
+  - distance_threshold: 50
+  - dwell_time_threshold: 1.0
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.4
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: True
+  - save_alerts: True
+  - enable_audio_monitor: False
+
+2025-07-11 16:09:35,837 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250711_160935.txt
+2025-07-11 16:09:35,837 - AllInOneSystem - INFO - ΩÃ “ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-11 16:11:26,672 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-11 16:11:26,673 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-11 16:11:26,917 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-11 16:11:31,131 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-11 16:11:31,502 - AllInOneSystem - WARNING - Œ¥’“µΩaudio_monitor£¨…˘—ßºÏ≤‚π¶ƒ‹Ω´±ªΩ˚”√: No module named 'tensorflow'
+2025-07-11 16:11:31,508 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-11 16:11:31,509 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-11 16:11:31,509 - DangerRecognizer - INFO - “—ÃÌº”∏ÊæØ«¯”Ú: æØΩ‰«¯
+2025-07-11 16:11:31,645 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-11 16:11:31,649 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-11 16:11:31,653 - AllInOneSystem - INFO -  ”∆µΩ´¬º÷∆µΩ: system_output\output_20250711_161131.avi
+2025-07-11 16:11:31,653 - AllInOneSystem - INFO - Œ¥∆Ù”√“Ù∆µº‡øÿ
+2025-07-11 16:11:31,654 - AllInOneSystem - INFO - ΩÃ “ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-11 16:11:31,654 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-11 16:11:31,655 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-11 16:11:31,655 - AllInOneSystem - INFO - ΩÃ “ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-11 16:11:31,665 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-11 16:11:31,666 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 16:11:31,928 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-11 16:11:34,789 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:34] "GET / HTTP/1.1" 200 -
+2025-07-11 16:11:34,835 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:34] "GET /video_feed HTTP/1.1" 200 -
+2025-07-11 16:11:34,836 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:34] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:34,838 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:34] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:34,839 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:34] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:35,740 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_11_20250711_161135.jpg
+2025-07-11 16:11:35,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:35] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:35,821 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:35] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:35,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:35] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:36,713 - DangerRecognizer - INFO - ∂‘œÛ person_-7855106359390030152 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:36,714 - DangerRecognizer - INFO - ∂‘œÛ person_4022493732390273034 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:36,714 - DangerRecognizer - INFO - ∂‘œÛ person_5428518494393529845 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:36,715 - DangerRecognizer - INFO - ∂‘œÛ person_6675465629644378764 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:36,719 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_22_20250711_161136.jpg
+2025-07-11 16:11:36,723 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_22_20250711_161136.jpg
+2025-07-11 16:11:36,726 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_22_20250711_161136.jpg
+2025-07-11 16:11:36,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:36] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:36,821 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:36] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:36,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:36] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:37,635 - DangerRecognizer - INFO - ∂‘œÛ person_7115912512147654420 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:37,635 - DangerRecognizer - INFO - ∂‘œÛ person_5003265983620509890 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:37,636 - DangerRecognizer - INFO - ∂‘œÛ person_-350822364321622934 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:37,636 - DangerRecognizer - INFO - ∂‘œÛ person_7105323947147234194 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:37,639 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_33_20250711_161137.jpg
+2025-07-11 16:11:37,641 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_33_20250711_161137.jpg
+2025-07-11 16:11:37,643 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_33_20250711_161137.jpg
+2025-07-11 16:11:37,646 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_33_20250711_161137.jpg
+2025-07-11 16:11:37,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:37] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:37,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:37] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:37,821 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:37] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:38,596 - DangerRecognizer - INFO - ∂‘œÛ person_-5013252221146826782 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:38,600 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_45_20250711_161138.jpg
+2025-07-11 16:11:38,603 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_45_20250711_161138.jpg
+2025-07-11 16:11:38,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:38] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:38,827 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:38] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:38,828 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:38] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:39,520 - DangerRecognizer - INFO - ∂‘œÛ person_-4823190805459898771 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:39,520 - DangerRecognizer - INFO - ∂‘œÛ person_-410481295642738319 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:39,520 - DangerRecognizer - INFO - ∂‘œÛ person_9094719376846260875 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:39,524 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_57_20250711_161139.jpg
+2025-07-11 16:11:39,527 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_57_20250711_161139.jpg
+2025-07-11 16:11:39,530 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_57_20250711_161139.jpg
+2025-07-11 16:11:39,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:39] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:39,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:39] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:39,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:39] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:40,455 - DangerRecognizer - INFO - ∂‘œÛ person_7577366682339957470 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:40,455 - DangerRecognizer - INFO - ∂‘œÛ person_8661872436598548503 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:40,455 - DangerRecognizer - INFO - ∂‘œÛ person_8852195156490764558 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:40,455 - DangerRecognizer - INFO - ∂‘œÛ person_3053094169267770229 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:40,457 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_69_20250711_161140.jpg
+2025-07-11 16:11:40,461 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_69_20250711_161140.jpg
+2025-07-11 16:11:40,464 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_69_20250711_161140.jpg
+2025-07-11 16:11:40,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:40] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:40,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:40] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:40,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:40] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:41,389 - DangerRecognizer - INFO - ∂‘œÛ person_-8492014452087052780 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:41,390 - DangerRecognizer - INFO - ∂‘œÛ person_-3578363345564324494 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:41,390 - DangerRecognizer - INFO - ∂‘œÛ person_-1126185534000820227 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:41,390 - DangerRecognizer - INFO - ∂‘œÛ person_-6142065029766844842 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:41,394 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_81_20250711_161141.jpg
+2025-07-11 16:11:41,397 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_81_20250711_161141.jpg
+2025-07-11 16:11:41,399 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_81_20250711_161141.jpg
+2025-07-11 16:11:41,831 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:41] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:41,832 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:41] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:41,835 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:41] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:42,332 - DangerRecognizer - INFO - ∂‘œÛ person_2684292653367261104 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:42,332 - DangerRecognizer - INFO - ∂‘œÛ person_-1617063809320202059 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:42,333 - DangerRecognizer - INFO - ∂‘œÛ person_-5436623502619852582 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:42,333 - DangerRecognizer - INFO - ∂‘œÛ person_-3087485070244942662 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:42,336 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_93_20250711_161142.jpg
+2025-07-11 16:11:42,338 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_93_20250711_161142.jpg
+2025-07-11 16:11:42,342 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_93_20250711_161142.jpg
+2025-07-11 16:11:42,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:42] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:42,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:42] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:42,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:42] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:43,252 - DangerRecognizer - INFO - Œ£œ’«¯”ÚÕ£¡Ù∏ÊæØ: ∂‘œÛ person_7577366682339957470 ‘⁄«¯”Ú 0 Õ£¡Ù 2.80√Î
+2025-07-11 16:11:43,252 - DangerRecognizer - INFO - ∂‘œÛ person_-4940433009643005632 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:43,253 - DangerRecognizer - INFO - ∂‘œÛ person_-8302890787733343426 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:43,253 - DangerRecognizer - INFO - ∂‘œÛ person_-215425560639295122 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:43,256 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Danger Zone Dwell_105_20250711_161143.jpg
+2025-07-11 16:11:43,259 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_105_20250711_161143.jpg
+2025-07-11 16:11:43,262 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_105_20250711_161143.jpg
+2025-07-11 16:11:43,265 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_105_20250711_161143.jpg
+2025-07-11 16:11:43,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:43] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:43,822 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:43] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:43,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:43] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:44,187 - DangerRecognizer - INFO - ∂‘œÛ person_-1855989205157086144 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:44,187 - DangerRecognizer - INFO - ∂‘œÛ person_1951784042630989441 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:44,188 - DangerRecognizer - INFO - ∂‘œÛ person_-6895053224350404355 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:44,188 - DangerRecognizer - INFO - ∂‘œÛ person_6375796092821910035 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:44,188 - DangerRecognizer - INFO - ∂‘œÛ person_-2774709304192189189 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:44,192 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_117_20250711_161144.jpg
+2025-07-11 16:11:44,194 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_117_20250711_161144.jpg
+2025-07-11 16:11:44,198 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_117_20250711_161144.jpg
+2025-07-11 16:11:44,200 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_117_20250711_161144.jpg
+2025-07-11 16:11:44,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:44] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:44,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:44] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:44,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:44] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:45,140 - DangerRecognizer - INFO - ∂‘œÛ person_7578096043768882977 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:45,141 - DangerRecognizer - INFO - ∂‘œÛ person_-7196013201580131722 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:45,141 - DangerRecognizer - INFO - ∂‘œÛ person_1624706606943052273 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:45,143 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_129_20250711_161145.jpg
+2025-07-11 16:11:45,146 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_129_20250711_161145.jpg
+2025-07-11 16:11:45,827 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:45] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:45,829 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:45] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:45,831 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:45] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:46,105 - DangerRecognizer - INFO - ∂‘œÛ person_5141038197028637284 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:46,106 - DangerRecognizer - INFO - ∂‘œÛ person_3039075666779330714 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:46,106 - DangerRecognizer - INFO - ∂‘œÛ person_6694992317803342009 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:46,106 - DangerRecognizer - INFO - ∂‘œÛ person_3170636998523232230 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:46,110 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_141_20250711_161146.jpg
+2025-07-11 16:11:46,114 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_141_20250711_161146.jpg
+2025-07-11 16:11:46,117 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_141_20250711_161146.jpg
+2025-07-11 16:11:46,120 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_141_20250711_161146.jpg
+2025-07-11 16:11:46,122 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_141_20250711_161146.jpg
+2025-07-11 16:11:46,817 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:46] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:46,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:46] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:46,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:46] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:46,957 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_152_20250711_161146.jpg
+2025-07-11 16:11:47,816 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:47] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:47,816 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:47] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:47,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:47] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:48,046 - DangerRecognizer - INFO - ∂‘œÛ person_2721811742311004284 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:48,046 - DangerRecognizer - INFO - ∂‘œÛ person_-1191081607334341208 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:48,049 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_166_20250711_161148.jpg
+2025-07-11 16:11:48,052 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_166_20250711_161148.jpg
+2025-07-11 16:11:48,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:48] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:48,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:48] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:48,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:48] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:49,005 - DangerRecognizer - INFO - ∂‘œÛ person_-620696153551385343 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:49,005 - DangerRecognizer - INFO - ∂‘œÛ person_5583967295544423701 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:49,008 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_178_20250711_161149.jpg
+2025-07-11 16:11:49,010 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_178_20250711_161149.jpg
+2025-07-11 16:11:49,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:49] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:49,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:49] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:49,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:49] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:49,947 - DangerRecognizer - INFO - ∂‘œÛ person_-7602724848167246848 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:49,948 - DangerRecognizer - INFO - ∂‘œÛ person_-2515262745419681507 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:49,948 - DangerRecognizer - INFO - ∂‘œÛ person_-5339419857822887061 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:49,952 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_190_20250711_161149.jpg
+2025-07-11 16:11:49,954 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_190_20250711_161149.jpg
+2025-07-11 16:11:49,957 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_190_20250711_161149.jpg
+2025-07-11 16:11:50,128 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:50] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-11 16:11:50,141 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:50] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:50,142 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:50] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:50,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:50] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:50,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:50] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:50,827 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:50] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:50,921 - DangerRecognizer - INFO - ∂‘œÛ person_6792394651672757016 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:50,921 - DangerRecognizer - INFO - ∂‘œÛ person_-4620607095224416387 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:50,923 - DangerRecognizer - INFO - ∂‘œÛ person_1695367154019136842 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:50,923 - DangerRecognizer - INFO - ∂‘œÛ person_5348088384167833717 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:50,925 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_202_20250711_161150.jpg
+2025-07-11 16:11:50,929 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_202_20250711_161150.jpg
+2025-07-11 16:11:50,931 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_202_20250711_161150.jpg
+2025-07-11 16:11:51,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:51] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:51,827 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:51] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:51,828 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:51] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:51,891 - DangerRecognizer - INFO - ∂‘œÛ person_7713193107485441201 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:51,892 - DangerRecognizer - INFO - ∂‘œÛ person_-956793092041513184 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:51,903 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_214_20250711_161151.jpg
+2025-07-11 16:11:51,907 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_214_20250711_161151.jpg
+2025-07-11 16:11:52,720 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:52] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:11:52,827 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:52] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:52,828 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:52] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:52,829 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:52] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:53,828 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:53] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:53,829 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:53] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:53,831 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:53] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:54,427 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:54] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:11:54,546 - DangerRecognizer - INFO - ∂‘œÛ person_-5070123951845828339 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:54,547 - DangerRecognizer - INFO - ∂‘œÛ person_811624296720878701 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:54,547 - DangerRecognizer - INFO - ∂‘œÛ person_4783698835950789024 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:54,550 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_226_20250711_161154.jpg
+2025-07-11 16:11:54,553 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_226_20250711_161154.jpg
+2025-07-11 16:11:54,555 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_226_20250711_161154.jpg
+2025-07-11 16:11:54,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:54] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:54,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:54] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:54,827 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:54] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:55,491 - DangerRecognizer - INFO - ∂‘œÛ person_-6066720386256970166 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:55,491 - DangerRecognizer - INFO - ∂‘œÛ person_8242519201483384642 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:55,492 - DangerRecognizer - INFO - ∂‘œÛ person_-3546369385460067992 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:55,492 - DangerRecognizer - INFO - ∂‘œÛ person_-5923333752042795436 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:55,494 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_238_20250711_161155.jpg
+2025-07-11 16:11:55,498 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_238_20250711_161155.jpg
+2025-07-11 16:11:55,500 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_238_20250711_161155.jpg
+2025-07-11 16:11:55,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:55] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:55,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:55] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:55,821 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:55] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:56,494 - DangerRecognizer - INFO - ∂‘œÛ person_6612959336967955588 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:56,494 - DangerRecognizer - INFO - ∂‘œÛ person_590130237522163453 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:56,494 - DangerRecognizer - INFO - ∂‘œÛ person_1554082730799144869 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:56,497 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_251_20250711_161156.jpg
+2025-07-11 16:11:56,500 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_251_20250711_161156.jpg
+2025-07-11 16:11:56,817 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:56] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:56,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:56] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:56,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:56] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:57,437 - DangerRecognizer - INFO - ∂‘œÛ person_-4671591365992007588 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:57,437 - DangerRecognizer - INFO - ∂‘œÛ person_2685176879508390077 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:57,441 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_263_20250711_161157.jpg
+2025-07-11 16:11:57,444 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_263_20250711_161157.jpg
+2025-07-11 16:11:57,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:57] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:57,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:57] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:57,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:57] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:58,374 - DangerRecognizer - INFO - ∂‘œÛ person_2476332658616644436 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:58,375 - DangerRecognizer - INFO - ∂‘œÛ person_-4901146801548580419 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:58,375 - DangerRecognizer - INFO - ∂‘œÛ person_-9162377878516789576 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:58,378 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_275_20250711_161158.jpg
+2025-07-11 16:11:58,381 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_275_20250711_161158.jpg
+2025-07-11 16:11:58,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:58] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:58,822 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:58] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:58,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:58] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:11:59,309 - DangerRecognizer - INFO - ∂‘œÛ person_-2416741370356051930 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:59,309 - DangerRecognizer - INFO - ∂‘œÛ person_1364496508054642472 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:59,309 - DangerRecognizer - INFO - ∂‘œÛ person_-6514190911264792362 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:11:59,317 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_287_20250711_161159.jpg
+2025-07-11 16:11:59,319 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_287_20250711_161159.jpg
+2025-07-11 16:11:59,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:59] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:11:59,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:59] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:11:59,826 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:11:59] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:00,244 - DangerRecognizer - INFO - ∂‘œÛ person_-7889745508807157840 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:00,244 - DangerRecognizer - INFO - ∂‘œÛ person_-1310449940092412482 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:00,247 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_298_20250711_161200.jpg
+2025-07-11 16:12:00,251 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_298_20250711_161200.jpg
+2025-07-11 16:12:00,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:00] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:00,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:00] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:00,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:00] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:01,261 - DangerRecognizer - INFO - Œ£œ’«¯”ÚÕ£¡Ù∏ÊæØ: ∂‘œÛ person_-2416741370356051930 ‘⁄«¯”Ú 0 Õ£¡Ù 1.95√Î
+2025-07-11 16:12:01,261 - DangerRecognizer - INFO - ∂‘œÛ person_1846596074986847611 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:01,262 - DangerRecognizer - INFO - ∂‘œÛ person_-6780628625427742405 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:01,262 - DangerRecognizer - INFO - ∂‘œÛ person_759320288243563575 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:01,265 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Danger Zone Dwell_311_20250711_161201.jpg
+2025-07-11 16:12:01,267 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_311_20250711_161201.jpg
+2025-07-11 16:12:01,270 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_311_20250711_161201.jpg
+2025-07-11 16:12:01,272 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_311_20250711_161201.jpg
+2025-07-11 16:12:01,275 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_311_20250711_161201.jpg
+2025-07-11 16:12:01,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:01] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:01,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:01] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:01,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:01] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:02,148 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_322_20250711_161202.jpg
+2025-07-11 16:12:02,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:02] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:02,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:02] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:02,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:02] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:03,219 - DangerRecognizer - INFO - ∂‘œÛ person_-2590972915824520462 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:03,219 - DangerRecognizer - INFO - ∂‘œÛ person_5804422709409244648 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:03,220 - DangerRecognizer - INFO - ∂‘œÛ person_5035923195775213621 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:03,220 - DangerRecognizer - INFO - ∂‘œÛ person_-8675081482881165715 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:03,224 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_333_20250711_161203.jpg
+2025-07-11 16:12:03,226 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_333_20250711_161203.jpg
+2025-07-11 16:12:03,229 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_333_20250711_161203.jpg
+2025-07-11 16:12:03,315 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:03] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-11 16:12:03,328 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:03] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:03,329 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:03] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:03,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:03] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:03,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:03] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:03,821 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:03] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:04,227 - DangerRecognizer - INFO - ∂‘œÛ person_-703218046692753777 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:04,227 - DangerRecognizer - INFO - ∂‘œÛ person_-336197520455990072 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:04,227 - DangerRecognizer - INFO - ∂‘œÛ person_7768158442028899578 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:04,228 - DangerRecognizer - INFO - ∂‘œÛ person_7842802226272855938 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:04,231 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_344_20250711_161204.jpg
+2025-07-11 16:12:04,233 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_344_20250711_161204.jpg
+2025-07-11 16:12:04,237 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_344_20250711_161204.jpg
+2025-07-11 16:12:04,241 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_344_20250711_161204.jpg
+2025-07-11 16:12:04,243 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_344_20250711_161204.jpg
+2025-07-11 16:12:04,829 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:04] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:04,830 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:04] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:04,831 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:04] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:05,203 - DangerRecognizer - INFO - ∂‘œÛ person_-5183490143670692976 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:05,205 - DangerRecognizer - INFO - ∂‘œÛ person_-5413045579227265807 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:05,205 - DangerRecognizer - INFO - ∂‘œÛ person_-6524981981489572303 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:05,205 - DangerRecognizer - INFO - ∂‘œÛ person_-4789704419307622892 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:05,210 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_355_20250711_161205.jpg
+2025-07-11 16:12:05,214 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_355_20250711_161205.jpg
+2025-07-11 16:12:05,217 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_355_20250711_161205.jpg
+2025-07-11 16:12:05,823 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:05] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:05,824 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:05] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:05,825 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:05] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:06,166 - DangerRecognizer - INFO - ∂‘œÛ person_-3598202811906510035 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:06,167 - DangerRecognizer - INFO - ∂‘œÛ person_2810362409805514822 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:12:06,170 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_366_20250711_161206.jpg
+2025-07-11 16:12:06,172 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_366_20250711_161206.jpg
+2025-07-11 16:12:06,175 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_366_20250711_161206.jpg
+2025-07-11 16:12:06,817 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:06] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:06,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:06] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:06,819 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:06] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:06,917 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:06] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:12:06,980 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-11 16:12:07,366 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-11 16:12:07,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:07] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:12:07,818 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:07] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:12:07,820 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:12:07] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:12:07,837 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 36.32 √Î
+◊‹÷° ˝: 716
+¥¶¿Ì÷° ˝: 376 (52.5%)
+∆Ωæ˘÷°¬ : 19.71 FPS
+
+ ∂±µΩµƒ––Œ™:
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 11)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 22)
+  - Intrusion Alert (÷√–≈∂»: 0.69, ÷°∫≈: 22)
+  - Intrusion Alert (÷√–≈∂»: 0.64, ÷°∫≈: 22)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 33)
+  - Intrusion Alert (÷√–≈∂»: 0.78, ÷°∫≈: 33)
+  - Intrusion Alert (÷√–≈∂»: 0.62, ÷°∫≈: 33)
+  - Intrusion Alert (÷√–≈∂»: 0.45, ÷°∫≈: 33)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 45)
+  - Intrusion Alert (÷√–≈∂»: 0.69, ÷°∫≈: 45)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 57)
+  - Intrusion Alert (÷√–≈∂»: 0.72, ÷°∫≈: 57)
+  - Intrusion Alert (÷√–≈∂»: 0.60, ÷°∫≈: 57)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 69)
+  - Intrusion Alert (÷√–≈∂»: 0.72, ÷°∫≈: 69)
+  - Intrusion Alert (÷√–≈∂»: 0.57, ÷°∫≈: 69)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 81)
+  - Intrusion Alert (÷√–≈∂»: 0.74, ÷°∫≈: 81)
+  - Intrusion Alert (÷√–≈∂»: 0.62, ÷°∫≈: 81)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 93)
+  - Intrusion Alert (÷√–≈∂»: 0.66, ÷°∫≈: 93)
+  - Intrusion Alert (÷√–≈∂»: 0.61, ÷°∫≈: 93)
+  - Danger Zone Dwell (÷√–≈∂»: 0.90, ÷°∫≈: 105)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 105)
+  - Intrusion Alert (÷√–≈∂»: 0.69, ÷°∫≈: 105)
+  - Intrusion Alert (÷√–≈∂»: 0.62, ÷°∫≈: 105)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 117)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 117)
+  - Intrusion Alert (÷√–≈∂»: 0.53, ÷°∫≈: 117)
+  - Intrusion Alert (÷√–≈∂»: 0.45, ÷°∫≈: 117)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 129)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 129)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 141)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 141)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 141)
+  - Intrusion Alert (÷√–≈∂»: 0.74, ÷°∫≈: 141)
+  - Intrusion Alert (÷√–≈∂»: 0.47, ÷°∫≈: 141)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 152)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 166)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 166)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 178)
+  - Intrusion Alert (÷√–≈∂»: 0.73, ÷°∫≈: 178)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 190)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 190)
+  - Intrusion Alert (÷√–≈∂»: 0.67, ÷°∫≈: 190)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 202)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 202)
+  - Intrusion Alert (÷√–≈∂»: 0.47, ÷°∫≈: 202)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 214)
+  - Intrusion Alert (÷√–≈∂»: 0.77, ÷°∫≈: 214)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 226)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 226)
+  - Intrusion Alert (÷√–≈∂»: 0.74, ÷°∫≈: 226)
+  - Intrusion Alert (÷√–≈∂»: 0.87, ÷°∫≈: 238)
+  - Intrusion Alert (÷√–≈∂»: 0.73, ÷°∫≈: 238)
+  - Intrusion Alert (÷√–≈∂»: 0.41, ÷°∫≈: 238)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 251)
+  - Intrusion Alert (÷√–≈∂»: 0.74, ÷°∫≈: 251)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 263)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 263)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 275)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 275)
+  - Intrusion Alert (÷√–≈∂»: 0.90, ÷°∫≈: 287)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 287)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 298)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 298)
+  - Danger Zone Dwell (÷√–≈∂»: 0.90, ÷°∫≈: 311)
+  - Intrusion Alert (÷√–≈∂»: 0.90, ÷°∫≈: 311)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 311)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 311)
+  - Intrusion Alert (÷√–≈∂»: 0.59, ÷°∫≈: 311)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 322)
+  - Intrusion Alert (÷√–≈∂»: 0.87, ÷°∫≈: 333)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 333)
+  - Intrusion Alert (÷√–≈∂»: 0.58, ÷°∫≈: 333)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 344)
+  - Intrusion Alert (÷√–≈∂»: 0.86, ÷°∫≈: 344)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 344)
+  - Intrusion Alert (÷√–≈∂»: 0.68, ÷°∫≈: 344)
+  - Intrusion Alert (÷√–≈∂»: 0.47, ÷°∫≈: 344)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 355)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 355)
+  - Intrusion Alert (÷√–≈∂»: 0.70, ÷°∫≈: 355)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 366)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 366)
+  - Intrusion Alert (÷√–≈∂»: 0.78, ÷°∫≈: 366)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 22)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 33)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 3, ÷°∫≈: 45)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 57)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 69)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 81)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 93)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 105)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 117)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 129)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 141)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 166)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 178)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 190)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 202)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 214)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 226)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 238)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 251)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 263)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 275)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 287)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 298)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 311)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 333)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 344)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 355)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 366)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 7
+  - Intrusion Alert: 77
+  - Danger Zone Dwell: 2
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 86
+  - “—¥¶¿Ì: 2
+  - Œ¥¥¶¿Ì: 84
+  - ¥¶¿Ì¬ : 2.3%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-11 16:11:35 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:36 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:36 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:36 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:37 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:37 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:37 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:37 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:38 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:38 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:39 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:39 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:39 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:40 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:40 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:40 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:41 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:41 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:41 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:42 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:42 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:42 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:43 | Danger Zone Dwell | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:43 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:43 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:43 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:44 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:44 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:44 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:44 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:45 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:45 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:46 | Large Area Motion | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-11 16:11:50
+  - 2025-07-11 16:11:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:46 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:48 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:48 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:50 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:50 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:50 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:51 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:51 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:54 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:54 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:54 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:55 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:55 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:55 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:56 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:56 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:57 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:57 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:58 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:58 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:59 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:11:59 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:00 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:00 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:01 | Danger Zone Dwell | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-11 16:12:03
+  - 2025-07-11 16:12:01 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:01 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:01 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:01 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:02 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:03 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:03 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:03 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:04 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:04 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:04 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:04 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:04 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:05 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:05 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:05 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:06 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:06 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:12:06 | Intrusion Alert | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: [(10,10), (260,10), (260,380), (10,380)]
+  - distance_threshold: 50
+  - dwell_time_threshold: 1.0
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.4
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: True
+  - save_alerts: True
+  - enable_audio_monitor: False
+
+2025-07-11 16:12:07,840 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250711_161207.txt
+2025-07-11 16:12:07,840 - AllInOneSystem - INFO - ΩÃ “ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-11 16:12:57,272 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-11 16:12:57,272 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-11 16:12:57,492 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-11 16:13:01,766 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-11 16:13:02,179 - AllInOneSystem - WARNING - Œ¥’“µΩaudio_monitor£¨…˘—ßºÏ≤‚π¶ƒ‹Ω´±ªΩ˚”√: No module named 'tensorflow'
+2025-07-11 16:13:02,179 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-11 16:13:02,179 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-11 16:13:02,191 - DangerRecognizer - INFO - “—ÃÌº”∏ÊæØ«¯”Ú: æØΩ‰«¯
+2025-07-11 16:13:02,324 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-11 16:13:02,328 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-11 16:13:02,333 - AllInOneSystem - INFO -  ”∆µΩ´¬º÷∆µΩ: system_output\output_20250711_161302.avi
+2025-07-11 16:13:02,333 - AllInOneSystem - INFO - Œ¥∆Ù”√“Ù∆µº‡øÿ
+2025-07-11 16:13:02,333 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-11 16:13:02,334 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-11 16:13:02,334 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-11 16:13:02,334 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-11 16:13:02,348 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-11 16:13:02,348 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 16:13:02,699 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-11 16:13:06,644 - DangerRecognizer - INFO - ∂‘œÛ person_4521309665150959574 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:06,644 - DangerRecognizer - INFO - ∂‘œÛ person_4314563065719041253 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:06,644 - DangerRecognizer - INFO - ∂‘œÛ person_-2952933628390941403 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:06,644 - DangerRecognizer - INFO - ∂‘œÛ person_7400622297050782568 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:06,650 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_12_20250711_161306.jpg
+2025-07-11 16:13:06,653 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_12_20250711_161306.jpg
+2025-07-11 16:13:06,655 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_12_20250711_161306.jpg
+2025-07-11 16:13:06,657 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_12_20250711_161306.jpg
+2025-07-11 16:13:07,522 - DangerRecognizer - INFO - ∂‘œÛ person_6355650640111471005 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:07,522 - DangerRecognizer - INFO - ∂‘œÛ person_-3211800793851624542 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:07,522 - DangerRecognizer - INFO - ∂‘œÛ person_-2193077690382957172 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:07,525 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_24_20250711_161307.jpg
+2025-07-11 16:13:07,525 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_24_20250711_161307.jpg
+2025-07-11 16:13:07,531 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_24_20250711_161307.jpg
+2025-07-11 16:13:08,078 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:08] "GET / HTTP/1.1" 200 -
+2025-07-11 16:13:08,122 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:08] "GET /video_feed HTTP/1.1" 200 -
+2025-07-11 16:13:08,125 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:08] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:08,129 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:08] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:08,131 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:08] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:08,490 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_35_20250711_161308.jpg
+2025-07-11 16:13:09,110 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:09] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:09,112 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:09] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:09,114 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:09] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:09,495 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_46_20250711_161309.jpg
+2025-07-11 16:13:10,112 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:10] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:10,113 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:10] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:10,113 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:10] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:10,578 - DangerRecognizer - INFO - ∂‘œÛ person_6515744377809161597 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:10,578 - DangerRecognizer - INFO - ∂‘œÛ person_5300731125611066148 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:10,578 - DangerRecognizer - INFO - ∂‘œÛ person_3976565731945408989 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:10,582 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_58_20250711_161310.jpg
+2025-07-11 16:13:10,584 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_58_20250711_161310.jpg
+2025-07-11 16:13:10,586 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_58_20250711_161310.jpg
+2025-07-11 16:13:11,114 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:11] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:11,115 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:11] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:11,116 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:11] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:11,451 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_70_20250711_161311.jpg
+2025-07-11 16:13:12,103 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:12] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:12,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:12] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:12,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:12] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:12,337 - DangerRecognizer - INFO - ∂‘œÛ person_-4430831285705575969 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:12,338 - DangerRecognizer - INFO - ∂‘œÛ person_-6313435903655867113 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:12,341 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161312.jpg
+2025-07-11 16:13:12,343 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161312.jpg
+2025-07-11 16:13:13,107 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:13] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:13,108 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:13] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:13,108 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:13] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:13,320 - DangerRecognizer - INFO - ∂‘œÛ person_-222085226768874401 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:13,323 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_95_20250711_161313.jpg
+2025-07-11 16:13:13,324 - AllInOneSystem - ERROR - ø… ”ªØ∏ÊæØ≥ˆ¥Ì: local variable 'x1' referenced before assignment
+2025-07-11 16:13:14,107 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:14] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:14,107 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:14] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:14,109 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:14] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:14,255 - DangerRecognizer - INFO - ∂‘œÛ person_-5158027180589750154 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:14,255 - DangerRecognizer - INFO - ∂‘œÛ person_4826375339267901220 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:14,255 - DangerRecognizer - INFO - ∂‘œÛ person_7718586207808797623 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:14,255 - DangerRecognizer - INFO - ∂‘œÛ person_1721064915464353415 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:14,258 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_107_20250711_161314.jpg
+2025-07-11 16:13:14,261 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_107_20250711_161314.jpg
+2025-07-11 16:13:14,263 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_107_20250711_161314.jpg
+2025-07-11 16:13:14,265 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_107_20250711_161314.jpg
+2025-07-11 16:13:15,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:15] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:15,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:15] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:15,106 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:15] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:15,243 - DangerRecognizer - INFO - ∂‘œÛ person_-426498769288594736 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:15,246 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_120_20250711_161315.jpg
+2025-07-11 16:13:15,249 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_120_20250711_161315.jpg
+2025-07-11 16:13:16,114 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:16] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:16,115 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:16] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:16,117 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:16] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:16,187 - DangerRecognizer - INFO - ∂‘œÛ person_4567338288733665512 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:16,187 - DangerRecognizer - INFO - ∂‘œÛ person_-6625362433235181737 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:16,190 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_132_20250711_161316.jpg
+2025-07-11 16:13:16,192 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_132_20250711_161316.jpg
+2025-07-11 16:13:16,194 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_132_20250711_161316.jpg
+2025-07-11 16:13:17,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:17] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:17,107 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:17] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:17,109 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:17] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:17,145 - DangerRecognizer - INFO - ∂‘œÛ person_2214972619971371292 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:17,145 - DangerRecognizer - INFO - ∂‘œÛ person_5692808800920499591 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:17,151 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_144_20250711_161317.jpg
+2025-07-11 16:13:17,153 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_144_20250711_161317.jpg
+2025-07-11 16:13:17,156 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_144_20250711_161317.jpg
+2025-07-11 16:13:17,158 - AllInOneSystem - ERROR - ø… ”ªØ∏ÊæØ≥ˆ¥Ì: local variable 'x1' referenced before assignment
+2025-07-11 16:13:18,109 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:18] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:18,110 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:18] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:18,110 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:18] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:18,152 - DangerRecognizer - INFO - ∂‘œÛ person_7389336351868985589 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:18,152 - DangerRecognizer - INFO - ∂‘œÛ person_-4800326981227992561 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:18,152 - DangerRecognizer - INFO - ∂‘œÛ person_283092646742758388 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:18,155 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_157_20250711_161318.jpg
+2025-07-11 16:13:18,158 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_157_20250711_161318.jpg
+2025-07-11 16:13:18,162 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_157_20250711_161318.jpg
+2025-07-11 16:13:18,164 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_157_20250711_161318.jpg
+2025-07-11 16:13:18,311 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:18] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:18,313 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:18] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:18,314 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:18] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:19,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:19] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:19,107 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:19] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:19,108 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:19] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:19,130 - DangerRecognizer - INFO - ∂‘œÛ person_-4597342044625084723 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:19,130 - DangerRecognizer - INFO - ∂‘œÛ person_6986592035935547623 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:19,131 - DangerRecognizer - INFO - ∂‘œÛ person_4600321477979712738 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:19,134 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_169_20250711_161319.jpg
+2025-07-11 16:13:19,137 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_169_20250711_161319.jpg
+2025-07-11 16:13:19,140 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_169_20250711_161319.jpg
+2025-07-11 16:13:19,144 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_169_20250711_161319.jpg
+2025-07-11 16:13:19,999 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:19] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-11 16:13:20,012 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:20] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:20,013 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:20] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:20,021 - DangerRecognizer - INFO - ∂‘œÛ person_-2346945066520407 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:20,022 - DangerRecognizer - INFO - ∂‘œÛ person_5400441758718570161 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:20,022 - DangerRecognizer - INFO - ∂‘œÛ person_4456612709966344139 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:20,026 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_180_20250711_161320.jpg
+2025-07-11 16:13:20,029 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_180_20250711_161320.jpg
+2025-07-11 16:13:20,031 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_180_20250711_161320.jpg
+2025-07-11 16:13:20,033 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_180_20250711_161320.jpg
+2025-07-11 16:13:20,115 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:20] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:20,116 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:20] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:20,117 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:20] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:20,909 - DangerRecognizer - INFO - ∂‘œÛ person_-3213985055049206096 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:20,910 - DangerRecognizer - INFO - ∂‘œÛ person_-3317969250604095444 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:20,910 - DangerRecognizer - INFO - ∂‘œÛ person_3627446360665555023 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:20,913 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_191_20250711_161320.jpg
+2025-07-11 16:13:20,916 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_191_20250711_161320.jpg
+2025-07-11 16:13:20,918 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_191_20250711_161320.jpg
+2025-07-11 16:13:20,920 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_191_20250711_161320.jpg
+2025-07-11 16:13:21,110 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:21] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:21,112 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:21] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:21,112 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:21] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:21,890 - DangerRecognizer - INFO - ∂‘œÛ person_-14130996155721096 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:21,890 - DangerRecognizer - INFO - ∂‘œÛ person_57303936631225342 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:21,890 - DangerRecognizer - INFO - ∂‘œÛ person_2152289901247561153 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:21,895 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_203_20250711_161321.jpg
+2025-07-11 16:13:21,897 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_203_20250711_161321.jpg
+2025-07-11 16:13:21,899 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_203_20250711_161321.jpg
+2025-07-11 16:13:21,902 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_203_20250711_161321.jpg
+2025-07-11 16:13:22,112 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:22] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:22,113 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:22] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:22,114 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:22] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:22,882 - DangerRecognizer - INFO - ∂‘œÛ person_-5302939720692371235 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:22,882 - DangerRecognizer - INFO - ∂‘œÛ person_5025292499691425188 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:22,882 - DangerRecognizer - INFO - ∂‘œÛ person_2372335797469331070 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:22,886 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_215_20250711_161322.jpg
+2025-07-11 16:13:22,889 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_215_20250711_161322.jpg
+2025-07-11 16:13:22,892 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_215_20250711_161322.jpg
+2025-07-11 16:13:22,894 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_215_20250711_161322.jpg
+2025-07-11 16:13:23,101 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:23] "POST /alerts/handle HTTP/1.1" 200 -
+2025-07-11 16:13:23,111 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:23] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:23,113 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:23] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:23,115 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:23] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:23,119 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:23] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:23,121 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:23] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:23,829 - DangerRecognizer - INFO - ∂‘œÛ person_5173772564327455144 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:23,829 - DangerRecognizer - INFO - ∂‘œÛ person_-8488838324776277057 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:23,829 - DangerRecognizer - INFO - ∂‘œÛ person_-4969460824559631873 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:23,829 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_226_20250711_161323.jpg
+2025-07-11 16:13:23,838 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_226_20250711_161323.jpg
+2025-07-11 16:13:23,841 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_226_20250711_161323.jpg
+2025-07-11 16:13:23,843 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_226_20250711_161323.jpg
+2025-07-11 16:13:23,903 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:23] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:13:24,115 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:24] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:24,115 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:24] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:24,115 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:24] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:24,927 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:24] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:13:24,964 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-11 16:13:25,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:25] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:25,105 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:25] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:25,107 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:25] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:25,463 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-11 16:13:25,484 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 23.30 √Î
+◊‹÷° ˝: 449
+¥¶¿Ì÷° ˝: 227 (50.6%)
+∆Ωæ˘÷°¬ : 19.27 FPS
+∏ÊæØ◊‹ ˝: 0
+
+ ∂±µΩµƒ––Œ™:
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 12)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 12)
+  - Intrusion Alert (÷√–≈∂»: 0.64, ÷°∫≈: 12)
+  - Intrusion Alert (÷√–≈∂»: 0.43, ÷°∫≈: 12)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 24)
+  - Intrusion Alert (÷√–≈∂»: 0.71, ÷°∫≈: 24)
+  - Intrusion Alert (÷√–≈∂»: 0.60, ÷°∫≈: 24)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 35)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 46)
+  - Intrusion Alert (÷√–≈∂»: 0.89, ÷°∫≈: 58)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 58)
+  - Intrusion Alert (÷√–≈∂»: 0.47, ÷°∫≈: 58)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 70)
+  - Intrusion Alert (÷√–≈∂»: 0.84, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 95)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 107)
+  - Intrusion Alert (÷√–≈∂»: 0.60, ÷°∫≈: 107)
+  - Intrusion Alert (÷√–≈∂»: 0.46, ÷°∫≈: 107)
+  - Intrusion Alert (÷√–≈∂»: 0.44, ÷°∫≈: 107)
+  - Intrusion Alert (÷√–≈∂»: 0.73, ÷°∫≈: 120)
+  - Intrusion Alert (÷√–≈∂»: 0.71, ÷°∫≈: 120)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 132)
+  - Intrusion Alert (÷√–≈∂»: 0.64, ÷°∫≈: 132)
+  - Intrusion Alert (÷√–≈∂»: 0.48, ÷°∫≈: 132)
+  - Intrusion Alert (÷√–≈∂»: 0.84, ÷°∫≈: 144)
+  - Intrusion Alert (÷√–≈∂»: 0.74, ÷°∫≈: 144)
+  - Intrusion Alert (÷√–≈∂»: 0.43, ÷°∫≈: 144)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 157)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 157)
+  - Intrusion Alert (÷√–≈∂»: 0.78, ÷°∫≈: 157)
+  - Intrusion Alert (÷√–≈∂»: 0.86, ÷°∫≈: 169)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 169)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 169)
+  - Intrusion Alert (÷√–≈∂»: 0.77, ÷°∫≈: 169)
+  - Intrusion Alert (÷√–≈∂»: 0.84, ÷°∫≈: 180)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 180)
+  - Intrusion Alert (÷√–≈∂»: 0.71, ÷°∫≈: 180)
+  - Intrusion Alert (÷√–≈∂»: 0.85, ÷°∫≈: 191)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 191)
+  - Intrusion Alert (÷√–≈∂»: 0.67, ÷°∫≈: 191)
+  - Intrusion Alert (÷√–≈∂»: 0.86, ÷°∫≈: 203)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 203)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 203)
+  - Intrusion Alert (÷√–≈∂»: 0.69, ÷°∫≈: 203)
+  - Intrusion Alert (÷√–≈∂»: 0.85, ÷°∫≈: 215)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 215)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 215)
+  - Intrusion Alert (÷√–≈∂»: 0.60, ÷°∫≈: 215)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 226)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 226)
+  - Intrusion Alert (÷√–≈∂»: 0.78, ÷°∫≈: 226)
+  - Intrusion Alert (÷√–≈∂»: 0.60, ÷°∫≈: 226)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 12)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 24)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 58)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 82)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 3, ÷°∫≈: 95)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 107)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 120)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 132)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 144)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 157)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 169)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 180)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 191)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 203)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 215)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 226)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 3
+  - Intrusion Alert: 53
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 60
+  - “—¥¶¿Ì: 2
+  - Œ¥¥¶¿Ì: 54
+  - ¥¶¿Ì¬ : 3.3%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-11 16:13:06 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:06 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:06 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:06 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:07 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:07 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:07 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:08 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:09 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:10 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:10 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:10 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:11 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:12 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:12 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:13 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:14 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:14 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:14 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:14 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:15 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:15 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:16 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:16 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:16 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:17 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:17 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:17 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:18 | Intrusion Alert | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-11 16:13:19
+  - 2025-07-11 16:13:18 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:18 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:18 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:19 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:19 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:19 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:19 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:20 | Intrusion Alert | “—¥¶¿Ì | ¥¶¿Ì ±º‰: 2025-07-11 16:13:23
+  - 2025-07-11 16:13:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:20 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:21 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:21 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:21 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:21 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:22 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:22 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:22 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:22 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:23 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:23 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:23 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:23 | Intrusion Alert | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: [(10,10), (260,10), (260,380), (10,380)]
+  - distance_threshold: 50
+  - dwell_time_threshold: 1.0
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.4
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: True
+  - save_alerts: True
+  - enable_audio_monitor: False
+
+2025-07-11 16:13:25,486 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250711_161325.txt
+2025-07-11 16:13:25,486 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-11 16:13:35,215 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-11 16:13:35,215 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-11 16:13:35,438 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-11 16:13:39,777 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-11 16:13:40,196 - AllInOneSystem - WARNING - Œ¥’“µΩaudio_monitor£¨…˘—ßºÏ≤‚π¶ƒ‹Ω´±ªΩ˚”√: No module named 'tensorflow'
+2025-07-11 16:13:40,200 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-11 16:13:40,202 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-11 16:13:40,202 - DangerRecognizer - INFO - “—ÃÌº”∏ÊæØ«¯”Ú: æØΩ‰«¯
+2025-07-11 16:13:40,379 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-11 16:13:40,383 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-11 16:13:40,389 - AllInOneSystem - INFO -  ”∆µΩ´¬º÷∆µΩ: system_output\output_20250711_161340.avi
+2025-07-11 16:13:40,389 - AllInOneSystem - INFO - Œ¥∆Ù”√“Ù∆µº‡øÿ
+2025-07-11 16:13:40,389 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-11 16:13:40,390 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-11 16:13:40,391 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-11 16:13:40,391 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-11 16:13:40,411 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-11 16:13:40,411 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 16:13:40,708 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-11 16:13:43,537 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:43] "GET / HTTP/1.1" 200 -
+2025-07-11 16:13:43,590 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:43] "GET /video_feed HTTP/1.1" 200 -
+2025-07-11 16:13:43,592 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:43] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:43,599 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:43] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:43,601 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:43] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:44,507 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_11_20250711_161344.jpg
+2025-07-11 16:13:44,569 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:44] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:44,570 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:44] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:44,572 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:44] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:45,582 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:45] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:45,582 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:45] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:45,584 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:45] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:45,668 - DangerRecognizer - INFO - ∂‘œÛ person_5097065320065275032 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:45,668 - DangerRecognizer - INFO - ∂‘œÛ person_-8828412628738241811 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:45,668 - DangerRecognizer - INFO - ∂‘œÛ person_-2374144734168094171 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:45,676 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_23_20250711_161345.jpg
+2025-07-11 16:13:45,679 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_23_20250711_161345.jpg
+2025-07-11 16:13:45,681 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_23_20250711_161345.jpg
+2025-07-11 16:13:45,684 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_23_20250711_161345.jpg
+2025-07-11 16:13:46,567 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:46] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:46,567 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:46] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:46,567 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:46] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:46,683 - DangerRecognizer - INFO - ∂‘œÛ person_8904237226307898683 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:46,684 - DangerRecognizer - INFO - ∂‘œÛ person_3859670472094914907 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:46,684 - DangerRecognizer - INFO - ∂‘œÛ person_-361045421184971361 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:46,686 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250711_161346.jpg
+2025-07-11 16:13:46,690 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250711_161346.jpg
+2025-07-11 16:13:46,692 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250711_161346.jpg
+2025-07-11 16:13:46,695 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250711_161346.jpg
+2025-07-11 16:13:47,565 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:47] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:47,565 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:47] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:47,567 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:47] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:47,666 - DangerRecognizer - INFO - ∂‘œÛ person_56182945233828768 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:47,666 - DangerRecognizer - INFO - ∂‘œÛ person_-3327391261679309331 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:47,669 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_47_20250711_161347.jpg
+2025-07-11 16:13:47,672 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_47_20250711_161347.jpg
+2025-07-11 16:13:47,674 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_47_20250711_161347.jpg
+2025-07-11 16:13:48,566 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:48] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:48,567 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:48] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:48,568 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:48] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:48,635 - DangerRecognizer - INFO - ∂‘œÛ person_6484983479106016572 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:48,636 - DangerRecognizer - INFO - ∂‘œÛ person_-3873438784121763475 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:48,636 - DangerRecognizer - INFO - ∂‘œÛ person_266109684622633766 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:48,638 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250711_161348.jpg
+2025-07-11 16:13:48,643 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250711_161348.jpg
+2025-07-11 16:13:48,646 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250711_161348.jpg
+2025-07-11 16:13:48,648 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250711_161348.jpg
+2025-07-11 16:13:49,573 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:49] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:49,574 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:49] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:49,577 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:49] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:49,624 - DangerRecognizer - INFO - ∂‘œÛ person_7062926025774260380 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:49,625 - DangerRecognizer - INFO - ∂‘œÛ person_6315089878400331303 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:49,625 - DangerRecognizer - INFO - ∂‘œÛ person_8073101460410912999 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:49,628 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250711_161349.jpg
+2025-07-11 16:13:49,632 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250711_161349.jpg
+2025-07-11 16:13:49,634 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250711_161349.jpg
+2025-07-11 16:13:49,637 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250711_161349.jpg
+2025-07-11 16:13:50,458 - DangerRecognizer - INFO - ∂‘œÛ person_1273415348223110052 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:50,458 - DangerRecognizer - INFO - ∂‘œÛ person_-4250609235510264347 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:50,458 - DangerRecognizer - INFO - ∂‘œÛ person_-4206664612406392566 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:50,461 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161350.jpg
+2025-07-11 16:13:50,464 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161350.jpg
+2025-07-11 16:13:50,467 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161350.jpg
+2025-07-11 16:13:50,470 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161350.jpg
+2025-07-11 16:13:50,573 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:50] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:50,574 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:50] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:50,575 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:50] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:51,414 - DangerRecognizer - INFO - ∂‘œÛ person_6655851293836312443 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:51,414 - DangerRecognizer - INFO - ∂‘œÛ person_2453954583879649248 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:51,414 - DangerRecognizer - INFO - ∂‘œÛ person_-8262978175627208882 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:51,417 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_94_20250711_161351.jpg
+2025-07-11 16:13:51,420 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_94_20250711_161351.jpg
+2025-07-11 16:13:51,423 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_94_20250711_161351.jpg
+2025-07-11 16:13:51,425 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_94_20250711_161351.jpg
+2025-07-11 16:13:51,572 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:51] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:51,572 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:51] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:51,575 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:51] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:52,360 - DangerRecognizer - INFO - ∂‘œÛ person_2983800970328380462 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:52,360 - DangerRecognizer - INFO - ∂‘œÛ person_-2456301576783404268 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:52,360 - DangerRecognizer - INFO - ∂‘œÛ person_-4969460824559631873 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:13:52,364 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_106_20250711_161352.jpg
+2025-07-11 16:13:52,367 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_106_20250711_161352.jpg
+2025-07-11 16:13:52,371 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_106_20250711_161352.jpg
+2025-07-11 16:13:52,373 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_106_20250711_161352.jpg
+2025-07-11 16:13:52,561 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:52] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:13:52,568 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:52] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:13:52,570 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:52] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:13:52,792 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:13:52] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:13:52,872 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-11 16:13:53,296 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-11 16:13:53,475 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 13.27 √Î
+◊‹÷° ˝: 255
+¥¶¿Ì÷° ˝: 112 (43.9%)
+∆Ωæ˘÷°¬ : 19.21 FPS
+∏ÊæØ◊‹ ˝: 0
+
+ ∂±µΩµƒ––Œ™:
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 11)
+  - Intrusion Alert (÷√–≈∂»: 0.78, ÷°∫≈: 23)
+  - Intrusion Alert (÷√–≈∂»: 0.73, ÷°∫≈: 23)
+  - Intrusion Alert (÷√–≈∂»: 0.68, ÷°∫≈: 23)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 35)
+  - Intrusion Alert (÷√–≈∂»: 0.71, ÷°∫≈: 35)
+  - Intrusion Alert (÷√–≈∂»: 0.66, ÷°∫≈: 35)
+  - Intrusion Alert (÷√–≈∂»: 0.58, ÷°∫≈: 35)
+  - Intrusion Alert (÷√–≈∂»: 0.77, ÷°∫≈: 47)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 47)
+  - Intrusion Alert (÷√–≈∂»: 0.62, ÷°∫≈: 47)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 59)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 59)
+  - Intrusion Alert (÷√–≈∂»: 0.75, ÷°∫≈: 59)
+  - Intrusion Alert (÷√–≈∂»: 0.73, ÷°∫≈: 59)
+  - Intrusion Alert (÷√–≈∂»: 0.77, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.75, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.73, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.71, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.75, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 94)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 94)
+  - Intrusion Alert (÷√–≈∂»: 0.78, ÷°∫≈: 94)
+  - Intrusion Alert (÷√–≈∂»: 0.77, ÷°∫≈: 94)
+  - Intrusion Alert (÷√–≈∂»: 0.88, ÷°∫≈: 106)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 106)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 106)
+  - Intrusion Alert (÷√–≈∂»: 0.75, ÷°∫≈: 106)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 23)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 35)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 47)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 59)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 71)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 82)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 94)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 106)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 1
+  - Intrusion Alert: 31
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 36
+  - “—¥¶¿Ì: 0
+  - Œ¥¥¶¿Ì: 32
+  - ¥¶¿Ì¬ : 0.0%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-11 16:13:44 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:45 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:45 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:45 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:45 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:46 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:47 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:47 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:47 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:48 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:48 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:48 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:48 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:49 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:50 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:50 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:50 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:50 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:51 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:51 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:51 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:51 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:52 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:52 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:52 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:13:52 | Intrusion Alert | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: [(10,10), (260,10), (260,380), (10,380)]
+  - distance_threshold: 50
+  - dwell_time_threshold: 1.0
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.4
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: True
+  - save_alerts: True
+  - enable_audio_monitor: False
+
+2025-07-11 16:13:53,475 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250711_161353.txt
+2025-07-11 16:13:53,475 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-11 16:18:50,940 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-11 16:18:50,943 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-11 16:18:51,165 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-11 16:18:55,377 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-11 16:18:55,816 - AllInOneSystem - WARNING - Œ¥’“µΩaudio_monitor£¨…˘—ßºÏ≤‚π¶ƒ‹Ω´±ªΩ˚”√: No module named 'tensorflow'
+2025-07-11 16:18:55,828 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-11 16:18:55,828 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-11 16:18:55,828 - DangerRecognizer - INFO - “—ÃÌº”∏ÊæØ«¯”Ú: æØΩ‰«¯
+2025-07-11 16:18:55,970 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-11 16:18:55,974 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-11 16:18:55,980 - AllInOneSystem - INFO -  ”∆µΩ´¬º÷∆µΩ: system_output\output_20250711_161855.avi
+2025-07-11 16:18:55,981 - AllInOneSystem - INFO - Œ¥∆Ù”√“Ù∆µº‡øÿ
+2025-07-11 16:18:55,981 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-11 16:18:55,981 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-11 16:18:55,982 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-11 16:18:55,982 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-11 16:18:55,994 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-11 16:18:55,994 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 16:18:56,255 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-11 16:18:58,926 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:58] "GET / HTTP/1.1" 200 -
+2025-07-11 16:18:58,965 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:58] "GET /video_feed HTTP/1.1" 200 -
+2025-07-11 16:18:58,966 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:58] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:18:58,970 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:58] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:18:58,972 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:58] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:18:59,960 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:59] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:18:59,961 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:59] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:18:59,962 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:18:59] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:00,114 - DangerRecognizer - INFO - ∂‘œÛ person_-8881036556085170989 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:00,114 - DangerRecognizer - INFO - ∂‘œÛ person_5597166238988712886 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:00,117 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_11_20250711_161900.jpg
+2025-07-11 16:19:00,120 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_11_20250711_161900.jpg
+2025-07-11 16:19:00,123 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_11_20250711_161900.jpg
+2025-07-11 16:19:00,961 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:00] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:00,962 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:00] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:00,964 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:00] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:01,167 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_22_20250711_161901.jpg
+2025-07-11 16:19:01,958 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:01] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:01,959 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:01] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:01,962 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:01] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:02,329 - DangerRecognizer - INFO - ∂‘œÛ person_7927381300555246023 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:02,329 - DangerRecognizer - INFO - ∂‘œÛ person_-7680001122379551604 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:02,332 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250711_161902.jpg
+2025-07-11 16:19:02,334 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_35_20250711_161902.jpg
+2025-07-11 16:19:02,953 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:02] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:02,954 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:02] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:02,955 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:02] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:03,325 - DangerRecognizer - INFO - ∂‘œÛ person_-7910977075598242109 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:03,325 - DangerRecognizer - INFO - ∂‘œÛ person_-6254757164860018330 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:03,329 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_47_20250711_161903.jpg
+2025-07-11 16:19:03,332 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_47_20250711_161903.jpg
+2025-07-11 16:19:03,951 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:03] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:03,951 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:03] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:03,951 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:03] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:04,562 - DangerRecognizer - INFO - ∂‘œÛ person_-5437778761675434286 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:04,563 - DangerRecognizer - INFO - ∂‘œÛ person_-1970495335129440346 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:04,566 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250711_161904.jpg
+2025-07-11 16:19:04,569 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_59_20250711_161904.jpg
+2025-07-11 16:19:04,968 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:04] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:04,969 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:04] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:04,970 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:04] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:05,764 - DangerRecognizer - INFO - ∂‘œÛ person_5123261937225714796 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:05,764 - DangerRecognizer - INFO - ∂‘œÛ person_8209344243409343059 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:05,771 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250711_161905.jpg
+2025-07-11 16:19:05,774 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_71_20250711_161905.jpg
+2025-07-11 16:19:05,960 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:05] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:05,962 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:05] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:05,964 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:05] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:06,957 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:06] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:06,960 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:06] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:06,961 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:06] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:07,015 - DangerRecognizer - INFO - ∂‘œÛ person_2126937849096601112 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:07,016 - DangerRecognizer - INFO - ∂‘œÛ person_3316270214436646693 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:07,020 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_82_20250711_161907.jpg
+2025-07-11 16:19:07,023 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161907.jpg
+2025-07-11 16:19:07,026 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_82_20250711_161907.jpg
+2025-07-11 16:19:07,955 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:07] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:07,957 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:07] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:07,958 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:07] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:07,965 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_93_20250711_161907.jpg
+2025-07-11 16:19:08,861 - DangerRecognizer - INFO - ∂‘œÛ person_-6258348573480874763 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:08,861 - DangerRecognizer - INFO - ∂‘œÛ person_-159302911826058837 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:08,862 - DangerRecognizer - INFO - ∂‘œÛ person_3963339638564755318 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:08,865 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_104_20250711_161908.jpg
+2025-07-11 16:19:08,867 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_104_20250711_161908.jpg
+2025-07-11 16:19:08,870 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_104_20250711_161908.jpg
+2025-07-11 16:19:08,873 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_104_20250711_161908.jpg
+2025-07-11 16:19:08,874 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_104_20250711_161908.jpg
+2025-07-11 16:19:08,955 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:08] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:08,957 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:08] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:08,958 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:08] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:09,861 - DangerRecognizer - INFO - ∂‘œÛ person_-3441986876990440127 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:09,861 - DangerRecognizer - INFO - ∂‘œÛ person_5149834520185056460 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:09,862 - DangerRecognizer - INFO - ∂‘œÛ person_-2544301117537243107 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:09,865 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_116_20250711_161909.jpg
+2025-07-11 16:19:09,867 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_116_20250711_161909.jpg
+2025-07-11 16:19:09,870 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_116_20250711_161909.jpg
+2025-07-11 16:19:09,874 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_116_20250711_161909.jpg
+2025-07-11 16:19:09,957 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:09] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:09,958 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:09] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:09,961 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:09] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:10,762 - DangerRecognizer - INFO - ∂‘œÛ person_-7849641382147266740 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:10,763 - DangerRecognizer - INFO - ∂‘œÛ person_6334068498135003172 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:10,763 - DangerRecognizer - INFO - ∂‘œÛ person_-2322807058338527859 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:10,766 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_127_20250711_161910.jpg
+2025-07-11 16:19:10,769 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_127_20250711_161910.jpg
+2025-07-11 16:19:10,771 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_127_20250711_161910.jpg
+2025-07-11 16:19:10,774 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_127_20250711_161910.jpg
+2025-07-11 16:19:10,956 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:10] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:10,957 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:10] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:10,959 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:10] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:11,711 - DangerRecognizer - INFO - ∂‘œÛ person_1517645121959197838 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:11,711 - DangerRecognizer - INFO - ∂‘œÛ person_-2610630104707240946 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:11,712 - DangerRecognizer - INFO - ∂‘œÛ person_-323300114814151416 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:11,715 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_139_20250711_161911.jpg
+2025-07-11 16:19:11,718 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_139_20250711_161911.jpg
+2025-07-11 16:19:11,720 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_139_20250711_161911.jpg
+2025-07-11 16:19:11,723 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_139_20250711_161911.jpg
+2025-07-11 16:19:11,960 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:11] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:11,960 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:11] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:11,961 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:11] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:12,637 - DangerRecognizer - INFO - ∂‘œÛ person_-2743154003631544039 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:12,637 - DangerRecognizer - INFO - ∂‘œÛ person_3040551147067426163 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:12,638 - DangerRecognizer - INFO - ∂‘œÛ person_7826528830195553397 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:12,641 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_151_20250711_161912.jpg
+2025-07-11 16:19:12,644 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_151_20250711_161912.jpg
+2025-07-11 16:19:12,646 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_151_20250711_161912.jpg
+2025-07-11 16:19:12,649 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_151_20250711_161912.jpg
+2025-07-11 16:19:12,963 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:12] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:12,964 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:12] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:12,965 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:12] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:13,629 - DangerRecognizer - INFO - ∂‘œÛ person_-6880606157593898239 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:13,630 - DangerRecognizer - INFO - ∂‘œÛ person_7150500256412418064 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:13,630 - DangerRecognizer - INFO - ∂‘œÛ person_2821737171617395637 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:13,633 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_164_20250711_161913.jpg
+2025-07-11 16:19:13,636 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_164_20250711_161913.jpg
+2025-07-11 16:19:13,638 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_164_20250711_161913.jpg
+2025-07-11 16:19:13,641 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_164_20250711_161913.jpg
+2025-07-11 16:19:13,963 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:13] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:13,963 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:13] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:13,965 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:13] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:14,503 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_175_20250711_161914.jpg
+2025-07-11 16:19:14,959 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:14] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:14,962 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:14] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:14,963 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:14] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:15,461 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_186_20250711_161915.jpg
+2025-07-11 16:19:15,967 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:15] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:15,968 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:15] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:15,970 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:15] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:16,403 - DangerRecognizer - INFO - ∂‘œÛ person_-2769306060937310414 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:16,403 - DangerRecognizer - INFO - ∂‘œÛ person_-2346913599165205557 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:16,406 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_197_20250711_161916.jpg
+2025-07-11 16:19:16,410 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_197_20250711_161916.jpg
+2025-07-11 16:19:16,412 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_197_20250711_161916.jpg
+2025-07-11 16:19:16,953 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:16] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:16,956 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:16] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:16,956 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:16] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:17,359 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:17] "POST /control HTTP/1.1" 200 -
+2025-07-11 16:19:17,394 - DangerRecognizer - INFO - ∂‘œÛ person_-3233651115143807736 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:17,395 - DangerRecognizer - INFO - ∂‘œÛ person_-9020750260098009014 Ω¯»ÎŒ£œ’«¯”Ú 0
+2025-07-11 16:19:17,398 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Large Area Motion_209_20250711_161917.jpg
+2025-07-11 16:19:17,400 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_209_20250711_161917.jpg
+2025-07-11 16:19:17,403 - DangerRecognizer - INFO - “—±£¥Ê∏ÊæØ÷°: system_output\alerts\Intrusion Alert_209_20250711_161917.jpg
+2025-07-11 16:19:17,408 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯
+2025-07-11 16:19:17,958 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:17] "GET /stats HTTP/1.1" 200 -
+2025-07-11 16:19:17,958 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:17] "GET /alerts HTTP/1.1" 200 -
+2025-07-11 16:19:17,958 - werkzeug - INFO - 127.0.0.1 - - [11/Jul/2025 16:19:17] "GET /alerts/stats HTTP/1.1" 200 -
+2025-07-11 16:19:17,977 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-11 16:19:18,103 - AllInOneSystem - INFO - 
+==== œµÕ≥±®∏Ê ====
+‘À–– ±º‰: 22.27 √Î
+◊‹÷° ˝: 455
+¥¶¿Ì÷° ˝: 209 (45.9%)
+∆Ωæ˘÷°¬ : 20.43 FPS
+∏ÊæØ◊‹ ˝: 0
+
+ ∂±µΩµƒ––Œ™:
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 11)
+  - Intrusion Alert (÷√–≈∂»: 0.85, ÷°∫≈: 11)
+  - Intrusion Alert (÷√–≈∂»: 0.84, ÷°∫≈: 11)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 22)
+  - Intrusion Alert (÷√–≈∂»: 0.84, ÷°∫≈: 35)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 35)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 47)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 47)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 59)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 71)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 71)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 82)
+  - Intrusion Alert (÷√–≈∂»: 0.76, ÷°∫≈: 82)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 93)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 104)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 104)
+  - Intrusion Alert (÷√–≈∂»: 0.74, ÷°∫≈: 104)
+  - Intrusion Alert (÷√–≈∂»: 0.57, ÷°∫≈: 104)
+  - Intrusion Alert (÷√–≈∂»: 0.44, ÷°∫≈: 104)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 116)
+  - Intrusion Alert (÷√–≈∂»: 0.77, ÷°∫≈: 116)
+  - Intrusion Alert (÷√–≈∂»: 0.63, ÷°∫≈: 116)
+  - Intrusion Alert (÷√–≈∂»: 0.42, ÷°∫≈: 116)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 127)
+  - Intrusion Alert (÷√–≈∂»: 0.61, ÷°∫≈: 127)
+  - Intrusion Alert (÷√–≈∂»: 0.51, ÷°∫≈: 127)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 139)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 139)
+  - Intrusion Alert (÷√–≈∂»: 0.71, ÷°∫≈: 139)
+  - Intrusion Alert (÷√–≈∂»: 0.63, ÷°∫≈: 139)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 151)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 151)
+  - Intrusion Alert (÷√–≈∂»: 0.70, ÷°∫≈: 151)
+  - Intrusion Alert (÷√–≈∂»: 0.59, ÷°∫≈: 151)
+  - Intrusion Alert (÷√–≈∂»: 0.82, ÷°∫≈: 164)
+  - Intrusion Alert (÷√–≈∂»: 0.80, ÷°∫≈: 164)
+  - Intrusion Alert (÷√–≈∂»: 0.79, ÷°∫≈: 164)
+  - Intrusion Alert (÷√–≈∂»: 0.53, ÷°∫≈: 164)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 175)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 186)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 197)
+  - Intrusion Alert (÷√–≈∂»: 0.83, ÷°∫≈: 197)
+  - Intrusion Alert (÷√–≈∂»: 0.67, ÷°∫≈: 197)
+  - Large Area Motion (÷√–≈∂»: 1.00, ÷°∫≈: 209)
+  - Intrusion Alert (÷√–≈∂»: 0.81, ÷°∫≈: 209)
+  - Intrusion Alert (÷√–≈∂»: 0.75, ÷°∫≈: 209)
+
+ ∂±µΩµƒΩªª•:
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 3, ÷°∫≈: 11)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 35)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 47)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 59)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 71)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 5, ÷°∫≈: 82)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 104)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 116)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 7, ÷°∫≈: 127)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 139)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 151)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 164)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 4, ÷°∫≈: 197)
+  - ∂‡∂‘œÛΩªª•ºÏ≤‚ (∂‘œÛ ˝: 6, ÷°∫≈: 209)
+
+∏ÊæØ∑÷¿‡Õ≥º∆:
+  - Large Area Motion: 9
+  - Intrusion Alert: 40
+
+∏ÊæØ¥¶¿ÌÕ≥º∆:
+  - ◊‹∏ÊæØ ˝: 52
+  - “—¥¶¿Ì: 0
+  - Œ¥¥¶¿Ì: 49
+  - ¥¶¿Ì¬ : 0.0%
+
+œÍœ∏∏ÊæØ¥¶¿Ìº«¬º:
+  - 2025-07-11 16:19:00 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:00 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:00 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:01 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:02 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:02 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:03 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:03 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:04 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:04 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:05 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:05 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:07 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:07 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:07 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:07 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:08 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:08 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:08 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:08 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:08 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:09 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:09 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:09 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:09 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:10 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:10 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:10 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:10 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:11 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:11 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:11 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:11 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:12 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:12 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:12 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:12 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:13 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:13 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:13 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:13 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:14 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:15 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:16 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:16 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:16 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:17 | Large Area Motion | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:17 | Intrusion Alert | Œ¥¥¶¿Ì
+  - 2025-07-11 16:19:17 | Intrusion Alert | Œ¥¥¶¿Ì
+
+œµÕ≥≈‰÷√:
+  - source: 0
+  - width: 640
+  - height: 480
+  - loop_video: False
+  - process_every: 1
+  - process_scale: 1.0
+  - max_fps: 30
+  - use_gpu: False
+  - use_motion_history: False
+  - minimal_ui: False
+  - feature_threshold: 80
+  - area_threshold: 0.05
+  - alert_cooldown: 10
+  - min_confidence: 0.5
+  - alert_region: [(10,10), (260,10), (260,380), (10,380)]
+  - distance_threshold: 50
+  - dwell_time_threshold: 1.0
+  - enable_ai: True
+  - vision_model: yolov8n
+  - ai_interval: 5
+  - ai_confidence: 0.4
+  - web_interface: True
+  - web_port: 5000
+  - output: system_output
+  - record: True
+  - save_alerts: True
+  - enable_audio_monitor: False
+
+2025-07-11 16:19:18,105 - AllInOneSystem - INFO - ±®∏Ê“—±£¥ÊµΩ: system_output\report_20250711_161918.txt
+2025-07-11 16:19:18,106 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—Õ£÷π
+2025-07-11 16:22:02,691 - AllInOneSystem - INFO - ≥…π¶µº»ÎMotionFeatureManager
+2025-07-11 16:22:02,692 - AllInOneSystem - INFO - ≥…π¶µº»ÎDangerRecognizer
+2025-07-11 16:22:02,914 - AllInOneSystem - INFO - ≥…π¶µº»ÎFlask Webƒ£øÈ
+2025-07-11 16:22:07,246 - AllInOneSystem - INFO - ≥…π¶µº»ÎAIπ¶ƒ‹ƒ£øÈ
+2025-07-11 16:22:07,630 - AllInOneSystem - WARNING - Œ¥’“µΩaudio_monitor£¨…˘—ßºÏ≤‚π¶ƒ‹Ω´±ªΩ˚”√: No module named 'tensorflow'
+2025-07-11 16:22:07,645 - MotionFeatureManager - INFO - ≥ı ºªØ‘À∂ØÃÿ’˜π‹¿Ì∆˜: π‚¡˜=True(farneback), ‘À∂Ø¿˙ ∑=False, ±≥æ∞ºı≥˝=False, ¬÷¿™=True, πÿº¸µ„=False, GPU=False
+2025-07-11 16:22:07,647 - DangerRecognizer - INFO - Œ£œ’––Œ™ ∂±∆˜“—≥ı ºªØ£¨Ãÿ’˜µ„„–÷µ:80, ±‰ªØ¬ „–÷µ:1.5, Œ£œ’«¯”ÚÕ£¡Ù„–÷µ:1.0√Î
+2025-07-11 16:22:07,647 - DangerRecognizer - INFO - “—ÃÌº”∏ÊæØ«¯”Ú: æØΩ‰«¯
+2025-07-11 16:22:07,793 - AllInOneSystem - INFO - ≥…π¶º”‘ÿAIƒ£–Õ: yolov8n
+2025-07-11 16:22:07,797 - AllInOneSystem - INFO - Web∑˛ŒÒ∆˜“—∆Ù∂Ø£¨∑√Œ  http://localhost:5000/
+2025-07-11 16:22:07,803 - AllInOneSystem - INFO -  ”∆µΩ´¬º÷∆µΩ: system_output\output_20250711_162207.avi
+2025-07-11 16:22:07,804 - AllInOneSystem - INFO - Œ¥∆Ù”√“Ù∆µº‡øÿ
+2025-07-11 16:22:07,804 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥≥ı ºªØÕÍ≥…
+2025-07-11 16:22:07,804 - AllInOneSystem - INFO - ø™ º ”∆µ≤∂ªÒœﬂ≥Ã
+2025-07-11 16:22:07,805 - AllInOneSystem - INFO - ø™ º ”∆µ¥¶¿Ìœﬂ≥Ã
+2025-07-11 16:22:07,805 - AllInOneSystem - INFO - »´π¶ƒ‹ ”∆µº‡øÿœµÕ≥“—∆Ù∂Ø
+2025-07-11 16:22:07,818 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.61.115.116:5000
+2025-07-11 16:22:07,819 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-11 16:22:08,099 - AllInOneSystem - INFO -  ”∆µ∑÷±Ê¬ : 640x480
+2025-07-11 16:22:09,753 - AllInOneSystem - INFO - ”√ªß÷–∂œ
+2025-07-11 16:22:10,541 - AllInOneSystem - INFO -  ”∆µ≤∂ªÒœﬂ≥ÃΩ· ¯
+2025-07-11 16:22:11,115 - AllInOneSystem - INFO -  ”∆µ¥¶¿Ìœﬂ≥ÃΩ· ¯

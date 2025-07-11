@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-教室视频监控系统 - 整合所有已开发模块的综合系统
+全功能视频监控系统 - 整合所有已开发模块的综合系统
 结合了运动特征提取、危险行为识别、Web界面等功能
 """
 
@@ -80,7 +80,7 @@ except ImportError as e:
 
 
 class AllInOneSystem:
-    """教室视频监控系统 - 整合所有模块"""
+    """全功能视频监控系统 - 整合所有模块"""
 
     def __init__(self, args):
         """初始化系统"""
@@ -187,7 +187,7 @@ class AllInOneSystem:
         else:
             logger.info("未启用音频监控")
 
-        logger.info("教室视频监控系统初始化完成")
+        logger.info("全功能视频监控系统初始化完成")
 
     def init_web_server(self):
         """初始化Web服务器"""
@@ -218,7 +218,7 @@ class AllInOneSystem:
 
         @self.app.route('/alerts')
         def alerts():
-            # 返回最近10条告警详情，过滤掉 Intrusion Alert
+            # 过滤掉 Intrusion Alert 类型的告警
             alerts_data = []
             for alert in self.recent_alerts[-10:][::-1]:
                 if alert.get('type', '') == 'Intrusion Alert':
@@ -241,32 +241,28 @@ class AllInOneSystem:
 
         @self.app.route('/alerts/stats')
         def alert_stats():
-            # 返回告警处理统计，过滤掉 Intrusion Alert
-            with self.alert_lock:
-                filtered_alerts = [a for a in self.all_alerts if a.get('type', '') != 'Intrusion Alert']
-                total = len(filtered_alerts)
-                handled = sum(1 for a in filtered_alerts if a.get('handled', False))
-                unhandled = total - handled
-            return jsonify({
-                'total_alerts': total,
-                'handled_alerts': handled,
-                'unhandled_alerts': unhandled
-            })
+            # 返回告警处理统计
+            return jsonify(self.alert_handling_stats)
 
         @self.app.route('/alerts/handle', methods=['POST'])
         def handle_alert():
             # 处理告警（标记为已处理）
             data = request.json
             alert_id = data.get('alert_id')
+            
             with self.alert_lock:
+                # 查找并更新告警状态
                 for alert in self.all_alerts:
                     if alert.get('id') == alert_id:
                         if not alert.get('handled', False):
                             alert['handled'] = True
                             alert['handled_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                            self.alert_handling_stats['handled_alerts'] += 1
+                            self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
                             return jsonify({'status': 'success', 'message': 'Alert marked as handled'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already handled'})
+                
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/alerts/unhandle', methods=['POST'])
@@ -274,15 +270,20 @@ class AllInOneSystem:
             # 取消处理告警（标记为未处理）
             data = request.json
             alert_id = data.get('alert_id')
+            
             with self.alert_lock:
+                # 查找并更新告警状态
                 for alert in self.all_alerts:
                     if alert.get('id') == alert_id:
                         if alert.get('handled', False):
                             alert['handled'] = False
                             alert.pop('handled_time', None)
+                            self.alert_handling_stats['handled_alerts'] = max(0, self.alert_handling_stats['handled_alerts'] - 1)
+                            self.alert_handling_stats['unhandled_alerts'] += 1
                             return jsonify({'status': 'success', 'message': 'Alert marked as unhandled'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already unhandled'})
+                
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/control', methods=['POST'])
@@ -336,7 +337,7 @@ class AllInOneSystem:
         process_thread.start()
         self.threads.append(process_thread)
 
-        logger.info("教室视频监控系统已启动")
+        logger.info("全功能视频监控系统已启动")
 
         # 如果没有Web界面，则使用显示循环
         if not (self.args.web_interface and HAS_FLASK):
@@ -370,7 +371,7 @@ class AllInOneSystem:
         # 生成报告
         self.generate_report()
 
-        logger.info("教室视频监控系统已停止")
+        logger.info("全功能视频监控系统已停止")
 
     def capture_thread_func(self):
         """视频捕获线程"""
@@ -736,7 +737,7 @@ class AllInOneSystem:
             while self.running:
                 # 显示处理后的帧
                 if self.processed_frame is not None:
-                    cv2.imshow("教室视频监控系统", self.processed_frame)
+                    cv2.imshow("全功能视频监控系统", self.processed_frame)
 
                 # 检查键盘输入
                 key = cv2.waitKey(1) & 0xFF
@@ -788,6 +789,7 @@ class AllInOneSystem:
         report += f"总帧数: {self.frame_count}\n"
         report += f"处理帧数: {self.processed_count} ({processed_ratio:.1f}%)\n"
         report += f"平均帧率: {avg_fps:.2f} FPS\n"
+        report += f"告警总数: {self.alert_count}\n"
 
         # 添加识别到的行为信息到报告
         report += "\n识别到的行为:\n"
@@ -814,14 +816,10 @@ class AllInOneSystem:
 
         # 新增：告警处理统计
         report += "\n告警处理统计:\n"
-        with self.alert_lock:
-            total = len(self.all_alerts)
-            handled = sum(1 for alert in self.all_alerts if alert.get('handled', False))
-            unhandled = total - handled
-        report += f"  - 总告警数: {total}\n"
-        report += f"  - 已处理: {handled}\n"
-        report += f"  - 未处理: {unhandled}\n"
-        report += f"  - 处理率: {(handled / max(1, total) * 100):.1f}%\n"
+        report += f"  - 总告警数: {self.alert_handling_stats['total_alerts']}\n"
+        report += f"  - 已处理: {self.alert_handling_stats['handled_alerts']}\n"
+        report += f"  - 未处理: {self.alert_handling_stats['unhandled_alerts']}\n"
+        report += f"  - 处理率: {(self.alert_handling_stats['handled_alerts'] / max(1, self.alert_handling_stats['total_alerts']) * 100):.1f}%\n"
 
         # 新增：详细告警处理记录
         report += "\n详细告警处理记录:\n"
@@ -879,7 +877,7 @@ class AllInOneSystem:
 
 def parse_args():
     """解析命令行参数"""
-    parser = argparse.ArgumentParser(description='教室视频监控系统')
+    parser = argparse.ArgumentParser(description='全功能视频监控系统')
 
     # 输入参数
     parser.add_argument('--source', type=str, default='0', help='视频源 (0表示摄像头, 或者是视频文件路径)')
