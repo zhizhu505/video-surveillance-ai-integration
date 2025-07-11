@@ -1,6 +1,62 @@
 {
   "rules": [
     {
+      "id": "large_area_motion",
+      "name": "Large Area Motion",
+      "description": "检测大面积运动",
+      "type": "motion",
+      "conditions": {
+        "motion_area_threshold": 0.25,
+        "motion_magnitude_threshold": 5
+      },
+      "severity": "低",
+      "danger_level": "low",
+      "actions": ["log", "notify"]
+    },
+    {
+      "id": "sudden_motion",
+      "name": "Sudden Motion",
+      "description": "检测突然运动",
+      "type": "motion",
+      "conditions": {
+        "feature_change_ratio": 1.5,
+        "motion_magnitude_threshold": 8
+      },
+      "severity": "低",
+      "danger_level": "low",
+      "actions": ["log", "notify"]
+    },
+    {
+      "id": "fall_detection",
+      "name": "Fall Detection",
+      "description": "检测摔倒行为",
+      "type": "behavior",
+      "conditions": {
+        "behavior_type": "FALL",
+        "confidence_threshold": 0.7,
+        "fall_motion_threshold": 5
+      },
+      "severity": "高",
+      "danger_level": "high",
+      "actions": ["log", "notify", "snapshot", "alert"]
+    },
+    {
+      "id": "intrusion_alert",
+      "name": "Intrusion Alert",
+      "description": "检测入侵行为",
+      "type": "behavior",
+      "conditions": {
+        "behavior_type": "INTRUSION",
+        "confidence_threshold": 0.6,
+        "regions": [
+          {"x1": 0, "y1": 0, "x2": 320, "y2": 240, "name": "禁止区域"}
+        ]
+      },
+      "severity": "中",
+      "danger_level": "medium",
+      "actions": ["log", "notify", "snapshot"]
+    },
+    {
       "id": "rule_1",
       "name": "快速移动检测",
       "description": "检测快速移动的人",
@@ -11,6 +67,7 @@
         "min_duration": 2
       },
       "severity": "低",
+      "danger_level": "low",
       "actions": ["log", "notify"]
     },
     {
@@ -27,6 +84,7 @@
         ]
       },
       "severity": "中",
+      "danger_level": "medium",
       "actions": ["log", "notify", "snapshot"]
     },
     {
@@ -40,6 +98,7 @@
         "min_duration": 3
       },
       "severity": "低",
+      "danger_level": "low",
       "actions": ["log"]
     },
     {
@@ -54,6 +113,7 @@
         "no_owner_nearby": true
       },
       "severity": "高",
+      "danger_level": "high",
       "actions": ["log", "notify", "snapshot", "alert"]
     },
     {
@@ -69,6 +129,7 @@
         "min_duration": 2
       },
       "severity": "中",
+      "danger_level": "medium",
       "actions": ["log", "notify", "snapshot"]
     },
     {
@@ -85,6 +146,7 @@
         "min_duration": 5
       },
       "severity": "中",
+      "danger_level": "medium",
       "actions": ["log", "notify", "snapshot"]
     },
     {
@@ -97,6 +159,7 @@
         "min_confidence": 0.6
       },
       "severity": "高",
+      "danger_level": "high",
       "actions": ["log", "notify", "snapshot", "alert"]
     }
   ]

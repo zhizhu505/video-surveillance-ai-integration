@@ -36,6 +36,7 @@
             overflow: hidden;
             min-height: 480px;
             position: relative;
+            /* 移除放大和居中样式 */
         }
         .info-panel {
             flex: 1 1 25%;
@@ -107,10 +108,36 @@
             margin-bottom: 10px;
             border-radius: 0 4px 4px 0;
             position: relative;
+            transition: all 0.3s ease;
         }
         .alert-item.handled {
             border-left-color: #27ae60;
             background-color: #e8f5e8;
+        }
+        /* 危险等级颜色 */
+        .alert-item.danger-low {
+            border-left-color: #27ae60;
+            background-color: #e8f5e8;
+        }
+        .alert-item.danger-medium {
+            border-left-color: #f39c12;
+            background-color: #fef9e7;
+        }
+        .alert-item.danger-high {
+            border-left-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+        .alert-item.danger-low.handled {
+            border-left-color: #27ae60;
+            background-color: #e8f5e8;
+        }
+        .alert-item.danger-medium.handled {
+            border-left-color: #f39c12;
+            background-color: #fef9e7;
+        }
+        .alert-item.danger-high.handled {
+            border-left-color: #e74c3c;
+            background-color: #fdf2f2;
         }
         .alert-time {
             font-size: 12px;
@@ -122,6 +149,16 @@
         }
         .alert-item.handled .alert-type {
             color: #27ae60;
+        }
+        /* 危险等级文字颜色 */
+        .alert-item.danger-low .alert-type {
+            color: #27ae60;
+        }
+        .alert-item.danger-medium .alert-type {
+            color: #f39c12;
+        }
+        .alert-item.danger-high .alert-type {
+            color: #e74c3c;
         }
         .alert-desc {
             margin-top: 5px;
@@ -209,6 +246,8 @@
             width: 100%;
             height: auto;
             display: block;
+            object-fit: contain;
+            background: #1f2022;
         }
         /* 响应式设计 */
         @media (max-width: 992px) {
@@ -225,7 +264,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>全功能视频监控系统</h1>
+            <h1>教室视频监控系统</h1>
             <p>运动分析 + 危险行为检测 + AI识别</p>
         </header>
         <div class="main">
@@ -238,9 +277,15 @@
                 <div class="system-status">
                     <p><span class="status-indicator status-running" id="status-dot"></span> <span id="status-text">运行中</span></p>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title">实时帧率</div>
-                    <div class="stat-value" id="fps">0.0</div>
+                <div class="stat-row" style="display: flex; gap: 10px;">
+                    <div class="stat-box" style="flex: 1;">
+                        <div class="stat-title">实时帧率</div>
+                        <div class="stat-value" id="fps">0.0</div>
+                    </div>
+                    <div class="stat-box" style="flex: 1;">
+                        <div class="stat-title">总帧数</div>
+                        <div class="stat-value" id="frame-count">0</div>
+                    </div>
                 </div>
                 <div class="stat-row" style="display: flex; gap: 10px;">
                     <div class="stat-box" style="flex: 1;">
@@ -248,13 +293,9 @@
                         <div class="stat-value" id="processed-count">0</div>
                     </div>
                     <div class="stat-box" style="flex: 1;">
-                        <div class="stat-title">告警数</div>
-                        <div class="stat-value" id="alert-count" style="color: #e74c3c;">0</div>
+                        <div class="stat-title">运行时间</div>
+                        <div class="stat-value" id="running-time">0秒</div>
                     </div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-title">运行时间</div>
-                    <div class="stat-value" id="running-time">0秒</div>
                 </div>
                 
                 <!-- 新增：告警处理统计 -->
@@ -308,6 +349,7 @@
             const stopBtn = document.getElementById('stop-btn');
             const loadingElement = document.querySelector('.loading');
             const videoElement = document.querySelector('.video-stream');
+            const frameCountElement = document.getElementById('frame-count');
             // 系统状态
             let systemState = 'running';
             let previousAlertCount = 0;
@@ -375,6 +417,12 @@
             function addAlert(alert, index) {
                 const alertItem = document.createElement('div');
                 alertItem.className = 'alert-item';
+                
+                // 添加危险等级样式
+                if (alert.danger_level) {
+                    alertItem.classList.add(`danger-${alert.danger_level}`);
+                }
+                
                 if (alert.handled) {
                     alertItem.classList.add('handled');
                 }
@@ -421,11 +469,26 @@
                 fetch('/alerts')
                     .then(response => response.json())
                     .then(data => {
-                        alertsCache = data;
-                        alertListElement.innerHTML = '';
-                        data.forEach((alert, idx) => {
-                            addAlert(alert, idx);
-                        });
+                        // 检查是否有新告警
+                        const currentCount = alertsCache.length;
+                        const newCount = data.length;
+                        
+                        if (newCount > currentCount) {
+                            // 有新告警，从下方添加
+                            const newAlerts = data.slice(currentCount);
+                            newAlerts.forEach((alert, idx) => {
+                                const actualIndex = currentCount + idx;
+                                alertsCache[actualIndex] = alert;
+                                addAlert(alert, actualIndex);
+                            });
+                        } else {
+                            // 重新渲染整个列表
+                            alertsCache = data;
+                            alertListElement.innerHTML = '';
+                            data.forEach((alert, idx) => {
+                                addAlert(alert, idx);
+                            });
+                        }
                     });
             }
             // 告警点击弹窗
@@ -440,9 +503,31 @@
                     if(alert){
                         let html = `<div><b>时间：</b>${alert.time}</div>`;
                         html += `<div><b>类别：</b>${alert.type}</div>`;
+                        
+                        // 添加危险等级显示
+                        if (alert.danger_level) {
+                            const levelText = {
+                                'low': '低危险',
+                                'medium': '中危险', 
+                                'high': '高危险'
+                            };
+                            const levelColor = {
+                                'low': '#27ae60',
+                                'medium': '#f39c12',
+                                'high': '#e74c3c'
+                            };
+                            html += `<div><b>危险等级：</b><span style="color: ${levelColor[alert.danger_level]};">${levelText[alert.danger_level]}</span></div>`;
+                        }
+                        
                         html += `<div><b>置信度：</b>${alert.confidence}</div>`;
                         html += `<div><b>帧号：</b>${alert.frame}</div>`;
                         html += `<div><b>描述：</b>${alert.desc||'无'}</div>`;
+                        if(alert.person_id || alert.person_class){
+                            html += `<div><b>触发对象：</b>`;
+                            if(alert.person_id) html += `ID: ${alert.person_id} `;
+                            if(alert.person_class) html += `类别: ${alert.person_class}`;
+                            html += `</div>`;
+                        }
                         html += `<div><b>状态：</b><span style="color: ${alert.handled ? '#27ae60' : '#e74c3c'};">${alert.handled ? '已处理' : '未处理'}</span></div>`;
                         if (alert.handled && alert.handled_time) {
                             html += `<div><b>处理时间：</b>${alert.handled_time}</div>`;
@@ -464,18 +549,13 @@
                     .then(response => response.json())
                     .then(data => {
                         fpsElement.textContent = data.fps.toFixed(1);
+                        frameCountElement.textContent = data.frame_count;
                         processedCountElement.textContent = data.processed_count;
-                        alertCountElement.textContent = data.alert_count;
                         runningTimeElement.textContent = data.running_time;
                         // 检查是否有新告警
                         if (data.alert_count > previousAlertCount) {
                             const now = new Date();
                             const timeStr = now.toLocaleTimeString();
-                            // 添加告警时传递一个索引，用于弹窗显示
-                            // 这里需要从alertsCache中获取最新的告警，并传递其索引
-                            // 假设alertsCache已经更新，或者需要重新拉取
-                            // 为了简化，这里直接使用data.alert_count - 1作为索引，
-                            // 实际应用中可能需要更精确的索引
                             const newAlert = alertsCache[data.alert_count - 1];
                             if (newAlert) {
                                 addAlert(newAlert, data.alert_count - 1);

@@ -70,6 +70,14 @@ except ImportError:
     HAS_AI = False
     logger.warning("未找到必要的AI依赖，AI功能将被禁用")
 
+try:
+    import audio_monitor
+    HAS_AUDIO_MONITOR = True
+    logger.info("成功导入audio_monitor音频监控模块")
+except ImportError as e:
+    HAS_AUDIO_MONITOR = False
+    logger.warning(f"未找到audio_monitor，声学检测功能将被禁用: {e}")
+
 
 class AllInOneSystem:
     """全功能视频监控系统 - 整合所有模块"""
@@ -127,7 +135,11 @@ class AllInOneSystem:
             'alert_cooldown': args.alert_cooldown,
             'save_alerts': args.save_alerts,
             'alert_dir': os.path.join(args.output, 'alerts'),
-            'min_confidence': args.min_confidence
+            'min_confidence': args.min_confidence,
+            # 新增：危险区域停留检测配置
+            'distance_threshold_m': getattr(args, 'distance_threshold', 50),
+            'dwell_time_threshold_s': getattr(args, 'dwell_time_threshold', 1.0),
+            'fps': args.max_fps
         }
         # 实例化危险检测器
         self.danger_recognizer = DangerRecognizer(danger_config)
@@ -165,6 +177,16 @@ class AllInOneSystem:
             self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, args.height))
             logger.info(f"视频将录制到: {output_path}")
 
+        # 自动启动音频监控线程（如可用）
+        self.audio_thread = None
+        if getattr(args, 'enable_audio_monitor', False) and HAS_AUDIO_MONITOR:
+            self.audio_thread = threading.Thread(target=audio_monitor.audio_monitor_callback, args=(self.add_audio_alert,))
+            self.audio_thread.daemon = True
+            self.audio_thread.start()
+            logger.info("音频监控线程已启动")
+        else:
+            logger.info("未启用音频监控")
+
         logger.info("全功能视频监控系统初始化完成")
 
     def init_web_server(self):
@@ -196,8 +218,24 @@ class AllInOneSystem:
 
         @self.app.route('/alerts')
         def alerts():
-            # 返回最近10条告警详情
-            return jsonify(self.recent_alerts[-10:][::-1])
+            # 返回最近10条告警详情，确保包含危险等级信息
+            alerts_data = []
+            for alert in self.recent_alerts[-10:][::-1]:
+                alert_data = {
+                    'id': alert.get('id', ''),
+                    'type': alert.get('type', ''),
+                    'danger_level': alert.get('danger_level', 'medium'),
+                    'time': alert.get('time', ''),
+                    'confidence': alert.get('confidence', 0),
+                    'frame': alert.get('frame', 0),
+                    'desc': alert.get('desc', ''),
+                    'handled': alert.get('handled', False),
+                    'handled_time': alert.get('handled_time', None),
+                    'person_id': alert.get('person_id', ''),
+                    'person_class': alert.get('person_class', '')
+                }
+                alerts_data.append(alert_data)
+            return jsonify(alerts_data)
 
         @self.app.route('/alerts/stats')
         def alert_stats():
@@ -495,12 +533,15 @@ class AllInOneSystem:
                         alert_info = {
                             'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
                             'type': alert.get('type', ''),
+                            'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                             'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
                             'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
                             'desc': alert.get('desc', ''),
                             'handled': False,  # 默认未处理
-                            'handled_time': None  # 处理时间
+                            'handled_time': None,  # 处理时间
+                            'person_id': alert.get('person_id', ''),  # 新增：person id
+                            'person_class': alert.get('person_class', '')  # 新增：person类别
                         }
                         
                         with self.alert_lock:
@@ -521,12 +562,15 @@ class AllInOneSystem:
                         alert_info = {
                             'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
                             'type': alert.get('type', ''),
+                            'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                             'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
                             'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
                             'desc': alert.get('desc', ''),
                             'handled': False,  # 默认未处理
-                            'handled_time': None  # 处理时间
+                            'handled_time': None,  # 处理时间
+                            'person_id': alert.get('person_id', ''),  # 新增：person id
+                            'person_class': alert.get('person_class', '')  # 新增：person类别
                         }
                         
                         with self.alert_lock:
@@ -658,29 +702,17 @@ class AllInOneSystem:
         """添加系统状态信息到帧"""
         h, w = frame.shape[:2]
 
-        # 绘制系统信息背景
-
-        # 显示基本信息
-        info_items = [
-            f"FPS: {self.fps:.1f}",
-            f"Frames: {self.frame_count}",
-            f"Processed: {self.processed_count}",
-            f"Alerts: {self.alert_count}",
-            f"Uptime: {int(time.time() - self.start_time)} s"
-        ]
-
-        for i, info in enumerate(info_items):
-            color = (0, 255, 255) if "Alerts" in info else (255, 255, 255)
-            cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
-
-        # 显示当前模式
-        mode_text = "Mode: "
-        if self.args.enable_ai and self.ai_model is not None:
-            mode_text += "AI+"
-        mode_text += "Motion"
-        cv2.putText(frame, mode_text, (w - 230, 25 * (len(info_items) + 1)),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 165, 255), 2)
+        # 不再绘制任何右上角系统状态文字
+        # info_items = [
+        #     f"FPS: {self.fps:.1f}",
+        #     f"Frames: {self.frame_count}",
+        #     f"Processed: {self.processed_count}",
+        #     f"Uptime: {int(time.time() - self.start_time)} s"
+        # ]
+        # for i, info in enumerate(info_items):
+        #     color = (255, 255, 255)
+        #     cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
+        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
@@ -819,6 +851,27 @@ class AllInOneSystem:
             'interactions': getattr(self, 'recognized_interactions', [])
         }
 
+    def add_audio_alert(self, label, score):
+        """供音频监控模块调用，推送声学异常告警"""
+        alert_info = {
+            'id': f"audio_alert_{int(time.time())}",
+            'type': '声学异常',
+            'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'confidence': float(score),
+            'frame': '',
+            'desc': f"检测到异常声音: {label}",
+            'handled': False,
+            'handled_time': None,
+            'person_id': '',
+            'person_class': ''
+        }
+        with self.alert_lock:
+            self.all_alerts.append(alert_info)
+            self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
+            self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
+            self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
+            self.recent_alerts = self.all_alerts[-10:]
+
 
 def parse_args():
     """解析命令行参数"""
@@ -845,6 +898,9 @@ def parse_args():
     parser.add_argument('--min_confidence', type=float, default=0.5, help='最小置信度')
     parser.add_argument('--alert_region', type=str,
                         help='警戒区域, 格式为坐标点列表, 例如: "[(100,100), (300,100), (300,300), (100,300)]"')
+    # 新增：危险区域停留检测参数
+    parser.add_argument('--distance_threshold', type=int, default=50, help='距离危险区域边界的阈值（像素）')
+    parser.add_argument('--dwell_time_threshold', type=float, default=1.0, help='危险区域停留时间阈值（秒）')
 
     # AI参数
     parser.add_argument('--enable_ai', action='store_true', help='启用AI功能')
@@ -860,6 +916,7 @@ def parse_args():
     parser.add_argument('--output', type=str, default='system_output', help='输出目录')
     parser.add_argument('--record', action='store_true', help='记录视频')
     parser.add_argument('--save_alerts', action='store_true', help='保存告警帧')
+    parser.add_argument('--enable_audio_monitor', action='store_true', help='启用音频监控（声学异常检测）')
 
     return parser.parse_args()
 
