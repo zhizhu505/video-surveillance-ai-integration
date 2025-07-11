@@ -2,7 +2,13 @@ from enum import Enum
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Any, Tuple
 from datetime import datetime
-
+'''
+行为分析系统的基础定义文件，它定义了系统能够识别的所有行为类型以及相关的数据结构。
+主要包含两个核心类：BehaviorAnalysisResult（用于存储单个行为的分析结果，包括行为类型、置信度、时间戳等）
+和 Interaction（用于描述多个对象之间的交互行为，如打架、聚集等）。
+这个文件就像是行为分析系统的"词典"，定义了系统要识别的行为类型和数据结构
+其他模块都需要基于这个文件的定义来进行行为识别和分析。
+'''
 
 class BehaviorType(Enum):
     """行为类型枚举。"""
