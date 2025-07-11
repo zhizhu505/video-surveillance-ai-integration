@@ -15,6 +15,7 @@ class Config:
     
     @staticmethod
     def load_config(config_path):
+        # 加载配置文件,传入文件路径，返回解析之后的Python字典
         """加载配置文件
         
         Args:
@@ -23,11 +24,13 @@ class Config:
         Returns:
             配置字典
         """
+        # 检查文件是否存在
         if not os.path.exists(config_path):
             raise FileNotFoundError(f"配置文件不存在: {config_path}")
             
+        # 获取文件扩展名
         _, ext = os.path.splitext(config_path)
-        
+        # 根据文件扩展名选择解析方式
         if ext.lower() in ('.yaml', '.yml'):
             with open(config_path, 'r', encoding='utf-8') as f:
                 return yaml.safe_load(f)
@@ -42,15 +45,18 @@ class Config:
         """保存配置到文件
         
         Args:
-            config: 配置字典
-            config_path: 配置文件保存路径
+            config: 配置字典，从上一个方法传入
+            config_path: 配置文件保存路径，类似.json或者.yaml
         """
+        # 获取文件扩展名
         _, ext = os.path.splitext(config_path)
+        # 创建目标文件夹
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
-        
+        # 如果扩展名是 .yaml 或 .yml，用 yaml.dump 保存为 YAML 格式
         if ext.lower() in ('.yaml', '.yml'):
             with open(config_path, 'w', encoding='utf-8') as f:
                 yaml.dump(config, f, default_flow_style=False)
+        # 如果扩展名是 .json，用 json.dump 保存为 JSON 格式
         elif ext.lower() == '.json':
             with open(config_path, 'w', encoding='utf-8') as f:
                 json.dump(config, f, indent=4, ensure_ascii=False)

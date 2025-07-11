@@ -4,16 +4,16 @@ from enum import Enum
 from dataclasses import dataclass, field
 from typing import Dict, List, Any, Optional, Union, Callable
 
-# Alert level enum for different severity levels
+# 告警级别枚举,用于定义不同的严重程度
 class AlertLevel(Enum):
-    INFO = 0     # Informational events
-    WARNING = 1  # Warnings that might need attention
-    ALERT = 2    # Alerts that need immediate attention
-    CRITICAL = 3 # Critical events requiring urgent action
+    INFO = 0     # 信息事件
+    WARNING = 1  # 需要关注的警告
+    ALERT = 2    # 需要立即注意的告警
+    CRITICAL = 3 # 需要紧急行动的严重事件
     
     @classmethod
     def from_string(cls, level_str: str) -> 'AlertLevel':
-        """Convert string to AlertLevel."""
+        """将字符串转换为AlertLevel。"""
         level_map = {
             'info': cls.INFO,
             'warning': cls.WARNING,
@@ -25,26 +25,24 @@ class AlertLevel(Enum):
 
 @dataclass
 class AlertRule:
-    """
-    Alert rule definition for different detection scenarios.
-    """
-    id: str                    # Unique rule identifier
-    name: str                  # Human-readable name
-    description: str           # Rule description
-    level: AlertLevel          # Alert severity level
-    source_type: str           # Source of the alert (behavior, object, motion, etc.)
-    conditions: Dict[str, Any] # Conditions that trigger the alert
-    enabled: bool = True       # Whether the rule is enabled
-    cooldown: int = 0          # Cooldown period in seconds to avoid alert flooding
+    """告警规则定义，用于不同的检测场景。"""
+    id: str                    # 唯一规则标识符
+    name: str                  # 可读性好的名称
+    description: str           # 规则描述
+    level: AlertLevel          # 告警严重级别
+    source_type: str           # 告警来源类型（行为、对象、运动等）
+    conditions: Dict[str, Any] # 触发告警的条件
+    enabled: bool = True       # 是否启用
+    cooldown: int = 0          # 冷却期，避免告警洪水
     
-    # Track last time this rule was triggered
+    # 跟踪上次触发时间
     last_triggered: float = 0  
     
-    # Count of times this rule has been triggered
+    # 触发次数
     trigger_count: int = 0     
     
     def to_dict(self) -> Dict[str, Any]:
-        """Convert rule to dictionary for serialization."""
+        """将规则转换为字典，用于序列化。"""
         return {
             'id': self.id,
             'name': self.name,
@@ -59,7 +57,7 @@ class AlertRule:
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'AlertRule':
-        """Create rule from dictionary."""
+        """从字典创建规则。"""
         return cls(
             id=data['id'],
             name=data['name'],
@@ -75,24 +73,22 @@ class AlertRule:
 
 @dataclass
 class AlertRuleConfig:
-    """
-    Configuration for alert rules.
-    """
+    """告警规则配置。"""
     rules: List[AlertRule] = field(default_factory=list)
     
     def add_rule(self, rule: AlertRule) -> None:
         """Add a rule to the configuration."""
-        # Check if rule with same ID already exists
+        # 检查是否已存在相同ID的规则
         for i, existing_rule in enumerate(self.rules):
             if existing_rule.id == rule.id:
-                # Replace existing rule
+                # 替换现有规则
                 self.rules[i] = rule
                 return
-        # Add new rule
+        # 添加新规则
         self.rules.append(rule)
     
     def remove_rule(self, rule_id: str) -> bool:
-        """Remove a rule from the configuration."""
+        """从配置中删除规则。"""
         for i, rule in enumerate(self.rules):
             if rule.id == rule_id:
                 self.rules.pop(i)
@@ -100,18 +96,18 @@ class AlertRuleConfig:
         return False
     
     def get_rule(self, rule_id: str) -> Optional[AlertRule]:
-        """Get a rule by ID."""
+        """根据ID获取规则。"""
         for rule in self.rules:
             if rule.id == rule_id:
                 return rule
         return None
     
     def get_rules_by_source(self, source_type: str) -> List[AlertRule]:
-        """Get all rules for a specific source type."""
+        """获取特定来源类型的所有规则。"""
         return [rule for rule in self.rules if rule.source_type == source_type and rule.enabled]
     
     def save_to_file(self, file_path: str) -> bool:
-        """Save rules to a JSON file."""
+        """将规则保存到JSON文件。"""
         try:
             with open(file_path, 'w') as f:
                 json.dump([rule.to_dict() for rule in self.rules], f, indent=2)
@@ -122,7 +118,7 @@ class AlertRuleConfig:
     
     @classmethod
     def load_from_file(cls, file_path: str) -> 'AlertRuleConfig':
-        """Load rules from a JSON file."""
+        """从JSON文件加载规则。"""
         try:
             with open(file_path, 'r') as f:
                 rules_data = json.load(f)
@@ -134,10 +130,10 @@ class AlertRuleConfig:
             return cls()
     
     def create_default_rules(self) -> None:
-        """Create default rules for common scenarios."""
+        """创建默认规则，用于常见场景。"""
         default_rules = [
             AlertRule(
-                id="intrusion_detection",
+                id="intrusion_detection", # 入侵检测
                 name="Intrusion Detection",
                 description="Detect when a person enters a restricted area",
                 level=AlertLevel.ALERT,
@@ -148,7 +144,7 @@ class AlertRuleConfig:
                 }
             ),
             AlertRule(
-                id="loitering_detection",
+                id="loitering_detection", # 徘徊检测
                 name="Loitering Detection",
                 description="Detect when a person stays in an area for too long",
                 level=AlertLevel.WARNING,
@@ -160,7 +156,7 @@ class AlertRuleConfig:
                 }
             ),
             AlertRule(
-                id="fast_motion_detection",
+                id="fast_motion_detection", # 快速运动检测
                 name="Fast Motion Detection",
                 description="Detect rapid movement in the scene",
                 level=AlertLevel.INFO,
@@ -171,7 +167,7 @@ class AlertRuleConfig:
                 }
             ),
             AlertRule(
-                id="object_counting",
+                id="object_counting", # 对象计数阈值
                 name="Object Counting Threshold",
                 description="Alert when too many objects are detected",
                 level=AlertLevel.WARNING,
@@ -183,7 +179,7 @@ class AlertRuleConfig:
                 }
             ),
             AlertRule(
-                id="abandoned_object",
+                id="abandoned_object", # 遗留对象检测
                 name="Abandoned Object Detection",
                 description="Detect stationary objects left behind",
                 level=AlertLevel.WARNING,
@@ -195,7 +191,7 @@ class AlertRuleConfig:
                 }
             ),
             AlertRule(
-                id="abnormal_scene",
+                id="abnormal_scene", # 异常场景检测
                 name="Abnormal Scene Detection",
                 description="Detect abnormal scenes using Qwen-VL",
                 level=AlertLevel.ALERT,
@@ -206,7 +202,7 @@ class AlertRuleConfig:
                 }
             ),
             AlertRule(
-                id="fighting_detection",
+                id="fighting_detection", # 打架检测 
                 name="Fighting Detection",
                 description="Detect when people are fighting",
                 level=AlertLevel.CRITICAL,

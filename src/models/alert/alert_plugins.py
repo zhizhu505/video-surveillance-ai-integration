@@ -15,14 +15,14 @@ from models.alert_rule import AlertLevel
 
 
 class AlertNotifier(abc.ABC):
-    """Abstract base class for alert notification plugins."""
+    """告警通知插件的抽象基类。"""
     
     def __init__(self, config: Dict[str, Any]):
         """
-        Initialize the notifier with configuration.
+        初始化通知器，使用配置字典。
         
         Args:
-            config: Configuration dictionary
+            config: 配置字典
         """
         self.config = config
         self.name = "BaseNotifier"
@@ -39,48 +39,48 @@ class AlertNotifier(abc.ABC):
     @abc.abstractmethod
     def notify(self, event: AlertEvent) -> bool:
         """
-        Send notification for an alert event.
+        发送告警事件通知。
         
-        Args:
-            event: Alert event to notify about
+        参数:
+            event: 需要通知的告警事件
             
-        Returns:
-            True if notification was sent successfully, False otherwise
+        返回:
+            通知发送成功返回True，否则返回False
         """
         pass
     
     def should_notify(self, event: AlertEvent) -> bool:
         """
-        Check if this notifier should handle this event.
+        检查此通知器是否应处理该事件。
         
-        Args:
-            event: Alert event to check
+        参数:
+            event: 需要检查的告警事件
             
-        Returns:
-            True if the notifier should handle this event, False otherwise
+        返回:
+            如果通知器应处理此事件则返回True，否则返回False
         """
         # Only notify if enabled and event level is >= min_level
         return self.enabled and event.level.value >= self.min_level.value
 
 
 class EmailNotifier(AlertNotifier):
-    """Email notification plugin."""
+    """电子邮件通知插件。"""
     
     def __init__(self, config: Dict[str, Any]):
         """
-        Initialize the email notifier.
+        初始化电子邮件通知器。
         
         Args:
-            config: Configuration dictionary with the following keys:
-                smtp_server: SMTP server address
-                smtp_port: SMTP server port
-                smtp_username: SMTP username
-                smtp_password: SMTP password
-                from_addr: Sender email address
-                to_addrs: List of recipient email addresses
-                use_ssl: Whether to use SSL
-                enabled: Whether the notifier is enabled
-                min_level: Minimum alert level to notify about
+            config: 配置字典，包含以下键:
+                smtp_server: SMTP服务器地址
+                smtp_port: SMTP服务器端口
+                smtp_username: SMTP用户名
+                smtp_password: SMTP密码
+                from_addr: 发送者电子邮件地址
+                to_addrs: 收件人电子邮件地址列表
+                use_ssl: 是否使用SSL
+                enabled: 通知器是否启用
+                min_level: 通知的最小告警级别
         """
         super().__init__(config)
         self.name = "EmailNotifier"
@@ -99,20 +99,21 @@ class EmailNotifier(AlertNotifier):
                     self.smtp_password, self.from_addr, self.to_addrs]):
             self.logger.error("Email notifier configuration is incomplete")
             self.enabled = False
-    
+    # 用于发送电子邮件通知
     def notify(self, event: AlertEvent) -> bool:
-        """Send an email notification."""
+        """发送电子邮件通知。"""
+        # 检查是否需要发送通知（基于告警级别和启用状态）
         if not self.should_notify(event):
-            return False
+            return False    
         
         try:
-            # Create message
+            # 创建消息
             msg = MIMEMultipart()
             msg['From'] = self.from_addr
             msg['To'] = ", ".join(self.to_addrs)
             msg['Subject'] = f"{event.level.name} Alert: {event.message}"
             
-            # Create HTML body
+            # 创建HTML正文
             html = f"""
             <html>
             <head></head>
@@ -127,10 +128,10 @@ class EmailNotifier(AlertNotifier):
             </html>
             """
             
-            # Attach HTML body
+            # 附加HTML正文
             msg.attach(MIMEText(html, 'html'))
             
-            # Attach thumbnail if available
+            # 附加缩略图（如果可用）
             if event.thumbnail is not None:
                 import cv2
                 _, img_data = cv2.imencode('.jpg', event.thumbnail)
@@ -138,7 +139,7 @@ class EmailNotifier(AlertNotifier):
                 image.add_header('Content-ID', '<image1>')
                 msg.attach(image)
             
-            # Connect to server and send
+            # 连接到服务器并发送
             server = None
             if self.use_ssl:
                 server = smtplib.SMTP_SSL(self.smtp_server, self.smtp_port)
@@ -159,24 +160,24 @@ class EmailNotifier(AlertNotifier):
 
 
 class WebhookNotifier(AlertNotifier):
-    """Webhook notification plugin."""
+    """Webhook 通知插件。"""
     
     def __init__(self, config: Dict[str, Any]):
         """
-        Initialize the webhook notifier.
+        初始化Webhook通知器。
         
         Args:
-            config: Configuration dictionary with the following keys:
-                webhook_url: Webhook URL
-                headers: HTTP headers to send
-                include_thumbnail: Whether to include thumbnail image
-                enabled: Whether the notifier is enabled
-                min_level: Minimum alert level to notify about
+            config: 配置字典，包含以下键:
+                webhook_url: Webhook URL    
+                headers: HTTP头信息
+                include_thumbnail: 是否包含缩略图
+                enabled: 通知器是否启用
+                min_level: 通知的最小告警级别
         """
         super().__init__(config)
         self.name = "WebhookNotifier"
         
-        # Webhook-specific config
+        # Webhook 特定配置
         self.webhook_url = config.get("webhook_url", "")
         self.headers = config.get("headers", {})
         self.include_thumbnail = config.get("include_thumbnail", True)
@@ -185,9 +186,10 @@ class WebhookNotifier(AlertNotifier):
         if not self.webhook_url:
             self.logger.error("Webhook URL is required")
             self.enabled = False
-    
+    # 用于发送Webhook通知
     def notify(self, event: AlertEvent) -> bool:
-        """Send a webhook notification."""
+        """发送Webhook通知。"""
+        # 检查是否需要发送通知（基于告警级别和启用状态）
         if not self.should_notify(event):
             return False
         
@@ -215,32 +217,32 @@ class WebhookNotifier(AlertNotifier):
             self.logger.error(f"Failed to send webhook notification: {e}")
             return False
 
-
+# 将告警信息写入日志文件
 class FileNotifier(AlertNotifier):
-    """File-based notification plugin that writes alerts to a log file."""
+    """基于文件的通知插件，将告警信息写入日志文件。"""
     
     def __init__(self, config: Dict[str, Any]):
         """
-        Initialize the file notifier.
+        初始化文件通知器。
         
         Args:
-            config: Configuration dictionary with the following keys:
-                output_file: Path to output file
-                append: Whether to append to file or overwrite
-                enabled: Whether the notifier is enabled
-                min_level: Minimum alert level to notify about
+            config: 配置字典，包含以下键:
+                output_file: 输出文件路径
+                append: 是否追加到文件或覆盖
+                enabled: 通知器是否启用
+                min_level: 通知的最小告警级别
         """
         super().__init__(config)
         self.name = "FileNotifier"
         
-        # File-specific config
+        # 文件特定配置
         self.output_file = config.get("output_file", "alerts.log")
         self.append = config.get("append", True)
         
-        # Create directory if needed
+        # 如果需要，创建目录
         os.makedirs(os.path.dirname(os.path.abspath(self.output_file)), exist_ok=True)
         
-        # Write header if file doesn't exist or not appending
+        # 如果文件不存在或不追加，写入头
         if not os.path.exists(self.output_file) or not self.append:
             with open(self.output_file, 'w') as f:
                 f.write("# Alert Log\n")
@@ -270,16 +272,14 @@ class FileNotifier(AlertNotifier):
 
 
 class NotificationManager:
-    """
-    Manages multiple notification plugins and handles alert distribution.
-    """
+    """管理多个通知插件并处理告警分发。"""
     
     def __init__(self, config: Dict[str, Any] = None):
         """
-        Initialize the notification manager.
+        初始化通知管理器。
         
         Args:
-            config: Configuration dictionary
+            config: 配置字典
         """
         self.notifiers = []
         
@@ -290,7 +290,7 @@ class NotificationManager:
         )
         self.logger = logging.getLogger("NotificationManager")
         
-        # Create default config if none provided
+        # 如果未提供配置，创建默认配置
         if config is None:
             config = {
                 "file": {

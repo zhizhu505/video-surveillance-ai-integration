@@ -159,7 +159,8 @@ class AllInOneSystem:
         # 初始化视频录制器，如果用户传了 --record 参数，就把最终处理后的画面同时录制到视频文件里保存
         self.video_writer = None
         if args.record:
-            fourcc = cv2.VideoWriter_fourcc(*'XVID')
+            # 使用标准写法，兼容大多数OpenCV版本
+            fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
             output_path = os.path.join(args.output, f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.avi")
             self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, args.height))
             logger.info(f"视频将录制到: {output_path}")
@@ -360,7 +361,7 @@ class AllInOneSystem:
         # 设置摄像头参数（仅用于本地摄像头）
         if source == 0 or (isinstance(source, int) and source >= 0):
             # 尝试设置MJPG格式（如果支持）
-            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
             # 尝试设置缓冲区大小最小
             cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 

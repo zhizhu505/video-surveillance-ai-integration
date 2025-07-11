@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 class BehaviorType(Enum):
-    """Enumeration of behavior types."""
+    """行为类型枚举。"""
     STATIC = 0          # 静止
     WALKING = 1         # 行走
     RUNNING = 2         # 奔跑
@@ -20,7 +20,7 @@ class BehaviorType(Enum):
 
 @dataclass
 class BehaviorAnalysisResult:
-    """Data class for behavior analysis results."""
+    """行为分析结果数据类。"""
     behavior_type: BehaviorType    # 行为类型
     confidence: float              # 置信度
     object_id: Optional[int] = None  # 关联的目标ID (如果可用)
@@ -35,7 +35,7 @@ class BehaviorAnalysisResult:
             self.timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
     
     def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary."""
+        """转换为字典。"""
         return {
             "behavior_type": self.behavior_type.name,
             "confidence": self.confidence,
@@ -48,7 +48,7 @@ class BehaviorAnalysisResult:
 
 @dataclass
 class Behavior:
-    """Data class for behavior of an individual object."""
+    """单个对象的行为数据类。"""
     object_id: int                     # 目标ID
     behavior_type: BehaviorType        # 行为类型
     confidence: float                  # 置信度
@@ -63,7 +63,7 @@ class Behavior:
             self.timestamp = datetime.now().timestamp()
     
     def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary."""
+        """转换为字典。"""
         return {
             "object_id": self.object_id,
             "behavior_type": self.behavior_type.name,
@@ -76,7 +76,7 @@ class Behavior:
 
 @dataclass
 class Interaction:
-    """Data class for interaction between multiple objects."""
+    """多个对象之间的交互数据类。"""
     object_ids: List[int]              # 交互的目标ID列表
     behavior_type: BehaviorType        # 交互类型
     confidence: float                  # 置信度
@@ -91,7 +91,7 @@ class Interaction:
             self.timestamp = datetime.now().timestamp()
     
     def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary."""
+        """转换为字典。"""
         return {
             "object_ids": self.object_ids,
             "behavior_type": self.behavior_type.name,
