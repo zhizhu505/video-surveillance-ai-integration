@@ -4,17 +4,17 @@ from typing import Dict, List, Tuple, Set, Any
 
 
 class InteractionDetector:
-    """Detects interactions between objects based on their trajectories."""
+    """基于对象轨迹检测对象之间的交互。"""
     
     def __init__(self, distance_threshold: float = 100, count_threshold: int = 2):
         """
-        Initialize the interaction detector.
+        初始化交互检测器。
         
         Args:
-            distance_threshold: Maximum distance between objects to be considered interacting
-            count_threshold: Minimum number of consecutive frames for interaction confirmation
+            distance_threshold: 对象之间最大距离，用于考虑交互
+            count_threshold: 交互确认所需的最小连续帧数
         """
-        # Configure logging
+        # 配置日志记录
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -23,23 +23,23 @@ class InteractionDetector:
         
         self.distance_threshold = distance_threshold
         self.count_threshold = count_threshold
-        self.interaction_counts = {}  # (obj_id1, obj_id2) -> count
-        self.detected_interactions = {}  # (obj_id1, obj_id2) -> interaction details
+        self.interaction_counts = {}  # (obj_id1, obj_id2) -> 计数
+        self.detected_interactions = {}  # (obj_id1, obj_id2) -> 交互细节
     
     def update(self, object_positions):
         """
-        Update the interaction detector with new object positions.
+        更新交互检测器。
         
         Args:
-            object_positions: Dictionary of object ID to position (x, y)
+            object_positions: 对象ID到位置（x, y）的字典
             
         Returns:
-            Dictionary of detected interactions
+            检测到的交互的字典
         """
-        # Check all pairs of objects
+        # 检查所有对象对
         current_interacting_pairs = set()
         
-        # Find pairs of close objects
+        # 找到接近的对象对
         object_ids = list(object_positions.keys())
         for i, obj_id1 in enumerate(object_ids):
             pos1 = object_positions[obj_id1]
@@ -48,24 +48,24 @@ class InteractionDetector:
                 obj_id2 = object_ids[j]
                 pos2 = object_positions[obj_id2]
                 
-                # Calculate distance
+                # 计算距离
                 dx = pos1[0] - pos2[0]
                 dy = pos1[1] - pos2[1]
                 distance = np.sqrt(dx*dx + dy*dy)
                 
-                # Determine pair key (always order by smaller ID first)
+                # 确定对键（总是按较小的ID排序）
                 pair = (min(obj_id1, obj_id2), max(obj_id1, obj_id2))
                 
                 if distance < self.distance_threshold:
                     current_interacting_pairs.add(pair)
                     
-                    # Update count
+                    # 更新计数
                     if pair in self.interaction_counts:
                         self.interaction_counts[pair] += 1
                     else:
                         self.interaction_counts[pair] = 1
                     
-                    # Check if interaction threshold is reached
+                    # 检查是否达到交互阈值
                     if self.interaction_counts[pair] >= self.count_threshold:
                         self.detected_interactions[pair] = {
                             'distance': distance,
@@ -74,14 +74,14 @@ class InteractionDetector:
                             'position2': pos2
                         }
                 else:
-                    # Decrease count if objects are far apart
+                    # 如果对象距离较远，则减少计数
                     if pair in self.interaction_counts:
                         self.interaction_counts[pair] -= 1
                         if self.interaction_counts[pair] <= 0:
                             self.interaction_counts.pop(pair, None)
                             self.detected_interactions.pop(pair, None)
         
-        # Remove interactions for pairs not currently detected
+        # 移除当前未检测到的对
         for pair in list(self.interaction_counts.keys()):
             if pair not in current_interacting_pairs:
                 self.interaction_counts[pair] -= 1
@@ -93,33 +93,33 @@ class InteractionDetector:
     
     def get_interactions(self):
         """
-        Get the current detected interactions.
+        获取当前检测到的交互。
         
         Returns:
-            Dictionary of detected interactions
+            检测到的交互的字典
         """
         return self.detected_interactions
     
     def detect_gatherings(self, object_positions):
         """
-        Detect groups of objects that are close to each other.
+        检测接近的对象组。
         
         Args:
-            object_positions: Dictionary of object ID to position (x, y)
+            object_positions: 对象ID到位置（x, y）的字典
             
         Returns:
-            List of sets of object IDs
+            对象ID列表的列表
         """
         groups = []
         
-        # Skip if not enough objects
+        # 如果对象数量不足，则跳过
         if len(object_positions) < self.count_threshold:
             return groups
         
-        # Build adjacency graph
+        # 构建邻接图
         adjacency = {obj_id: set() for obj_id in object_positions}
         
-        # Find pairs of close objects
+        # 找到接近的对象对
         object_ids = list(object_positions.keys())
         for i, obj_id1 in enumerate(object_ids):
             pos1 = object_positions[obj_id1]
@@ -128,7 +128,7 @@ class InteractionDetector:
                 obj_id2 = object_ids[j]
                 pos2 = object_positions[obj_id2]
                 
-                # Calculate distance
+                # 计算距离
                 dx = pos1[0] - pos2[0]
                 dy = pos1[1] - pos2[1]
                 distance = np.sqrt(dx*dx + dy*dy)
@@ -137,12 +137,12 @@ class InteractionDetector:
                     adjacency[obj_id1].add(obj_id2)
                     adjacency[obj_id2].add(obj_id1)
         
-        # Find connected components
+        # 找到连通分量
         visited = set()
         
         for obj_id in object_positions:
             if obj_id not in visited:
-                # Start a new group
+                # 开始一个新的组
                 group = set()
                 queue = [obj_id]
                 
@@ -153,7 +153,7 @@ class InteractionDetector:
                         visited.add(current)
                         group.add(current)
                         
-                        # Add neighbors to queue
+                        # 将邻居添加到队列
                         for neighbor in adjacency[current]:
                             if neighbor not in visited:
                                 queue.append(neighbor)
@@ -165,14 +165,14 @@ class InteractionDetector:
     
     def calculate_group_positions(self, groups, object_positions):
         """
-        Calculate the average position of each group.
+        计算每个组的平均位置。
         
-        Args:
-            groups: List of sets of object IDs
-            object_positions: Dictionary of object ID to position (x, y)
+        参数:
+            groups: 对象ID集合的列表
+            object_positions: 对象ID到位置(x, y)的字典映射
             
-        Returns:
-            List of average positions (x, y) for each group
+        返回:
+            每个组的平均位置(x, y)列表
         """
         group_positions = []
         
@@ -192,6 +192,6 @@ class InteractionDetector:
         return group_positions
     
     def reset(self):
-        """Reset the interaction detector."""
+        """重置交互检测器。"""
         self.interaction_counts = {}
         self.detected_interactions = {} 

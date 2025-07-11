@@ -5,22 +5,22 @@ import numpy as np
 def preprocess_frame(frame, resize_dim=None, normalize=True, denoise=True, 
                      enhance=True, equalize_hist=False):
     """
-    Preprocess a video frame with multiple operations:
-    - Denoising (Gaussian or bilateral filter)
-    - Enhancement (contrast and brightness adjustment)
-    - Resizing
-    - Normalization (pixel values to 0-1 range)
+    对视频帧进行多重预处理操作:
+    - 降噪 (高斯或双边滤波)
+    - 增强 (对比度和亮度调整)
+    - 调整大小
+    - 归一化 (像素值归一化到0-1范围)
     
-    Args:
-        frame: Input OpenCV frame
-        resize_dim: Tuple (width, height) to resize frame, None for no resize
-        normalize: Whether to normalize pixel values to 0-1 range
-        denoise: Whether to apply denoising filter
-        enhance: Whether to enhance contrast and brightness
-        equalize_hist: Whether to apply histogram equalization
+    参数:
+        frame: 输入的OpenCV帧
+        resize_dim: 用于调整帧大小的元组(宽,高),None表示不调整大小
+        normalize: 是否将像素值归一化到0-1范围
+        denoise: 是否应用降噪滤波
+        enhance: 是否增强对比度和亮度
+        equalize_hist: 是否应用直方图均衡化
         
-    Returns:
-        Preprocessed frame
+    返回:
+        预处理后的帧
     """
     if frame is None:
         return None

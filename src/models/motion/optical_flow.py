@@ -8,7 +8,7 @@ from models.motion.motion_feature_base import MotionFeature, MotionFeatureExtrac
 
 
 class OpticalFlowExtractor(MotionFeatureExtractor):
-    """Extract optical flow features from consecutive frames."""
+    """从连续帧中提取光流特征。"""
     
     METHODS = {
         'farneback': cv2.calcOpticalFlowFarneback,
@@ -20,17 +20,17 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
                  poly_n: int = 5, poly_sigma: float = 1.2,
                  use_gpu: bool = False):
         """
-        Initialize the optical flow extractor.
+        初始化光流特征提取器。
         
         Args:
-            method: Optical flow method ('farneback' or 'pyr_lk')
-            pyr_scale: Image scale for pyramid (<1 means larger pyramids)
-            levels: Number of pyramid levels
-            winsize: Averaging window size
-            iterations: Number of iterations at each pyramid level
-            poly_n: Size of pixel neighborhood for polynomial approximation
-            poly_sigma: Standard deviation of Gaussian for polynomial approximation
-            use_gpu: Use GPU acceleration if available
+            method: 光流方法（'farneback' 或 'pyr_lk'）
+            pyr_scale: 金字塔图像缩放比例（<1表示更大的金字塔）
+            levels: 金字塔层数
+            winsize: 平均窗口大小
+            iterations: 每个金字塔层级的迭代次数
+            poly_n: 多项式近似中的像素邻域大小
+            poly_sigma: 高斯分布的标准差
+            use_gpu: 如果可用，使用GPU加速
         """
         super().__init__()
         
@@ -40,7 +40,7 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
                 self.logger.error(f"Unsupported optical flow method: {method}")
                 return
             
-            # Set parameters
+            # 设置参数
             self.pyr_scale = pyr_scale
             self.levels = levels
             self.winsize = winsize
@@ -48,7 +48,7 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
             self.poly_n = poly_n
             self.poly_sigma = poly_sigma
             
-            # Set device for GPU acceleration
+            # 设置GPU加速设备
             self.use_gpu = use_gpu
             cuda_available = False
             
@@ -84,24 +84,24 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
                 self.logger.warning(f"GPU acceleration not available for {self.method} method")
                 self.use_gpu = False
             
-            # For Lucas-Kanade method
+            # 对于Lucas-Kanade方法
             if self.method == 'pyr_lk':
-                # Parameters for ShiTomasi corner detection
+                # ShiTomasi角点检测参数
                 self.feature_params = dict(maxCorners=100, qualityLevel=0.3, minDistance=7, blockSize=7)
                 
-                # Parameters for Lucas-Kanade optical flow
+                # Lucas-Kanade光流参数
                 self.lk_params = dict(
                     winSize=(self.winsize, self.winsize),
                     maxLevel=self.levels,
                     criteria=(cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03)
                 )
                 
-                # Create points to track
+                # 创建要跟踪的点
                 self.prev_pts = None
             
             self.is_initialized = True
             self.prev_gray = None
-            self.flow = None  # 初始化光流
+            self.flow = None  # 初始化光流场
             self.logger.info(f"OpticalFlowExtractor initialized successfully with method: {self.method}")
             
         except Exception as e:
@@ -112,27 +112,27 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
     def _extract_impl(self, frame: np.ndarray, prev_frame: np.ndarray = None, 
                 tracks: List[Dict[str, Any]] = None) -> List[MotionFeature]:
         """
-        Extract optical flow features from consecutive frames.
+        从连续帧中提取光流特征。
         
         Args:
-            frame: Current frame
-            prev_frame: Previous frame (if None, will use cached previous frame)
-            tracks: Object tracks from object tracker (optional)
+            frame: 当前帧
+            prev_frame: 上一帧（如果为None，将使用缓存的前一帧）
+            tracks: 对象跟踪器中的对象轨迹（可选）
             
         Returns:
-            List of optical flow features
+            光流特征列表
         """
-        # Convert frames to grayscale
+        # 将帧转换为灰度图像
         if frame is None:
             return []
         
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
         if prev_frame is None and self.prev_gray is None:
-            # First frame, no optical flow yet
+            # 第一帧，没有光流
             self.prev_gray = gray
             
-            # For Lucas-Kanade method, initialize points to track
+            # 对于Lucas-Kanade方法，初始化要跟踪的点
             if self.method == 'pyr_lk':
                 self.prev_pts = cv2.goodFeaturesToTrack(gray, mask=None, **self.feature_params)
             
@@ -155,24 +155,24 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
             self.logger.error(f"Error calculating optical flow: {str(e)}")
             self.logger.error(traceback.format_exc())
         
-        # Update previous gray frame
+        # 更新上一帧灰度图像
         self.prev_gray = gray
         
         return features
     
     def _extract_farneback(self, prev_gray: np.ndarray, gray: np.ndarray, 
                           tracks: List[Dict[str, Any]] = None) -> List[MotionFeature]:
-        """Extract optical flow using Farneback method."""
+        """使用Farneback方法提取光流。"""
         features = []
         
         if self.use_gpu:
-            # GPU implementation
+            # GPU实现
             prev_cuda = cv2.cuda_GpuMat(prev_gray)
             curr_cuda = cv2.cuda_GpuMat(gray)
             flow_cuda = self.flow_calculator.calc(prev_cuda, curr_cuda, None)
             flow = flow_cuda.download()
         else:
-            # CPU implementation
+            # CPU实现
             flow = cv2.calcOpticalFlowFarneback(
                 prev_gray, gray, None, self.pyr_scale, self.levels, self.winsize,
                 self.iterations, self.poly_n, self.poly_sigma, 0
@@ -181,53 +181,53 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
         # 保存计算的光流，以便后续可以访问
         self.flow = flow
         
-        # Extract flow features for the entire frame
-        step = 16  # Sample flow every 16 pixels
+        # 提取整个帧的光流特征
+        step = 16  # 每16个像素采样一次光流
         h, w = flow.shape[:2]
         
-        # Sample flow vectors
+        # 采样光流向量
         y_indices, x_indices = np.mgrid[step//2:h:step, step//2:w:step].reshape(2, -1).astype(int)
         
-        # Get flow vectors at sampled locations
+        # 在采样位置获取光流向量
         fx, fy = flow[y_indices, x_indices].T
         
-        # Filter out small movements
+        # 过滤掉小运动
         mag = np.sqrt(fx*fx + fy*fy)
         mask = mag > 1.0
         
-        # Create motion features
+        # 创建运动特征
         for i in range(len(x_indices)):
             if mask[i]:
                 features.append(MotionFeature(
                     type='optical_flow',
                     data=np.array([fx[i], fy[i]]),
                     position=(int(x_indices[i]), int(y_indices[i])),
-                    frame_idx=0,  # Will be set by caller
+                    frame_idx=0,  # 由调用者设置
                     confidence=float(mag[i] / np.max(mag) if np.max(mag) > 0 else 0)
                 ))
         
-        # If tracks are provided, calculate flow for each track
+        # 如果提供了轨迹，则计算每个轨迹的光流
         if tracks:
             for track in tracks:
                 box = track['box']
                 track_id = track['id']
                 
-                # Calculate center of bounding box
+                # 计算边界框的中心
                 cx = int((box[0] + box[2]) / 2)
                 cy = int((box[1] + box[3]) / 2)
                 
-                # Get flow at center
+                # 在中心获取光流
                 if 0 <= cy < h and 0 <= cx < w:
                     fx, fy = flow[cy, cx]
                     
-                    # Only add if there's significant motion
+                    # 只有当有显著运动时才添加
                     mag = np.sqrt(fx*fx + fy*fy)
                     if mag > 1.0:
                         features.append(MotionFeature(
                             type='object_flow',
                             data=np.array([fx, fy]),
                             position=(cx, cy),
-                            frame_idx=0,  # Will be set by caller
+                            frame_idx=0,  # 由调用者设置
                             object_id=track_id,
                             confidence=1.0
                         ))
@@ -235,57 +235,57 @@ class OpticalFlowExtractor(MotionFeatureExtractor):
         return features
     
     def _extract_lucas_kanade(self, prev_gray: np.ndarray, gray: np.ndarray) -> List[MotionFeature]:
-        """Extract optical flow using Lucas-Kanade method."""
+        """使用Lucas-Kanade方法提取光流。"""
         features = []
         
         if self.prev_pts is None or len(self.prev_pts) == 0:
-            # Initialize points to track
+            # 初始化要跟踪的点
             self.prev_pts = cv2.goodFeaturesToTrack(prev_gray, mask=None, **self.feature_params)
             return []
         
-        # Calculate optical flow using Lucas-Kanade method
+        # 使用Lucas-Kanade方法计算光流
         curr_pts, status, err = cv2.calcOpticalFlowPyrLK(
             prev_gray, gray, self.prev_pts, None, **self.lk_params
         )
         
-        # Select good points
+        # 选择好的点
         if curr_pts is not None:
             good_new = curr_pts[status == 1]
             good_old = self.prev_pts[status == 1]
             
-            # Create motion features for each point
+            # 为每个点创建运动特征
             for i, (new, old) in enumerate(zip(good_new, good_old)):
                 nx, ny = new.ravel()
                 ox, oy = old.ravel()
                 
-                # Calculate displacement
+                # 计算位移
                 dx = nx - ox
                 dy = ny - oy
                 
-                # Calculate magnitude
+                # 计算幅度
                 mag = np.sqrt(dx*dx + dy*dy)
                 
-                # Only add if there's significant motion
+                # 只有当有显著运动时才添加
                 if mag > 1.0:
                     features.append(MotionFeature(
                         type='sparse_flow',
                         data=np.array([dx, dy]),
                         position=(int(nx), int(ny)),
-                        frame_idx=0,  # Will be set by caller
-                        confidence=float(1.0 / (err[i][0] + 1e-6))  # Use inverse of error as confidence
+                        frame_idx=0,  # 由调用者设置
+                        confidence=float(1.0 / (err[i][0] + 1e-6))  # 使用误差的倒数作为置信度
                     ))
 
             
-            # Update previous points
+            # 更新上一帧的点
             self.prev_pts = good_new.reshape(-1, 1, 2)
         else:
-            # Reset points if tracking fails
+            # 如果跟踪失败，则重置点
             self.prev_pts = None
         
         return features
     
     def reset(self):
-        """Reset the optical flow extractor."""
+        """重置光流提取器。"""
         self.prev_gray = None
         self.flow = None
         self.logger.info("Optical flow extractor reset")

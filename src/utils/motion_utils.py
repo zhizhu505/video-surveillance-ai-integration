@@ -14,13 +14,13 @@ from models.behavior.behavior_recognition import BehaviorAnalysisResult
 
 def calculate_magnitude_and_angle(motion_vector: np.ndarray) -> Tuple[float, float]:
     """
-    Calculate magnitude and angle from a motion vector.
+    计算运动向量的幅度和角度。
     
-    Args:
-        motion_vector: Motion vector as [dx, dy]
+    参数:
+        motion_vector: 运动向量 [dx, dy]
         
-    Returns:
-        Tuple of (magnitude, angle_in_degrees)
+    返回:
+        元组 (幅度, 角度(度))
     """
     dx, dy = motion_vector
     magnitude = np.sqrt(dx*dx + dy*dy)
@@ -31,42 +31,42 @@ def calculate_magnitude_and_angle(motion_vector: np.ndarray) -> Tuple[float, flo
 
 def filter_features_by_type(features: List[MotionFeature], feature_type: str) -> List[MotionFeature]:
     """
-    Filter motion features by type.
+    根据类型过滤运动特征。
     
-    Args:
-        features: List of motion features
-        feature_type: Feature type to filter for
+    参数:
+        features: 运动特征列表
+        feature_type: 要过滤的特征类型
         
-    Returns:
-        Filtered list of motion features
+    返回:
+        过滤后的运动特征列表
     """
     return [f for f in features if f.type == feature_type]
 
 
 def filter_features_by_object_id(features: List[MotionFeature], object_id: int) -> List[MotionFeature]:
     """
-    Filter motion features by object ID.
+    根据对象ID过滤运动特征。
     
-    Args:
-        features: List of motion features
-        object_id: Object ID to filter for
+    参数:
+        features: 运动特征列表
+        object_id: 要过滤的对象ID
         
-    Returns:
-        Filtered list of motion features
+    返回:
+        过滤后的运动特征列表
     """
     return [f for f in features if f.object_id == object_id]
 
 
 def create_motion_heatmap(features: List[MotionFeature], frame_shape: Tuple[int, int]) -> np.ndarray:
     """
-    Create a motion heatmap from motion features.
+    从运动特征创建运动热图。
     
-    Args:
-        features: List of motion features
-        frame_shape: Shape of the frame as (height, width)
+    参数:
+        features: 运动特征列表
+        frame_shape: 帧的形状（高度，宽度）
         
-    Returns:
-        Motion heatmap as a numpy array
+    返回:
+        运动热图作为numpy数组
     """
     height, width = frame_shape
     heatmap = np.zeros((height, width), dtype=np.float32)
@@ -74,47 +74,47 @@ def create_motion_heatmap(features: List[MotionFeature], frame_shape: Tuple[int,
     for feature in features:
         x, y = feature.position
         
-        # Skip if position is outside the frame
+        # 如果位置超出帧范围，则跳过
         if x < 0 or x >= width or y < 0 or y >= height:
             continue
         
-        # Calculate magnitude for optical flow features
+        # 计算光流特征的幅度
         if feature.type == 'optical_flow' or feature.type == 'sparse_flow' or feature.type == 'object_flow':
             vx, vy = feature.data
             magnitude = np.sqrt(vx*vx + vy*vy)
             
-            # Add magnitude to heatmap with Gaussian weighting
-            sigma = 10.0  # Standard deviation of Gaussian
+            # 使用高斯加权将幅度添加到热图中
+            sigma = 10.0  # 高斯标准差
             for i in range(max(0, int(y-3*sigma)), min(height, int(y+3*sigma))):
                 for j in range(max(0, int(x-3*sigma)), min(width, int(x+3*sigma))):
-                    # Calculate Gaussian weight
+                    # 计算高斯权重
                     weight = np.exp(-((i-y)**2 + (j-x)**2) / (2*sigma*sigma))
                     
-                    # Add weighted magnitude to heatmap
+                    # 使用加权幅度添加到热图中
                     heatmap[i, j] += magnitude * weight * feature.confidence
         
-        # Handle motion history features
+        # 处理运动历史特征
         elif feature.type == 'motion_history':
             vx, vy, area = feature.data
             
-            # Calculate radius based on area
+            # 根据面积计算半径
             radius = int(np.sqrt(area) / 10)
-            radius = max(5, min(radius, 50))  # Constrain radius
+            radius = max(5, min(radius, 50))  # 约束半径
             
-            # Add value to heatmap with circular weighting
+            # 使用圆形加权将值添加到热图中
             for i in range(max(0, int(y-radius)), min(height, int(y+radius))):
                 for j in range(max(0, int(x-radius)), min(width, int(x+radius))):
-                    # Calculate distance from center
+                    # 计算距离
                     distance = np.sqrt((i-y)**2 + (j-x)**2)
                     
                     if distance <= radius:
-                        # Linear falloff from center
+                        # 线性衰减从中心
                         weight = 1.0 - (distance / radius)
                         
-                        # Add weighted value to heatmap
+                        # 使用加权值添加到热图中
                         heatmap[i, j] += weight * feature.confidence
     
-    # Normalize to [0, 1]
+    # 归一化到[0, 1]
     if np.max(heatmap) > 0:
         heatmap = heatmap / np.max(heatmap)
     
@@ -123,21 +123,21 @@ def create_motion_heatmap(features: List[MotionFeature], frame_shape: Tuple[int,
 
 def apply_colormap(heatmap: np.ndarray) -> np.ndarray:
     """
-    Apply a colormap to a heatmap.
+    应用颜色映射到热图。
     
-    Args:
-        heatmap: Heatmap as a numpy array
+    参数:
+        heatmap: 热图作为numpy数组
         
-    Returns:
-        Colored heatmap as BGR image
+    返回:
+        彩色热图作为BGR图像
     """
-    # Ensure heatmap is in [0, 1]
+    # 确保热图在[0, 1]范围内
     heatmap = np.clip(heatmap, 0, 1)
     
-    # Convert to 8-bit
+    # 转换为8位
     heatmap_8bit = (heatmap * 255).astype(np.uint8)
     
-    # Apply colormap
+    # 应用颜色映射
     colored_heatmap = cv2.applyColorMap(heatmap_8bit, cv2.COLORMAP_JET)
     
     return colored_heatmap
@@ -145,14 +145,14 @@ def apply_colormap(heatmap: np.ndarray) -> np.ndarray:
 
 def blend_heatmap_with_frame(frame: np.ndarray, heatmap: np.ndarray, alpha: float = 0.5) -> np.ndarray:
     """
-    Blend a heatmap with a frame.
+    混合热图和帧。
     
-    Args:
-        frame: Frame as BGR image
-        heatmap: Colored heatmap as BGR image
-        alpha: Blend factor (0.0 for frame only, 1.0 for heatmap only)
+    参数:
+        frame: 帧作为BGR图像
+        heatmap: 
+        alpha: 混合因子（0.0表示仅帧，1.0表示仅热图）
         
-    Returns:
+    返回:
         Blended image
     """
     return cv2.addWeighted(frame, 1 - alpha, heatmap, alpha, 0)

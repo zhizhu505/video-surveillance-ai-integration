@@ -15,7 +15,6 @@ class AlertEvent:
     """
     告警事件数据结构，包含一次告警的所有信息。
     """
-<<<<<<< HEAD
     id: str                      # 唯一事件标识符
     rule_id: str                 # 触发该告警的规则ID
     level: AlertLevel            # 告警级别
@@ -30,23 +29,6 @@ class AlertEvent:
     # 附加元数据
     acknowledged: bool = False   # 告警是否已被确认
     related_events: List[str] = field(default_factory=list)  # 相关事件的ID列表
-=======
-    id: str                      # Unique event identifier
-    rule_id: str                 # ID of the rule that triggered this alert
-    level: AlertLevel            # Alert level
-    danger_level: str            # Danger level: low, medium, high
-    source_type: str             # Type of source that triggered the alert
-    timestamp: float             # Unix timestamp when the alert was generated
-    message: str                 # Human-readable message
-    details: Dict[str, Any]      # Detailed information about the alert
-    frame_idx: int               # Frame index when the alert was triggered
-    frame: Optional[np.ndarray] = None  # Frame image when the alert was triggered
-    thumbnail: Optional[np.ndarray] = None  # Small thumbnail of the frame
-    
-    # Additional metadata
-    acknowledged: bool = False   # Whether the alert has been acknowledged
-    related_events: List[str] = field(default_factory=list)  # IDs of related events
->>>>>>> origin/zsq
     
     # 创建告警事件
     @classmethod
