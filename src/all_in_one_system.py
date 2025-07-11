@@ -19,6 +19,7 @@ from queue import Queue
 from datetime import datetime
 import traceback
 import collections
+import uuid
 
 # 配置日志
 logging.basicConfig(
@@ -544,7 +545,7 @@ class AllInOneSystem:
                     # 更新all_alerts和recent_alerts
                     for alert in alerts:
                         alert_info = {
-                            'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
+                            'id': str(uuid.uuid4()),  # 使用UUID生成唯一ID
                             'type': alert.get('type', ''),
                             'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -573,7 +574,7 @@ class AllInOneSystem:
                     # 更新recent_alerts
                     for alert in alerts:
                         alert_info = {
-                            'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
+                            'id': str(uuid.uuid4()),  # 使用UUID生成唯一ID
                             'type': alert.get('type', ''),
                             'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -867,7 +868,7 @@ class AllInOneSystem:
     def add_audio_alert(self, label, score):
         """供音频监控模块调用，推送声学异常告警"""
         alert_info = {
-            'id': f"audio_alert_{int(time.time())}",
+            'id': str(uuid.uuid4()),
             'type': '声学异常',
             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'confidence': float(score),
