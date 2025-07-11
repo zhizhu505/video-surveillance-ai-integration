@@ -217,8 +217,24 @@ class AllInOneSystem:
 
         @self.app.route('/alerts')
         def alerts():
-            # 返回最近10条告警详情
-            return jsonify(self.recent_alerts[-10:][::-1])
+            # 返回最近10条告警详情，确保包含危险等级信息
+            alerts_data = []
+            for alert in self.recent_alerts[-10:][::-1]:
+                alert_data = {
+                    'id': alert.get('id', ''),
+                    'type': alert.get('type', ''),
+                    'danger_level': alert.get('danger_level', 'medium'),
+                    'time': alert.get('time', ''),
+                    'confidence': alert.get('confidence', 0),
+                    'frame': alert.get('frame', 0),
+                    'desc': alert.get('desc', ''),
+                    'handled': alert.get('handled', False),
+                    'handled_time': alert.get('handled_time', None),
+                    'person_id': alert.get('person_id', ''),
+                    'person_class': alert.get('person_class', '')
+                }
+                alerts_data.append(alert_data)
+            return jsonify(alerts_data)
 
         @self.app.route('/alerts/stats')
         def alert_stats():
@@ -516,6 +532,7 @@ class AllInOneSystem:
                         alert_info = {
                             'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
                             'type': alert.get('type', ''),
+                            'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                             'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
                             'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
@@ -544,6 +561,7 @@ class AllInOneSystem:
                         alert_info = {
                             'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
                             'type': alert.get('type', ''),
+                            'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                             'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
                             'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',

@@ -19,11 +19,12 @@ logger = logging.getLogger(__name__)
 class Alert:
     """告警类，表示一个告警事件"""
     
-    def __init__(self, rule_name, description, severity="低", frame=None, metadata=None):
+    def __init__(self, rule_name, description, severity="低", danger_level="medium", frame=None, metadata=None):
         """初始化告警事件"""
         self.rule_name = rule_name
         self.description = description
         self.severity = severity
+        self.danger_level = danger_level
         self.timestamp = datetime.now()
         self.frame = frame
         self.metadata = metadata or {}
@@ -36,6 +37,7 @@ class Alert:
             "rule_name": self.rule_name,
             "description": self.description,
             "severity": self.severity,
+            "danger_level": self.danger_level,
             "timestamp": self.timestamp.isoformat(),
             "metadata": self.metadata
         }
@@ -87,10 +89,11 @@ class AlertProcessor:
             rule_name = alert_data.get("rule_name", "未知规则")
             description = alert_data.get("description", "")
             severity = alert_data.get("severity", "低")
+            danger_level = alert_data.get("danger_level", "medium")
             frame = alert_data.get("frame")
             metadata = alert_data.get("metadata", {})
             
-            alert = Alert(rule_name, description, severity, frame, metadata)
+            alert = Alert(rule_name, description, severity, danger_level, frame, metadata)
         elif isinstance(alert_data, Alert):
             # 如果已经是告警对象，则直接使用
             alert = alert_data

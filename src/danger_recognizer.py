@@ -28,6 +28,17 @@ class DangerRecognizer:
         'danger_zone_dwell': 'Danger Zone Dwell',  # 新增：危险区域停留告警
     }
     
+    # 危险等级映射
+    DANGER_LEVELS = {
+        'sudden_motion': 'low',
+        'large_area_motion': 'low',
+        'fall': 'high',
+        'abnormal_pattern': 'medium',
+        'intrusion': 'medium',
+        'loitering': 'medium',
+        'danger_zone_dwell': 'medium',
+    }
+    
     def __init__(self, config=None):
         """初始化危险行为识别器
         
@@ -244,6 +255,7 @@ class DangerRecognizer:
                             region_name = str(region_id)
                         alert = {
                             'type': self.DANGER_TYPES['danger_zone_dwell'],
+                            'danger_level': self.DANGER_LEVELS['danger_zone_dwell'],
                             'confidence': 0.9,  # 高置信度
                             'frame': current_frame,
                             'object_id': object_id,
@@ -464,6 +476,7 @@ class DangerRecognizer:
                     print(f"[调试] 详细参数: max_vertical_motion={max_vertical_motion:.2f}, earlier_avg={earlier_avg:.2f}, recent_avg={recent_avg:.2f}, vertical_motion_count={vertical_motion_count}")
                     fall_alerts.append({
                         'type': self.DANGER_TYPES['fall'],
+                        'danger_level': self.DANGER_LEVELS['fall'],
                         'confidence': confidence,
                         'frame': self.current_frame,
                         'vertical_motion': max_vertical_motion,
@@ -506,6 +519,7 @@ class DangerRecognizer:
                         print(f"[判定] Sudden Motion: 特征点数={feature_count}, 阈值={self.config['feature_count_threshold']}, 置信度={confidence:.2f}, 平均特征点={avg_recent_features:.1f}")
                         alerts.append({
                             'type': self.DANGER_TYPES['sudden_motion'],
+                            'danger_level': self.DANGER_LEVELS['sudden_motion'],
                             'confidence': confidence,
                             'frame': self.current_frame,
                             'feature_count': feature_count,
@@ -519,6 +533,7 @@ class DangerRecognizer:
                     print(f"[判定] Sudden Motion: 特征点数={feature_count}, 阈值={self.config['feature_count_threshold']}, 置信度={confidence:.2f}")
                     alerts.append({
                         'type': self.DANGER_TYPES['sudden_motion'],
+                        'danger_level': self.DANGER_LEVELS['sudden_motion'],
                         'confidence': confidence,
                         'frame': self.current_frame,
                         'feature_count': feature_count,
@@ -536,6 +551,7 @@ class DangerRecognizer:
                     print(f"[判定] Feature Change: 变化率={feature_change_ratio:.2f}, 阈值={self.config['feature_change_ratio']}, 置信度={confidence:.2f}")
                     alerts.append({
                         'type': self.DANGER_TYPES['sudden_motion'],
+                        'danger_level': self.DANGER_LEVELS['sudden_motion'],
                         'confidence': confidence,
                         'frame': self.current_frame,
                         'change_ratio': feature_change_ratio,
@@ -556,6 +572,7 @@ class DangerRecognizer:
                     print(f"[判定] Motion Magnitude: 当前={current:.2f}, 阈值={self.config['motion_magnitude_threshold']}, 置信度={confidence:.2f}")
                     alerts.append({
                         'type': self.DANGER_TYPES['sudden_motion'],
+                        'danger_level': self.DANGER_LEVELS['sudden_motion'],
                         'confidence': confidence,
                         'frame': self.current_frame,
                         'magnitude': current,
@@ -570,6 +587,7 @@ class DangerRecognizer:
             if confidence >= self.config['min_confidence']:
                 alerts.append({
                     'type': self.DANGER_TYPES['large_area_motion'],
+                    'danger_level': self.DANGER_LEVELS['large_area_motion'],
                     'confidence': confidence,
                     'frame': self.current_frame,
                     'area': motion_area,
@@ -597,6 +615,7 @@ class DangerRecognizer:
                             # 目标在警戒区域内
                             alerts.append({
                                 'type': self.DANGER_TYPES['intrusion'],
+                                'danger_level': self.DANGER_LEVELS['intrusion'],
                                 'confidence': obj.get('confidence', 0.8),
                                 'frame': self.current_frame,
                                 'object': obj.get('class', 'unknown'),

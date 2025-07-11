@@ -108,10 +108,36 @@
             margin-bottom: 10px;
             border-radius: 0 4px 4px 0;
             position: relative;
+            transition: all 0.3s ease;
         }
         .alert-item.handled {
             border-left-color: #27ae60;
             background-color: #e8f5e8;
+        }
+        /* 危险等级颜色 */
+        .alert-item.danger-low {
+            border-left-color: #27ae60;
+            background-color: #e8f5e8;
+        }
+        .alert-item.danger-medium {
+            border-left-color: #f39c12;
+            background-color: #fef9e7;
+        }
+        .alert-item.danger-high {
+            border-left-color: #e74c3c;
+            background-color: #fdf2f2;
+        }
+        .alert-item.danger-low.handled {
+            border-left-color: #27ae60;
+            background-color: #e8f5e8;
+        }
+        .alert-item.danger-medium.handled {
+            border-left-color: #f39c12;
+            background-color: #fef9e7;
+        }
+        .alert-item.danger-high.handled {
+            border-left-color: #e74c3c;
+            background-color: #fdf2f2;
         }
         .alert-time {
             font-size: 12px;
@@ -123,6 +149,16 @@
         }
         .alert-item.handled .alert-type {
             color: #27ae60;
+        }
+        /* 危险等级文字颜色 */
+        .alert-item.danger-low .alert-type {
+            color: #27ae60;
+        }
+        .alert-item.danger-medium .alert-type {
+            color: #f39c12;
+        }
+        .alert-item.danger-high .alert-type {
+            color: #e74c3c;
         }
         .alert-desc {
             margin-top: 5px;
@@ -381,6 +417,12 @@
             function addAlert(alert, index) {
                 const alertItem = document.createElement('div');
                 alertItem.className = 'alert-item';
+                
+                // 添加危险等级样式
+                if (alert.danger_level) {
+                    alertItem.classList.add(`danger-${alert.danger_level}`);
+                }
+                
                 if (alert.handled) {
                     alertItem.classList.add('handled');
                 }
@@ -427,11 +469,26 @@
                 fetch('/alerts')
                     .then(response => response.json())
                     .then(data => {
-                        alertsCache = data;
-                        alertListElement.innerHTML = '';
-                        data.forEach((alert, idx) => {
-                            addAlert(alert, idx);
-                        });
+                        // 检查是否有新告警
+                        const currentCount = alertsCache.length;
+                        const newCount = data.length;
+                        
+                        if (newCount > currentCount) {
+                            // 有新告警，从下方添加
+                            const newAlerts = data.slice(currentCount);
+                            newAlerts.forEach((alert, idx) => {
+                                const actualIndex = currentCount + idx;
+                                alertsCache[actualIndex] = alert;
+                                addAlert(alert, actualIndex);
+                            });
+                        } else {
+                            // 重新渲染整个列表
+                            alertsCache = data;
+                            alertListElement.innerHTML = '';
+                            data.forEach((alert, idx) => {
+                                addAlert(alert, idx);
+                            });
+                        }
                     });
             }
             // 告警点击弹窗
@@ -446,6 +503,22 @@
                     if(alert){
                         let html = `<div><b>时间：</b>${alert.time}</div>`;
                         html += `<div><b>类别：</b>${alert.type}</div>`;
+                        
+                        // 添加危险等级显示
+                        if (alert.danger_level) {
+                            const levelText = {
+                                'low': '低危险',
+                                'medium': '中危险', 
+                                'high': '高危险'
+                            };
+                            const levelColor = {
+                                'low': '#27ae60',
+                                'medium': '#f39c12',
+                                'high': '#e74c3c'
+                            };
+                            html += `<div><b>危险等级：</b><span style="color: ${levelColor[alert.danger_level]};">${levelText[alert.danger_level]}</span></div>`;
+                        }
+                        
                         html += `<div><b>置信度：</b>${alert.confidence}</div>`;
                         html += `<div><b>帧号：</b>${alert.frame}</div>`;
                         html += `<div><b>描述：</b>${alert.desc||'无'}</div>`;

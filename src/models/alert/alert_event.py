@@ -18,6 +18,7 @@ class AlertEvent:
     id: str                      # Unique event identifier
     rule_id: str                 # ID of the rule that triggered this alert
     level: AlertLevel            # Alert level
+    danger_level: str            # Danger level: low, medium, high
     source_type: str             # Type of source that triggered the alert
     timestamp: float             # Unix timestamp when the alert was generated
     message: str                 # Human-readable message
@@ -31,7 +32,7 @@ class AlertEvent:
     related_events: List[str] = field(default_factory=list)  # IDs of related events
     
     @classmethod
-    def create(cls, rule_id: str, level: AlertLevel, source_type: str, 
+    def create(cls, rule_id: str, level: AlertLevel, danger_level: str, source_type: str, 
                message: str, details: Dict[str, Any], frame_idx: int,
                frame: Optional[np.ndarray] = None) -> 'AlertEvent':
         """
@@ -40,6 +41,7 @@ class AlertEvent:
         Args:
             rule_id: ID of the rule that triggered this alert
             level: Alert level
+            danger_level: Danger level (low, medium, high)
             source_type: Type of source that triggered the alert
             message: Human-readable message
             details: Detailed information about the alert
@@ -64,6 +66,7 @@ class AlertEvent:
             id=event_id,
             rule_id=rule_id,
             level=level,
+            danger_level=danger_level,
             source_type=source_type,
             timestamp=timestamp,
             message=message,
@@ -87,6 +90,7 @@ class AlertEvent:
             'id': self.id,
             'rule_id': self.rule_id,
             'level': self.level.name,
+            'danger_level': self.danger_level,
             'source_type': self.source_type,
             'timestamp': self.timestamp,
             'message': self.message,
