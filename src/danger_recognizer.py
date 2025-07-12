@@ -656,6 +656,7 @@ class DangerRecognizer:
             alerts.extend(dwell_alerts)
 
         # 6. 摔倒检测（事件级检测）
+        fall_alerts = []  # 初始化fall_alerts变量
         if len(self.history) >= 10:  # 需要更多历史记录来判断摔倒事件
             recent_vertical_motions = [h['vertical_motion'] for h in self.history[-8:]]
             max_vertical_motion = np.max(recent_vertical_motions)
@@ -743,6 +744,9 @@ class DangerRecognizer:
                 if not cooldown_ok:
                     # print(f"[调试] 冷却时间阻止: 当前帧={self.current_frame}, 上次摔倒帧={getattr(self, 'last_fall_frame', 0)}, 需要等待={fall_cooldown_frames - (self.current_frame - getattr(self, 'last_fall_frame', 0))}帧")
                     pass
+        
+        # 将摔倒告警添加到总告警列表中
+        alerts.extend(fall_alerts)
         
         # 如果有告警，更新最后告警帧
         if alerts:

@@ -293,10 +293,15 @@ class AllInOneSystem:
 
         @self.app.route('/alerts/handle', methods=['POST'])
         def handle_alert():
-            # 处理告警（标记为已处理）
+            # 处理告警（标记为已处理，同时更新数据库）
             data = request.json
             alert_id = data.get('alert_id')
-            
+
+            # 先更新数据库
+            db_success = False
+            if self.alert_database:
+                db_success = self.alert_database.acknowledge_alert(alert_id)
+
             with self.alert_lock:
                 # 查找并更新告警状态
                 for alert in self.all_alerts:
@@ -306,18 +311,26 @@ class AllInOneSystem:
                             alert['handled_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                             self.alert_handling_stats['handled_alerts'] += 1
                             self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
-                            return jsonify({'status': 'success', 'message': 'Alert marked as handled'})
+                            if db_success:
+                                return jsonify({'status': 'success', 'message': 'Alert marked as handled and database updated'})
+                            else:
+                                return jsonify({'status': 'warning', 'message': 'Alert marked as handled, but database update failed'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already handled'})
-                
+
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/alerts/unhandle', methods=['POST'])
         def unhandle_alert():
-            # 取消处理告警（标记为未处理）
+            # 取消处理告警（标记为未处理，同时更新数据库）
             data = request.json
             alert_id = data.get('alert_id')
-            
+
+            # 先更新数据库
+            db_success = False
+            if self.alert_database:
+                db_success = self.alert_database.unacknowledge_alert(alert_id)
+
             with self.alert_lock:
                 # 查找并更新告警状态
                 for alert in self.all_alerts:
@@ -327,10 +340,13 @@ class AllInOneSystem:
                             alert.pop('handled_time', None)
                             self.alert_handling_stats['handled_alerts'] = max(0, self.alert_handling_stats['handled_alerts'] - 1)
                             self.alert_handling_stats['unhandled_alerts'] += 1
-                            return jsonify({'status': 'success', 'message': 'Alert marked as unhandled'})
+                            if db_success:
+                                return jsonify({'status': 'success', 'message': 'Alert marked as unhandled and database updated'})
+                            else:
+                                return jsonify({'status': 'warning', 'message': 'Alert marked as unhandled, but database update failed'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already unhandled'})
-                
+
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/alerts/history')
@@ -805,10 +821,11 @@ class AllInOneSystem:
                                     os.makedirs(alert_dir, exist_ok=True)
                                     image_paths = alert_event.save_images(alert_dir)
                                 
-                                logger.info(f"准备写入告警到数据库: {alert_event.id}")
-                                result = self.alert_database.save_alert_event(alert_event)
-                                logger.info(f"写入数据库结果: {result}")
-                                
+                                logger.info(f"准备写入告警到数据库: {alert_event.message}")
+                                new_id = self.alert_database.save_alert_event(alert_event)
+                                logger.info(f"写入数据库返回id: {new_id}")
+                                if new_id is not None:
+                                    alert_info['id'] = new_id  # 用数据库自增id覆盖原id
                             except Exception as e:
                                 logger.error(f"保存告警到数据库失败: {str(e)}")
                         else:

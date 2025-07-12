@@ -74,29 +74,25 @@ class MySQLAlertDatabase:
             self.logger.error(f"MySQL数据库连接测试失败: {str(e)}")
             raise
     
-    def save_alert_event(self, event: AlertEvent, image_paths: Optional[Dict[str, str]] = None) -> bool:
+    def save_alert_event(self, event: AlertEvent, image_paths: Optional[Dict[str, str]] = None) -> Optional[int]:
         """
         保存告警事件到数据库
-        
         Args:
             event: 告警事件对象
             image_paths: 相关图像路径字典
-            
         Returns:
-            是否保存成功
+            新插入的自增id，失败返回None
         """
         try:
             with self.lock:
                 with self._get_connection() as conn:
                     with conn.cursor() as cursor:
-                        
                         # 强制格式化为MySQL DATETIME格式
                         try:
                             event_time_str = datetime.fromtimestamp(float(event.timestamp)).strftime('%Y-%m-%d %H:%M:%S')
                         except Exception:
                             event_time_str = str(event.timestamp)[:19]
                         self.logger.info(f"插入的时间字符串: {event_time_str}")
-                        
                         # 插入告警事件（不再传id，event_time为DATETIME字符串）
                         sql = """
                             INSERT INTO alert_events 
@@ -104,7 +100,6 @@ class MySQLAlertDatabase:
                              frame_idx, acknowledged, related_events)
                             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         """
-                        
                         cursor.execute(sql, (
                             event.rule_id,
                             event.level.name,
@@ -117,29 +112,25 @@ class MySQLAlertDatabase:
                             event.acknowledged,
                             json.dumps(event.related_events)
                         ))
-                        
+                        new_id = cursor.lastrowid
                         # 保存相关图像路径
                         if image_paths:
                             for image_type, image_path in image_paths.items():
-                                # 获取文件大小
                                 file_size = None
                                 try:
                                     if os.path.exists(image_path):
                                         file_size = os.path.getsize(image_path)
                                 except:
                                     pass
-                                
                                 cursor.execute("""
                                     INSERT INTO alert_images (event_id, image_type, image_path, file_size)
-                                    VALUES (LAST_INSERT_ID(), %s, %s, %s)
-                                """, (image_type, image_path, file_size))
-                        
-                        self.logger.debug(f"告警事件已保存到MySQL数据库: {event.message}")
-                        return True
-                        
+                                    VALUES (%s, %s, %s, %s)
+                                """, (new_id, image_type, image_path, file_size))
+                        self.logger.debug(f"告警事件已保存到MySQL数据库: {event.message}, 新id: {new_id}")
+                        return new_id
         except Exception as e:
             self.logger.error(f"保存告警事件到MySQL失败: {str(e)}")
-            return False
+            return None
     
     def get_alert_events(self, 
                         limit: int = 100,
