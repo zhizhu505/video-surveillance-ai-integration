@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>告警历史中心</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .nav-links {
+            margin-top: 15px;
+        }
+        
+        .nav-links a {
+            color: #3498db;
+            text-decoration: none;
+            margin-right: 20px;
+            padding: 8px 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: #ecf0f1;
+        }
+        
+        .search-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .search-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+        }
+        
+        .stats-panel {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .alerts-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alerts-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .alerts-count {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+        
+        .alert-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .alert-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+        
+        .alert-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .alert-time {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .alert-level {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .level-high {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .level-medium {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .level-low {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .alert-message {
+            color: #34495e;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        
+        .alert-details {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .detail-value {
+            color: #34495e;
+        }
+        
+        .alert-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            gap: 10px;
+        }
+        
+        .page-btn {
+            padding: 8px 12px;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .page-btn:hover,
+        .page-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .no-alerts {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        
+        .alert-image {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        @media (max-width: 768px) {
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-buttons {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .alert-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 头部 -->
+        <div class="header">
+            <h1>🚨 告警历史中心</h1>
+            <p>查看和管理所有历史告警信息</p>
+            <div class="nav-links">
+                <a href="/">返回监控界面</a>
+                <a href="/alerts">实时告警</a>
+            </div>
+        </div>
+        
+        <!-- 搜索面板 -->
+        <div class="search-panel">
+            <h3>🔍 搜索过滤</h3>
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="searchText">搜索文本</label>
+                    <input type="text" id="searchText" placeholder="在告警消息和详情中搜索...">
+                </div>
+                
+                <div class="form-group">
+                    <label for="levelFilter">告警级别</label>
+                    <select id="levelFilter">
+                        <option value="">全部级别</option>
+                        <option value="high">高级别</option>
+                        <option value="medium">中级别</option>
+                        <option value="low">低级别</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="sourceFilter">来源类型</label>
+                    <select id="sourceFilter">
+                        <option value="">全部来源</option>
+                        <option value="fall_detection">摔倒检测</option>
+                        <option value="danger_zone_dwell">危险区域停留</option>
+                        <option value="sudden_motion">突发运动</option>
+                        <option value="large_area_motion">大范围运动</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="acknowledgedFilter">处理状态</label>
+                    <select id="acknowledgedFilter">
+                        <option value="">全部状态</option>
+                        <option value="false">未处理</option>
+                        <option value="true">已处理</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="startDate">开始日期</label>
+                    <input type="datetime-local" id="startDate">
+                </div>
+                
+                <div class="form-group">
+                    <label for="endDate">结束日期</label>
+                    <input type="datetime-local" id="endDate">
+                </div>
+                
+                <div class="search-buttons">
+                    <button type="submit" class="btn btn-primary">🔍 搜索</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetSearch()">🔄 重置</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- 统计面板 -->
+        <div class="stats-panel">
+            <h3>📊 统计信息</h3>
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAlerts">-</div>
+                    <div class="stat-label">总告警数</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="unhandledAlerts">-</div>
+                    <div class="stat-label">未处理告警</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="highLevelAlerts">-</div>
+                    <div class="stat-label">高级别告警</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayAlerts">-</div>
+                    <div class="stat-label">今日告警</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 告警列表 -->
+        <div class="alerts-container">
+            <div class="alerts-header">
+                <h3>📋 告警列表</h3>
+                <div class="alerts-count" id="alertsCount">共 0 条告警</div>
+            </div>
+            
+            <div id="alertsList">
+                <div class="loading">正在加载告警数据...</div>
+            </div>
+            
+            <!-- 分页 -->
+            <div class="pagination" id="pagination" style="display: none;">
+                <button class="page-btn" id="prevPage" onclick="changePage(-1)">上一页</button>
+                <span id="pageInfo">第 1 页，共 1 页</span>
+                <button class="page-btn" id="nextPage" onclick="changePage(1)">下一页</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentFilters = {};
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAlerts();
+            loadStats();
+            
+            // 绑定搜索表单事件
+            document.getElementById('searchForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                currentPage = 1;
+                loadAlerts();
+            });
+        });
+        
+        // 加载告警数据
+        function loadAlerts() {
+            const alertsList = document.getElementById('alertsList');
+            alertsList.innerHTML = '<div class="loading">正在加载告警数据...</div>';
+            
+            // 构建查询参数
+            const params = new URLSearchParams({
+                page: currentPage,
+                limit: 10,
+                ...getSearchFilters()
+            });
+            
+            fetch(`/api/alerts/history?${params}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        displayAlerts(data.alerts);
+                        updatePagination(data.total, data.page, data.pages);
+                        updateAlertsCount(data.total);
+                    } else {
+                        alertsList.innerHTML = '<div class="no-alerts">加载失败: ' + data.message + '</div>';
+                    }
+                })
+                .catch(error => {
+                    alertsList.innerHTML = '<div class="no-alerts">加载失败: ' + error.message + '</div>';
+                });
+        }
+        
+        // 加载统计信息
+        function loadStats() {
+            fetch('/api/alerts/statistics')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        updateStats(data.stats);
+                    }
+                })
+                .catch(error => {
+                    console.error('加载统计信息失败:', error);
+                });
+        }
+        
+        // 获取搜索过滤条件
+        function getSearchFilters() {
+            const filters = {};
+            
+            const searchText = document.getElementById('searchText').value.trim();
+            if (searchText) filters.search_text = searchText;
+            
+            const level = document.getElementById('levelFilter').value;
+            if (level) filters.level = level;
+            
+            const sourceType = document.getElementById('sourceFilter').value;
+            if (sourceType) filters.source_type = sourceType;
+            
+            const acknowledged = document.getElementById('acknowledgedFilter').value;
+            if (acknowledged !== '') filters.acknowledged = acknowledged;
+            
+            const startDate = document.getElementById('startDate').value;
+            if (startDate) {
+                filters.start_time = new Date(startDate).getTime() / 1000;
+            }
+            
+            const endDate = document.getElementById('endDate').value;
+            if (endDate) {
+                filters.end_time = new Date(endDate).getTime() / 1000;
+            }
+            
+            return filters;
+        }
+        
+        // 显示告警列表
+        function displayAlerts(alerts) {
+            const alertsList = document.getElementById('alertsList');
+            
+            if (alerts.length === 0) {
+                alertsList.innerHTML = '<div class="no-alerts">没有找到符合条件的告警</div>';
+                return;
+            }
+            
+            alertsList.innerHTML = alerts.map(alert => `
+                <div class="alert-item">
+                    <div class="alert-header">
+                        <div>
+                            <div class="alert-title">${escapeHtml(alert.message)}</div>
+                            <div class="alert-time">${alert.datetime}</div>
+                        </div>
+                        <div class="alert-level level-${alert.level.toLowerCase()}">${alert.level}</div>
+                    </div>
+                    
+                    <div class="alert-message">${escapeHtml(alert.message)}</div>
+                    
+                    <div class="alert-details">
+                        <div class="detail-row">
+                            <span class="detail-label">危险级别:</span>
+                            <span class="detail-value">${alert.danger_level}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">来源类型:</span>
+                            <span class="detail-value">${alert.source_type}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">处理状态:</span>
+                            <span class="detail-value">${alert.acknowledged ? '已处理' : '未处理'}</span>
+                        </div>
+                        ${alert.details && alert.details.location ? `
+                        <div class="detail-row">
+                            <span class="detail-label">位置信息:</span>
+                            <span class="detail-value">${escapeHtml(alert.details.location.description || '未知')}</span>
+                        </div>
+                        ` : ''}
+                        ${alert.details && alert.details.person_id ? `
+                        <div class="detail-row">
+                            <span class="detail-label">触发对象:</span>
+                            <span class="detail-value">ID: ${alert.details.person_id}</span>
+                        </div>
+                        ` : ''}
+                    </div>
+                    
+                    ${alert.images && alert.images.thumbnail ? `
+                    <img src="/alerts/${alert.id}_thumb.jpg" alt="告警截图" class="alert-image" 
+                         onerror="this.style.display='none'">
+                    ` : ''}
+                    
+                    <div class="alert-actions">
+                        ${!alert.acknowledged ? 
+                            `<button class="btn btn-success btn-sm" onclick="acknowledgeAlert('${alert.id}')">✅ 标记已处理</button>` :
+                            `<button class="btn btn-warning btn-sm" onclick="unacknowledgeAlert('${alert.id}')">🔄 取消处理</button>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // 更新分页信息
+        function updatePagination(total, page, pages) {
+            const pagination = document.getElementById('pagination');
+            const pageInfo = document.getElementById('pageInfo');
+            const prevBtn = document.getElementById('prevPage');
+            const nextBtn = document.getElementById('nextPage');
+            
+            currentPage = page;
+            totalPages = pages;
+            
+            pageInfo.textContent = `第 ${page} 页，共 ${pages} 页`;
+            prevBtn.disabled = page <= 1;
+            nextBtn.disabled = page >= pages;
+            
+            pagination.style.display = pages > 1 ? 'flex' : 'none';
+        }
+        
+        // 更新告警数量
+        function updateAlertsCount(total) {
+            document.getElementById('alertsCount').textContent = `共 ${total} 条告警`;
+        }
+        
+        // 更新统计信息
+        function updateStats(stats) {
+            document.getElementById('totalAlerts').textContent = stats.total_alerts || 0;
+            document.getElementById('unhandledAlerts').textContent = stats.unhandled_alerts || 0;
+            document.getElementById('highLevelAlerts').textContent = stats.high_level_alerts || 0;
+            document.getElementById('todayAlerts').textContent = stats.today_alerts || 0;
+        }
+        
+        // 切换页面
+        function changePage(delta) {
+            const newPage = currentPage + delta;
+            if (newPage >= 1 && newPage <= totalPages) {
+                currentPage = newPage;
+                loadAlerts();
+            }
+        }
+        
+        // 重置搜索
+        function resetSearch() {
+            document.getElementById('searchForm').reset();
+            currentPage = 1;
+            loadAlerts();
+        }
+        
+        // 确认告警
+        function acknowledgeAlert(alertId) {
+            fetch('/api/alerts/acknowledge', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ alert_id: alertId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadAlerts();
+                    loadStats();
+                } else {
+                    alert('操作失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('操作失败: ' + error.message);
+            });
+        }
+        
+        // 取消确认告警
+        function unacknowledgeAlert(alertId) {
+            fetch('/api/alerts/unacknowledge', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ alert_id: alertId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadAlerts();
+                    loadStats();
+                } else {
+                    alert('操作失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('操作失败: ' + error.message);
+            });
+        }
+        
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html> 

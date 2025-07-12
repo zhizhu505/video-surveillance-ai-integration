@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any, Union
 from datetime import datetime
 
-from models.alert_rule import AlertLevel
+from models.alert.alert_rule import AlertLevel
 
 
 @dataclass
@@ -18,6 +18,7 @@ class AlertEvent:
     id: str                      # 唯一事件标识符
     rule_id: str                 # 触发该告警的规则ID
     level: AlertLevel            # 告警级别
+    danger_level: str            # 危险级别 (low, medium, high)
     source_type: str             # 触发告警的来源类型
     timestamp: float             # 告警生成时的Unix时间戳
     message: str                 # 可读的告警信息
@@ -208,7 +209,7 @@ class AlertEventStore:
                 return event
         return None
     # 批量获取（筛选）告警事件
-    def get_events(self, count: int = None, level: Optional[AlertLevel] = None, 
+    def get_events(self, count: Optional[int] = None, level: Optional[AlertLevel] = None, 
                   source_type: Optional[str] = None, 
                   acknowledged: Optional[bool] = None) -> List[AlertEvent]:
         """

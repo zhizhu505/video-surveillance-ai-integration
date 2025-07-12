@@ -1,0 +1,29 @@
+{
+    "mysql": {
+        "host": "localhost",
+        "port": 3306,
+        "user": "root",
+        "password": "cangshu606",
+        "database": "video_surveillance_alerts",
+        "charset": "utf8mb4",
+        "autocommit": true,
+        "pool_size": 10,
+        "pool_recycle": 3600
+    },
+    "sqlite": {
+        "database": "alerts.db",
+        "timeout": 30
+    },
+    "default": "mysql",
+    "backup": {
+        "enabled": true,
+        "interval_hours": 24,
+        "retention_days": 7,
+        "backup_path": "./backups"
+    },
+    "cleanup": {
+        "enabled": true,
+        "retention_days": 90,
+        "auto_cleanup_hours": 24
+    }
+} 
