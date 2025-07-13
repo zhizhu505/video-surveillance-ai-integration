@@ -354,6 +354,25 @@
                     <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">
                         提示：点击"开始框选"后在视频上拖拽鼠标框选警戒区域
                     </div>
+                    
+                    <!-- 新增：手动输入坐标点配置 -->
+                    <div style="margin-top: 20px; border-top: 1px solid #dee2e6; padding-top: 15px;">
+                        <div class="config-title">手动输入坐标点</div>
+                        <div class="config-item">
+                            <label class="config-label">坐标点列表:</label>
+                            <div id="coordinate-points" style="margin-bottom: 10px;">
+                                <!-- 坐标点输入框会动态添加到这里 -->
+                            </div>
+                            <div class="config-buttons">
+                                <button class="config-btn secondary" id="add-point-btn">添加点</button>
+                                <button class="config-btn primary" id="create-polygon-btn">创建多边形</button>
+                                <button class="config-btn secondary" id="clear-points-btn">清空点</button>
+                            </div>
+                        </div>
+                        <div style="font-size: 12px; color: #6c757d;">
+                            提示：输入坐标点后点击"创建多边形"生成警戒区域
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="stat-row" style="display: flex; gap: 10px;">
@@ -436,6 +455,15 @@
             const startSelectionBtn = document.getElementById('start-selection-btn');
             const resetRegionBtn = document.getElementById('reset-region-btn');
             const selectionBox = document.getElementById('selection-box');
+            
+            // 新增：坐标点相关元素
+            const coordinatePointsContainer = document.getElementById('coordinate-points');
+            const addPointBtn = document.getElementById('add-point-btn');
+            const createPolygonBtn = document.getElementById('create-polygon-btn');
+            const clearPointsBtn = document.getElementById('clear-points-btn');
+            
+            // 新增：坐标点数组
+            let coordinatePoints = [];
             
             // 新增：框选相关变量
             let isSelecting = false;
@@ -605,10 +633,105 @@
                 selectionBox.style.display = 'none';
             });
             
+            // 新增：添加坐标点
+            function addCoordinatePoint() {
+                const pointIndex = coordinatePoints.length;
+                const pointDiv = document.createElement('div');
+                pointDiv.className = 'config-item';
+                pointDiv.style.display = 'flex';
+                pointDiv.style.gap = '10px';
+                pointDiv.style.alignItems = 'center';
+                pointDiv.style.marginBottom = '5px';
+                
+                const pointLabel = document.createElement('span');
+                pointLabel.textContent = `点${pointIndex + 1}:`;
+                pointLabel.style.fontSize = '12px';
+                pointLabel.style.fontWeight = 'bold';
+                pointLabel.style.minWidth = '30px';
+                
+                const xInput = document.createElement('input');
+                xInput.type = 'number';
+                xInput.placeholder = 'X坐标';
+                xInput.className = 'config-input';
+                xInput.style.flex = '1';
+                xInput.style.padding = '4px 8px';
+                xInput.style.fontSize = '12px';
+                
+                const yInput = document.createElement('input');
+                yInput.type = 'number';
+                yInput.placeholder = 'Y坐标';
+                yInput.className = 'config-input';
+                yInput.style.flex = '1';
+                yInput.style.padding = '4px 8px';
+                yInput.style.fontSize = '12px';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '删除';
+                removeBtn.className = 'config-btn danger';
+                removeBtn.style.padding = '4px 8px';
+                removeBtn.style.fontSize = '12px';
+                removeBtn.onclick = function() {
+                    coordinatePointsContainer.removeChild(pointDiv);
+                    coordinatePoints.splice(pointIndex, 1);
+                    updatePointLabels();
+                };
+                
+                pointDiv.appendChild(pointLabel);
+                pointDiv.appendChild(xInput);
+                pointDiv.appendChild(yInput);
+                pointDiv.appendChild(removeBtn);
+                
+                coordinatePointsContainer.appendChild(pointDiv);
+                coordinatePoints.push({ xInput, yInput, div: pointDiv });
+            }
+            
+            // 新增：更新坐标点标签
+            function updatePointLabels() {
+                coordinatePoints.forEach((point, index) => {
+                    const label = point.div.querySelector('span');
+                    label.textContent = `点${index + 1}:`;
+                });
+            }
+            
+            // 新增：清空坐标点
+            function clearCoordinatePoints() {
+                coordinatePointsContainer.innerHTML = '';
+                coordinatePoints = [];
+            }
+            
+            // 新增：创建多边形警戒区域
+            function createPolygonRegion() {
+                if (coordinatePoints.length < 3) {
+                    alert('至少需要3个点才能创建多边形！');
+                    return;
+                }
+                
+                const points = [];
+                for (let i = 0; i < coordinatePoints.length; i++) {
+                    const x = parseInt(coordinatePoints[i].xInput.value);
+                    const y = parseInt(coordinatePoints[i].yInput.value);
+                    
+                    if (isNaN(x) || isNaN(y)) {
+                        alert(`点${i + 1}的坐标输入无效，请输入数字！`);
+                        return;
+                    }
+                    
+                    points.push([x, y]);
+                }
+                
+                // 设置多边形警戒区域
+                setAlertRegion(points);
+            }
+            
             // 新增：绑定配置按钮事件
             setThresholdBtn.addEventListener('click', setDwellTimeThreshold);
             startSelectionBtn.addEventListener('click', startSelection);
             resetRegionBtn.addEventListener('click', resetAlertRegion);
+            
+            // 新增：绑定坐标点按钮事件
+            addPointBtn.addEventListener('click', addCoordinatePoint);
+            createPolygonBtn.addEventListener('click', createPolygonRegion);
+            clearPointsBtn.addEventListener('click', clearCoordinatePoints);
             
             // 更新状态UI
             function updateStatusUI(status) {
