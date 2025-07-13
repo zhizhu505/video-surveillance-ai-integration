@@ -238,7 +238,77 @@
             display: block;
             object-fit: contain;
             background: #1f2022;
+            cursor: crosshair;
         }
+        
+        /* 新增：配置面板样式 */
+        .config-panel {
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #dee2e6;
+        }
+        .config-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+        .config-item {
+            margin-bottom: 15px;
+        }
+        .config-label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #495057;
+        }
+        .config-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .config-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        .config-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .config-btn {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+        .config-btn.primary {
+            background-color: #3498db;
+        }
+        .config-btn.secondary {
+            background-color: #6c757d;
+        }
+        .config-btn.danger {
+            background-color: #e74c3c;
+        }
+        .config-btn:hover {
+            opacity: 0.8;
+        }
+        
+        /* 新增：选择框样式 */
+        .selection-box {
+            position: absolute;
+            border: 2px dashed #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
         /* 响应式设计 */
         @media (max-width: 992px) {
             .main {
@@ -260,13 +330,32 @@
         <div class="main">
             <div class="video-container">
                 <div class="loading">正在连接视频流...</div>
-                <img class="video-stream" src="{{ url_for('video_feed') }}" alt="视频流">
+                <img class="video-stream" src="{{ url_for('video_feed') }}" alt="视频流" id="video-stream">
+                <div class="selection-box" id="selection-box" style="display: none;"></div>
             </div>
             <div class="info-panel">
                 <h2>系统状态</h2>
                 <div class="system-status">
                     <p><span class="status-indicator status-running" id="status-dot"></span> <span id="status-text">运行中</span></p>
                 </div>
+                
+                <!-- 新增：配置面板 -->
+                <div class="config-panel">
+                    <div class="config-title">警戒区域配置</div>
+                    <div class="config-item">
+                        <label class="config-label">停留时间阈值（秒）:</label>
+                        <input type="number" class="config-input" id="dwell-time-threshold" value="1.0" min="0.1" max="60.0" step="0.1">
+                    </div>
+                    <div class="config-buttons">
+                        <button class="config-btn primary" id="set-threshold-btn">设置阈值</button>
+                        <button class="config-btn secondary" id="start-selection-btn">开始框选</button>
+                        <button class="config-btn danger" id="reset-region-btn">重置区域</button>
+                    </div>
+                    <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">
+                        提示：点击"开始框选"后在视频上拖拽鼠标框选警戒区域
+                    </div>
+                </div>
+                
                 <div class="stat-row" style="display: flex; gap: 10px;">
                     <div class="stat-box" style="flex: 1;">
                         <div class="stat-title">实时帧率</div>
@@ -340,9 +429,23 @@
             const loadingElement = document.querySelector('.loading');
             const videoElement = document.querySelector('.video-stream');
             const frameCountElement = document.getElementById('frame-count');
+            
+            // 新增：配置相关元素
+            const dwellTimeThresholdInput = document.getElementById('dwell-time-threshold');
+            const setThresholdBtn = document.getElementById('set-threshold-btn');
+            const startSelectionBtn = document.getElementById('start-selection-btn');
+            const resetRegionBtn = document.getElementById('reset-region-btn');
+            const selectionBox = document.getElementById('selection-box');
+            
+            // 新增：框选相关变量
+            let isSelecting = false;
+            let selectionStart = { x: 0, y: 0 };
+            let currentSelection = { x: 0, y: 0, width: 0, height: 0 };
+            
             // 系统状态
             let systemState = 'running';
             let previousAlertCount = 0;
+            
             // 图像加载处理
             videoElement.onload = function() {
                 loadingElement.style.display = 'none';
@@ -350,6 +453,163 @@
             videoElement.onerror = function() {
                 loadingElement.textContent = '视频流连接失败，请检查系统状态';
             };
+            
+            // 新增：设置时间阈值
+            function setDwellTimeThreshold() {
+                const threshold = parseFloat(dwellTimeThresholdInput.value);
+                if (isNaN(threshold) || threshold <= 0) {
+                    alert('请输入有效的时间阈值（大于0的数字）');
+                    return;
+                }
+                
+                fetch('/config/dwell_time_threshold', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ threshold: threshold }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('时间阈值设置成功！');
+                    } else {
+                        alert('设置失败：' + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error('设置时间阈值失败:', err);
+                    alert('设置失败，请检查网络连接');
+                });
+            }
+            
+            // 新增：开始框选
+            function startSelection() {
+                isSelecting = true;
+                startSelectionBtn.textContent = '框选中...';
+                startSelectionBtn.disabled = true;
+                videoElement.style.cursor = 'crosshair';
+                alert('请在视频上拖拽鼠标框选警戒区域');
+            }
+            
+            // 新增：重置警戒区域
+            function resetAlertRegion() {
+                fetch('/config/reset_alert_region', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('警戒区域已重置！');
+                        // 刷新视频流以显示更新
+                        videoElement.src = '/video_feed?' + new Date().getTime();
+                    } else {
+                        alert('重置失败：' + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error('重置警戒区域失败:', err);
+                    alert('重置失败，请检查网络连接');
+                });
+            }
+            
+            // 新增：设置警戒区域
+            function setAlertRegion(region) {
+                fetch('/config/alert_region', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ region: region }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('警戒区域设置成功！');
+                        // 刷新视频流以显示更新
+                        videoElement.src = '/video_feed?' + new Date().getTime();
+                    } else {
+                        alert('设置失败：' + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error('设置警戒区域失败:', err);
+                    alert('设置失败，请检查网络连接');
+                });
+            }
+            
+            // 新增：鼠标事件处理
+            videoElement.addEventListener('mousedown', function(e) {
+                if (!isSelecting) return;
+                
+                const rect = videoElement.getBoundingClientRect();
+                selectionStart.x = e.clientX - rect.left;
+                selectionStart.y = e.clientY - rect.top;
+                
+                selectionBox.style.left = selectionStart.x + 'px';
+                selectionBox.style.top = selectionStart.y + 'px';
+                selectionBox.style.width = '0px';
+                selectionBox.style.height = '0px';
+                selectionBox.style.display = 'block';
+            });
+            
+            videoElement.addEventListener('mousemove', function(e) {
+                if (!isSelecting) return;
+                
+                const rect = videoElement.getBoundingClientRect();
+                const currentX = e.clientX - rect.left;
+                const currentY = e.clientY - rect.top;
+                
+                const width = Math.abs(currentX - selectionStart.x);
+                const height = Math.abs(currentY - selectionStart.y);
+                const left = Math.min(currentX, selectionStart.x);
+                const top = Math.min(currentY, selectionStart.y);
+                
+                selectionBox.style.left = left + 'px';
+                selectionBox.style.top = top + 'px';
+                selectionBox.style.width = width + 'px';
+                selectionBox.style.height = height + 'px';
+                
+                currentSelection = { x: left, y: top, width: width, height: height };
+            });
+            
+            videoElement.addEventListener('mouseup', function(e) {
+                if (!isSelecting) return;
+                
+                // 计算实际视频坐标（考虑视频缩放）
+                const videoRect = videoElement.getBoundingClientRect();
+                const videoWidth = videoElement.naturalWidth;
+                const videoHeight = videoElement.naturalHeight;
+                
+                const scaleX = videoWidth / videoRect.width;
+                const scaleY = videoHeight / videoRect.height;
+                
+                const region = [
+                    [Math.round(currentSelection.x * scaleX), Math.round(currentSelection.y * scaleY)],
+                    [Math.round((currentSelection.x + currentSelection.width) * scaleX), Math.round(currentSelection.y * scaleY)],
+                    [Math.round((currentSelection.x + currentSelection.width) * scaleX), Math.round((currentSelection.y + currentSelection.height) * scaleY)],
+                    [Math.round(currentSelection.x * scaleX), Math.round((currentSelection.y + currentSelection.height) * scaleY)]
+                ];
+                
+                // 设置警戒区域
+                setAlertRegion(region);
+                
+                // 重置框选状态
+                isSelecting = false;
+                startSelectionBtn.textContent = '开始框选';
+                startSelectionBtn.disabled = false;
+                videoElement.style.cursor = 'default';
+                selectionBox.style.display = 'none';
+            });
+            
+            // 新增：绑定配置按钮事件
+            setThresholdBtn.addEventListener('click', setDwellTimeThreshold);
+            startSelectionBtn.addEventListener('click', startSelection);
+            resetRegionBtn.addEventListener('click', resetAlertRegion);
+            
             // 更新状态UI
             function updateStatusUI(status) {
                 statusDotElement.className = 'status-indicator';

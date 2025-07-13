@@ -99,9 +99,24 @@ class DangerRecognizer:
         self.tracking_max_distance = 50  # 最大中心点距离，判定为同一人
         self.tracking_max_missing = 30   # 最大丢失帧数
         
+        # 添加属性访问器，方便动态更新配置
+        self._dwell_time_threshold_s = self.config['dwell_time_threshold_s']
+        
         logger.info(f"危险行为识别器已初始化，特征点阈值:{self.config['feature_count_threshold']}, " + 
                    f"变化率阈值:{self.config['feature_change_ratio']}, " +
                    f"危险区域停留阈值:{self.config['dwell_time_threshold_s']}秒")
+    
+    @property
+    def dwell_time_threshold_s(self):
+        """获取停留时间阈值"""
+        return self._dwell_time_threshold_s
+    
+    @dwell_time_threshold_s.setter
+    def dwell_time_threshold_s(self, value):
+        """设置停留时间阈值"""
+        self._dwell_time_threshold_s = value
+        self.config['dwell_time_threshold_s'] = value
+        logger.info(f"停留时间阈值已更新为: {value}秒")
     
     def add_alert_region(self, region, name="警戒区"):
         """添加告警区域
@@ -118,6 +133,11 @@ class DangerRecognizer:
         })
         logger.info(f"已添加告警区域: {name}")
         return len(self.alert_regions) - 1  # 返回区域ID
+    
+    def clear_alert_regions(self):
+        """清除所有告警区域"""
+        self.alert_regions.clear()
+        logger.info("已清除所有告警区域")
     
     def _calculate_distance_to_region(self, bbox, region_points):
         """计算边界框到危险区域的距离
@@ -244,7 +264,7 @@ class DangerRecognizer:
                     dwell_time = current_time - self.danger_zone_trackers[object_id]['start_time']
                     
                     # 检查是否超过停留时间阈值
-                    if (dwell_time >= self.config['dwell_time_threshold_s'] and 
+                    if (dwell_time >= self.dwell_time_threshold_s and 
                         object_id not in self.dwell_alert_cooldown):
                         
                         # 触发告警
@@ -262,7 +282,7 @@ class DangerRecognizer:
                             'region_id': region_id,
                             'region_name': region_name,
                             'dwell_time': dwell_time,
-                            'threshold': self.config['dwell_time_threshold_s'],
+                            'threshold': self.dwell_time_threshold_s,
                             'bbox': bbox
                         }
                         alerts.append(alert)

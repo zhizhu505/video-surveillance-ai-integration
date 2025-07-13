@@ -173,11 +173,15 @@ class AllInOneSystem:
         # 初始化视频录制器，如果用户传了 --record 参数，就把最终处理后的画面同时录制到视频文件里保存
         self.video_writer = None
         if args.record:
-            # 使用标准写法，兼容大多数OpenCV版本
-            fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
-            output_path = os.path.join(args.output, f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.avi")
-            self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, args.height))
-            logger.info(f"视频将录制到: {output_path}")
+            try:
+                # 兼容OpenCV不同版本的VideoWriter_fourcc写法
+                fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')  # type: ignore
+                output_path = os.path.join(args.output, f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.avi")
+                self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, self.args.height))
+                logger.info(f"视频将录制到: {output_path}")
+            except Exception as e:
+                logger.error(f"初始化视频录制器失败: {str(e)}")
+                self.video_writer = None
 
         # 自动启动音频监控线程（如可用）
         self.audio_thread = None
@@ -260,6 +264,8 @@ class AllInOneSystem:
         def handle_alert():
             # 处理告警（标记为已处理）
             data = request.json
+            if data is None:
+                return jsonify({'status': 'error', 'message': 'Invalid JSON data'})
             alert_id = data.get('alert_id')
             
             with self.alert_lock:
@@ -281,6 +287,8 @@ class AllInOneSystem:
         def unhandle_alert():
             # 取消处理告警（标记为未处理）
             data = request.json
+            if data is None:
+                return jsonify({'status': 'error', 'message': 'Invalid JSON data'})
             alert_id = data.get('alert_id')
             
             with self.alert_lock:
@@ -301,7 +309,10 @@ class AllInOneSystem:
         @self.app.route('/control', methods=['POST'])
         def control():
             """控制API"""
-            action = request.json.get('action', '')
+            data = request.json
+            if data is None:
+                return jsonify({'status': 'error', 'message': 'Invalid JSON data'})
+            action = data.get('action', '')
             if action == 'start':
                 self.running = True
                 return jsonify({'status': 'success', 'message': 'System started'})
@@ -313,9 +324,60 @@ class AllInOneSystem:
                 return jsonify({'status': 'success', 'message': f'System {"paused" if self.paused else "resumed"}'})
             return jsonify({'status': 'error', 'message': f'Unknown action: {action}'})
 
+        @self.app.route('/config/dwell_time_threshold', methods=['POST'])
+        def set_dwell_time_threshold():
+            """设置停留时间阈值"""
+            try:
+                data = request.json
+                if data is None:
+                    return jsonify({'success': False, 'message': 'Invalid JSON data'})
+                threshold = data.get('threshold')
+                if threshold is None or threshold <= 0:
+                    return jsonify({'success': False, 'message': '无效的时间阈值'})
+                
+                # 更新危险识别器的配置
+                self.danger_recognizer.dwell_time_threshold_s = threshold
+                logger.info(f"停留时间阈值已更新为: {threshold}秒")
+                return jsonify({'success': True, 'message': '时间阈值设置成功'})
+            except Exception as e:
+                logger.error(f"设置时间阈值失败: {str(e)}")
+                return jsonify({'success': False, 'message': f'设置失败: {str(e)}'})
+
+        @self.app.route('/config/alert_region', methods=['POST'])
+        def set_alert_region():
+            """设置警戒区域"""
+            try:
+                data = request.json
+                if data is None:
+                    return jsonify({'success': False, 'message': 'Invalid JSON data'})
+                region = data.get('region')
+                if not region or not isinstance(region, list) or len(region) < 3:
+                    return jsonify({'success': False, 'message': '无效的警戒区域格式'})
+                
+                # 清除现有警戒区域并添加新的
+                self.danger_recognizer.clear_alert_regions()
+                self.danger_recognizer.add_alert_region(region, "用户框选警戒区")
+                logger.info(f"警戒区域已更新: {region}")
+                return jsonify({'success': True, 'message': '警戒区域设置成功'})
+            except Exception as e:
+                logger.error(f"设置警戒区域失败: {str(e)}")
+                return jsonify({'success': False, 'message': f'设置失败: {str(e)}'})
+
+        @self.app.route('/config/reset_alert_region', methods=['POST'])
+        def reset_alert_region():
+            """重置警戒区域"""
+            try:
+                self.danger_recognizer.clear_alert_regions()
+                logger.info("警戒区域已重置")
+                return jsonify({'success': True, 'message': '警戒区域已重置'})
+            except Exception as e:
+                logger.error(f"重置警戒区域失败: {str(e)}")
+                return jsonify({'success': False, 'message': f'重置失败: {str(e)}'})
+
         def run_web_server():
             """在单独的线程中运行Web服务器"""
-            self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
+            if self.app is not None:
+                self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
 
         # 启动Web服务器线程
         web_thread = threading.Thread(target=run_web_server)
@@ -413,7 +475,10 @@ class AllInOneSystem:
         # 设置摄像头参数（仅用于本地摄像头）
         if source == 0 or (isinstance(source, int) and source >= 0):
             # 尝试设置MJPG格式（如果支持）
-            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
+            try:
+                cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))  # type: ignore
+            except Exception as e:
+                logger.warning(f"设置MJPG格式失败: {str(e)}")
             # 尝试设置缓冲区大小最小
             cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
@@ -626,7 +691,7 @@ class AllInOneSystem:
                 self.fps = self.frame_count / elapsed if elapsed > 0 else 0
 
                 # 录制视频
-                if self.video_writer is not None:
+                if self.video_writer is not None and vis_frame is not None:
                     # 确保尺寸匹配
                     if vis_frame.shape[1] != self.args.width or vis_frame.shape[0] != self.args.height:
                         vis_frame_resized = cv2.resize(vis_frame, (self.args.width, self.args.height))
