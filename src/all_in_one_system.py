@@ -361,53 +361,47 @@ class AllInOneSystem:
                 return jsonify({'success': False, 'message': '数据库未初始化'})
             
             try:
-                # 获取查询参数
+                import datetime
+                # 分页参数
                 page = int(request.args.get('page', 1))
                 limit = int(request.args.get('limit', 10))
                 offset = (page - 1) * limit
-                
-                # 获取过滤参数
-                level = request.args.get('level')
+                # 新增筛选参数
+                danger_level = request.args.get('danger_level')
                 source_type = request.args.get('source_type')
                 acknowledged = request.args.get('acknowledged')
-                if acknowledged is not None:
-                    acknowledged = acknowledged.lower() == 'true'
-                
-                start_time = request.args.get('start_time')
-                if start_time and start_time.strip():
-                    start_time = float(start_time)
+                start_time = request.args.get('start_time', type=float)
+                end_time = request.args.get('end_time', type=float)
+                # 时间戳转DATETIME字符串
+                def ts2dtstr(ts):
+                    if ts:
+                        return datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                    return None
+                start_time_str = ts2dtstr(start_time) if start_time else None
+                end_time_str = ts2dtstr(end_time) if end_time else None
+                # 处理 acknowledged 字符串转布尔
+                if acknowledged == 'true':
+                    acknowledged = True
+                elif acknowledged == 'false':
+                    acknowledged = False
                 else:
-                    start_time = None
-                
-                end_time = request.args.get('end_time')
-                if end_time and end_time.strip():
-                    end_time = float(end_time)
-                else:
-                    end_time = None
-                
-                search_text = request.args.get('search_text')
-                
-                # 查询告警
+                    acknowledged = None
                 alerts = self.alert_database.get_alert_events(
                     limit=limit,
                     offset=offset,
-                    level=level,
+                    danger_level=danger_level,
                     source_type=source_type,
                     acknowledged=acknowledged,
-                    start_time=start_time,
-                    end_time=end_time,
-                    search_text=search_text
+                    start_time=start_time_str,
+                    end_time=end_time_str
                 )
-                
-                # 获取总数
                 total = self.alert_database.get_alert_count(
-                    level=level,
+                    danger_level=danger_level,
                     source_type=source_type,
                     acknowledged=acknowledged,
-                    start_time=start_time,
-                    end_time=end_time
+                    start_time=start_time_str,
+                    end_time=end_time_str
                 )
-                
                 pages = (total + limit - 1) // limit
                 
                 return jsonify({
@@ -423,36 +417,30 @@ class AllInOneSystem:
         
         @self.app.route('/api/alerts/statistics')
         def api_alerts_statistics():
-            # 告警统计API
             if not self.alert_database:
                 return jsonify({'success': False, 'message': '数据库未初始化'})
-            
             try:
                 days = int(request.args.get('days', 30))
                 stats = self.alert_database.get_alert_statistics(days)
-                
-                # 计算今日告警数
-                import time
-                today_start = time.time() - (time.time() % 86400)  # 今天开始时间
-                today_alerts = self.alert_database.get_alert_count(start_time=today_start)
-                
+                # 今日告警数
+                import datetime
+                today = datetime.date.today()
+                today_start_dt = datetime.datetime.combine(today, datetime.time.min)
+                today_start_str = today_start_dt.strftime('%Y-%m-%d %H:%M:%S')
+                today_alerts = self.alert_database.get_alert_count(start_time=today_start_str)
                 # 计算未处理告警数
                 unhandled_alerts = self.alert_database.get_alert_count(acknowledged=False)
-                
                 # 计算高级别告警数
                 high_level_alerts = self.alert_database.get_alert_count(level='CRITICAL')
-                
                 stats.update({
                     'today_alerts': today_alerts,
                     'unhandled_alerts': unhandled_alerts,
                     'high_level_alerts': high_level_alerts
                 })
-                
                 return jsonify({
                     'success': True,
                     'stats': stats
                 })
-                
             except Exception as e:
                 return jsonify({'success': False, 'message': str(e)})
         
@@ -499,6 +487,17 @@ class AllInOneSystem:
                 else:
                     return jsonify({'success': False, 'message': '告警不存在'})
                     
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})
+
+        @self.app.route('/api/alerts/source_types')
+        def api_alert_source_types():
+            try:
+                with self.alert_database._get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute("SELECT DISTINCT source_type FROM alert_events")
+                        types = [row['source_type'] for row in cursor.fetchall() if row['source_type']]
+                return jsonify({'success': True, 'types': types})
             except Exception as e:
                 return jsonify({'success': False, 'message': str(e)})
 

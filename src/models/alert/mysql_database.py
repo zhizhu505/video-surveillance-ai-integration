@@ -135,11 +135,12 @@ class MySQLAlertDatabase:
     def get_alert_events(self, 
                         limit: int = 100,
                         offset: int = 0,
+                        danger_level: Optional[str] = None,
                         level: Optional[str] = None,
                         source_type: Optional[str] = None,
                         acknowledged: Optional[bool] = None,
-                        start_time: Optional[float] = None,
-                        end_time: Optional[float] = None,
+                        start_time: Optional[str] = None,  # 起始时间DATETIME字符串
+                        end_time: Optional[str] = None,    # 结束时间DATETIME字符串
                         search_text: Optional[str] = None) -> List[Dict[str, Any]]:
         """
         查询告警事件
@@ -147,11 +148,12 @@ class MySQLAlertDatabase:
         Args:
             limit: 返回结果数量限制
             offset: 分页偏移量
+            danger_level: 危险级别过滤
             level: 告警级别过滤
             source_type: 来源类型过滤
             acknowledged: 是否已确认过滤
-            start_time: 开始时间戳
-            end_time: 结束时间戳
+            start_time: 起始时间DATETIME字符串
+            end_time: 结束时间DATETIME字符串
             search_text: 搜索文本（在消息和详情中搜索）
             
         Returns:
@@ -165,6 +167,10 @@ class MySQLAlertDatabase:
                         # 构建查询条件
                         conditions = []
                         params = []
+                        
+                        if danger_level:
+                            conditions.append("danger_level = %s")
+                            params.append(danger_level)
                         
                         if level:
                             conditions.append("level = %s")
@@ -202,7 +208,7 @@ class MySQLAlertDatabase:
                             LEFT JOIN alert_images i ON e.id = i.event_id
                             WHERE {where_clause}
                             GROUP BY e.id
-                            ORDER BY e.event_time DESC
+                            ORDER BY e.id ASC
                             LIMIT %s OFFSET %s
                         """
                         
@@ -237,7 +243,14 @@ class MySQLAlertDatabase:
                                 event_dict['images'] = {}
                             
                             # 添加可读时间
-                            event_dict['datetime'] = datetime.fromtimestamp(event_dict['event_time']).strftime('%Y-%m-%d %H:%M:%S')
+                            et = event_dict['event_time']
+                            if isinstance(et, datetime):
+                                event_dict['datetime'] = et.strftime('%Y-%m-%d %H:%M:%S')
+                            else:
+                                try:
+                                    event_dict['datetime'] = datetime.fromtimestamp(float(et)).strftime('%Y-%m-%d %H:%M:%S')
+                                except Exception:
+                                    event_dict['datetime'] = str(et)
                             
                             results.append(event_dict)
                         
@@ -248,20 +261,23 @@ class MySQLAlertDatabase:
             return []
     
     def get_alert_count(self, 
+                       danger_level: Optional[str] = None,
                        level: Optional[str] = None,
                        source_type: Optional[str] = None,
                        acknowledged: Optional[bool] = None,
-                       start_time: Optional[float] = None,
-                       end_time: Optional[float] = None) -> int:
+                       start_time: Optional[str] = None,  # 起始时间DATETIME字符串
+                       end_time: Optional[str] = None    # 结束时间DATETIME字符串
+    ) -> int:
         """
         获取告警事件数量
         
         Args:
+            danger_level: 危险级别过滤
             level: 告警级别过滤
             source_type: 来源类型过滤
             acknowledged: 是否已确认过滤
-            start_time: 开始时间戳
-            end_time: 结束时间戳
+            start_time: 起始时间DATETIME字符串
+            end_time: 结束时间DATETIME字符串
             
         Returns:
             告警事件数量
@@ -274,6 +290,10 @@ class MySQLAlertDatabase:
                         # 构建查询条件
                         conditions = []
                         params = []
+                        
+                        if danger_level:
+                            conditions.append("danger_level = %s")
+                            params.append(danger_level)
                         
                         if level:
                             conditions.append("level = %s")
@@ -376,67 +396,46 @@ class MySQLAlertDatabase:
             with self.lock:
                 with self._get_connection() as conn:
                     with conn.cursor() as cursor:
-                        
-                        # 计算时间范围
                         end_time = time.time()
                         start_time = end_time - (days * 24 * 3600)
-                        
-                        # 使用存储过程获取统计
-                        cursor.callproc('get_alert_statistics', [days])
-                        result = cursor.fetchone()
-                        
-                        if result:
-                            stats = {
-                                'total_alerts': result['total_alerts'],
-                                'unhandled_alerts': result['unhandled_alerts'],
-                                'critical_alerts': result['critical_alerts'],
-                                'alert_alerts': result['alert_alerts'],
-                                'warning_alerts': result['warning_alerts'],
-                                'info_alerts': result['info_alerts'],
-                                'period_days': days
-                            }
-                        else:
-                            stats = {
-                                'total_alerts': 0,
-                                'unhandled_alerts': 0,
-                                'critical_alerts': 0,
-                                'alert_alerts': 0,
-                                'warning_alerts': 0,
-                                'info_alerts': 0,
-                                'period_days': days
-                            }
-                        
-                        # 按来源类型统计
-                        cursor.execute("""
-                            SELECT source_type, COUNT(*) as count 
-                            FROM alert_events 
-                            WHERE event_time >= %s
-                            GROUP BY source_type
-                        """, (start_time,))
-                        
-                        source_stats = {}
-                        for row in cursor.fetchall():
-                            source_stats[row['source_type']] = row['count']
-                        
-                        stats['source_statistics'] = source_stats
-                        
-                        # 每日告警趋势
-                        cursor.execute("""
-                            SELECT DATE(FROM_UNIXTIME(event_time)) as date, COUNT(*) as count
-                            FROM alert_events 
-                            WHERE event_time >= %s
-                            GROUP BY date
-                            ORDER BY date
-                        """, (start_time,))
-                        
-                        daily_trend = {}
-                        for row in cursor.fetchall():
-                            daily_trend[str(row['date'])] = row['count']
-                        
-                        stats['daily_trend'] = daily_trend
-                        
+                        stats = {
+                            'total_alerts': 0,
+                            'unhandled_alerts': 0,
+                            'handled_alerts': 0,
+                            'high_level_alerts': 0,
+                            'medium_level_alerts': 0,
+                            'low_level_alerts': 0,
+                            'today_alerts': 0,
+                            'period_days': days
+                        }
+                        # 总告警数
+                        cursor.execute("SELECT COUNT(*) as total FROM alert_events WHERE event_time >= %s", (start_time,))
+                        row = cursor.fetchone()
+                        stats['total_alerts'] = row['total'] if row and 'total' in row else 0
+                        # 未处理告警
+                        cursor.execute("SELECT COUNT(*) as count FROM alert_events WHERE event_time >= %s AND acknowledged = 0", (start_time,))
+                        row = cursor.fetchone()
+                        stats['unhandled_alerts'] = row['count'] if row and 'count' in row else 0
+                        # 已处理告警
+                        stats['handled_alerts'] = stats['total_alerts'] - stats['unhandled_alerts']
+                        # 各级别
+                        cursor.execute("SELECT COUNT(*) as count FROM alert_events WHERE event_time >= %s AND danger_level = 'high'", (start_time,))
+                        row = cursor.fetchone()
+                        stats['high_level_alerts'] = row['count'] if row and 'count' in row else 0
+                        cursor.execute("SELECT COUNT(*) as count FROM alert_events WHERE event_time >= %s AND danger_level = 'medium'", (start_time,))
+                        row = cursor.fetchone()
+                        stats['medium_level_alerts'] = row['count'] if row and 'count' in row else 0
+                        cursor.execute("SELECT COUNT(*) as count FROM alert_events WHERE event_time >= %s AND danger_level = 'low'", (start_time,))
+                        row = cursor.fetchone()
+                        stats['low_level_alerts'] = row['count'] if row and 'count' in row else 0
+                        # 今日告警
+                        import datetime
+                        today = datetime.date.today()
+                        today_start = int(datetime.datetime.combine(today, datetime.time.min).timestamp())
+                        cursor.execute("SELECT COUNT(*) as count FROM alert_events WHERE event_time >= %s", (today_start,))
+                        row = cursor.fetchone()
+                        stats['today_alerts'] = row['count'] if row and 'count' in row else 0
                         return stats
-                        
         except Exception as e:
             self.logger.error(f"获取告警统计失败: {str(e)}")
             return {}

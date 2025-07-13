@@ -142,7 +142,7 @@
         
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(6, 1fr);
             gap: 20px;
         }
         
@@ -356,6 +356,30 @@
                 gap: 10px;
             }
         }
+        .alerts-table th, .alerts-table td {
+          border: 1px solid #e0e0e0;
+          padding: 8px 10px;
+          text-align: center;
+        }
+        .alerts-table th {
+          background: #f0f4fa;
+          font-weight: bold;
+        }
+        .alerts-table tr:nth-child(even) {
+          background: #f9f9f9;
+        }
+        .stat-card-high {
+            background: linear-gradient(135deg, #e74c3c, #f1948a);
+            color: white;
+        }
+        .stat-card-medium {
+            background: linear-gradient(135deg, #f39c12, #f7ca18);
+            color: white;
+        }
+        .stat-card-low {
+            background: linear-gradient(135deg, #27ae60, #82e0aa);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -375,21 +399,6 @@
             <h3>🔍 搜索过滤</h3>
             <form class="search-form" id="searchForm">
                 <div class="form-group">
-                    <label for="searchText">搜索文本</label>
-                    <input type="text" id="searchText" placeholder="在告警消息和详情中搜索...">
-                </div>
-                
-                <div class="form-group">
-                    <label for="levelFilter">告警级别</label>
-                    <select id="levelFilter">
-                        <option value="">全部级别</option>
-                        <option value="high">高级别</option>
-                        <option value="medium">中级别</option>
-                        <option value="low">低级别</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
                     <label for="sourceFilter">来源类型</label>
                     <select id="sourceFilter">
                         <option value="">全部来源</option>
@@ -399,7 +408,15 @@
                         <option value="large_area_motion">大范围运动</option>
                     </select>
                 </div>
-                
+                <div class="form-group">
+                    <label for="levelFilter">告警级别</label>
+                    <select id="levelFilter">
+                        <option value="">全部级别</option>
+                        <option value="high">高级别</option>
+                        <option value="medium">中级别</option>
+                        <option value="low">低级别</option>
+                    </select>
+                </div>
                 <div class="form-group">
                     <label for="acknowledgedFilter">处理状态</label>
                     <select id="acknowledgedFilter">
@@ -408,17 +425,14 @@
                         <option value="true">已处理</option>
                     </select>
                 </div>
-                
                 <div class="form-group">
                     <label for="startDate">开始日期</label>
                     <input type="datetime-local" id="startDate">
                 </div>
-                
                 <div class="form-group">
                     <label for="endDate">结束日期</label>
                     <input type="datetime-local" id="endDate">
                 </div>
-                
                 <div class="search-buttons">
                     <button type="submit" class="btn btn-primary">🔍 搜索</button>
                     <button type="button" class="btn btn-secondary" onclick="resetSearch()">🔄 重置</button>
@@ -439,12 +453,20 @@
                     <div class="stat-label">未处理告警</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="highLevelAlerts">-</div>
-                    <div class="stat-label">高级别告警</div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-number" id="todayAlerts">-</div>
                     <div class="stat-label">今日告警</div>
+                </div>
+                <div class="stat-card stat-card-high">
+                    <div class="stat-number" id="highLevelAlerts">-</div>
+                    <div class="stat-label">高等级告警</div>
+                </div>
+                <div class="stat-card stat-card-medium">
+                    <div class="stat-number" id="mediumLevelAlerts">-</div>
+                    <div class="stat-label">中等级告警</div>
+                </div>
+                <div class="stat-card stat-card-low">
+                    <div class="stat-number" id="lowLevelAlerts">-</div>
+                    <div class="stat-label">低等级告警</div>
                 </div>
             </div>
         </div>
@@ -457,7 +479,23 @@
             </div>
             
             <div id="alertsList">
-                <div class="loading">正在加载告警数据...</div>
+                <div class="alerts-table-container" style="margin-top: 0;">
+                  <table class="alerts-table" style="width:100%;border-collapse:collapse;">
+                    <thead>
+                      <tr style="background:#f0f4fa;">
+                        <th>ID</th>
+                        <th>类型</th>
+                        <th>等级</th>
+                        <th>时间</th>
+                        <th>详情</th>
+                        <th>处理情况</th>
+                      </tr>
+                    </thead>
+                    <tbody id="alerts-tbody">
+                      <!-- JS动态填充 -->
+                    </tbody>
+                  </table>
+                </div>
             </div>
             
             <!-- 分页 -->
@@ -476,6 +514,7 @@
         
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
+            loadSourceTypes(); // 新增
             loadAlerts();
             loadStats();
             
@@ -489,16 +528,16 @@
         
         // 加载告警数据
         function loadAlerts() {
-            const alertsList = document.getElementById('alertsList');
-            alertsList.innerHTML = '<div class="loading">正在加载告警数据...</div>';
-            
+            const tbody = document.getElementById('alerts-tbody');
+            if (tbody) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;">正在加载告警数据...</td></tr>';
+            }
             // 构建查询参数
             const params = new URLSearchParams({
                 page: currentPage,
                 limit: 10,
                 ...getSearchFilters()
             });
-            
             fetch(`/api/alerts/history?${params}`)
                 .then(response => response.json())
                 .then(data => {
@@ -507,11 +546,11 @@
                         updatePagination(data.total, data.page, data.pages);
                         updateAlertsCount(data.total);
                     } else {
-                        alertsList.innerHTML = '<div class="no-alerts">加载失败: ' + data.message + '</div>';
+                        if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;">加载失败: ' + data.message + '</td></tr>';
                     }
                 })
                 .catch(error => {
-                    alertsList.innerHTML = '<div class="no-alerts">加载失败: ' + error.message + '</div>';
+                    if (tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;">加载失败: ' + error.message + '</td></tr>';
                 });
         }
         
@@ -529,96 +568,65 @@
                 });
         }
         
+        // 加载来源类型
+        function loadSourceTypes() {
+            fetch('/api/alerts/source_types')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const select = document.getElementById('sourceFilter');
+                        select.innerHTML = '<option value="">全部来源</option>';
+                        data.types.forEach(type => {
+                            select.innerHTML += `<option value="${type}">${type}</option>`;
+                        });
+                    }
+                });
+        }
+        
         // 获取搜索过滤条件
         function getSearchFilters() {
             const filters = {};
-            
-            const searchText = document.getElementById('searchText').value.trim();
-            if (searchText) filters.search_text = searchText;
-            
-            const level = document.getElementById('levelFilter').value;
-            if (level) filters.level = level;
-            
+            const dangerLevel = document.getElementById('levelFilter').value;
+            if (dangerLevel) filters.danger_level = dangerLevel;
             const sourceType = document.getElementById('sourceFilter').value;
             if (sourceType) filters.source_type = sourceType;
-            
             const acknowledged = document.getElementById('acknowledgedFilter').value;
             if (acknowledged !== '') filters.acknowledged = acknowledged;
-            
             const startDate = document.getElementById('startDate').value;
-            if (startDate) {
-                filters.start_time = new Date(startDate).getTime() / 1000;
-            }
-            
+            if (startDate) filters.start_time = new Date(startDate).getTime() / 1000;
             const endDate = document.getElementById('endDate').value;
-            if (endDate) {
-                filters.end_time = new Date(endDate).getTime() / 1000;
-            }
-            
+            if (endDate) filters.end_time = new Date(endDate).getTime() / 1000;
             return filters;
         }
         
         // 显示告警列表
         function displayAlerts(alerts) {
-            const alertsList = document.getElementById('alertsList');
-            
+            const tbody = document.getElementById('alerts-tbody');
+            if (!tbody) return;
             if (alerts.length === 0) {
-                alertsList.innerHTML = '<div class="no-alerts">没有找到符合条件的告警</div>';
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#888;">没有找到符合条件的告警</td></tr>';
                 return;
             }
-            
-            alertsList.innerHTML = alerts.map(alert => `
-                <div class="alert-item">
-                    <div class="alert-header">
-                        <div>
-                            <div class="alert-title">${escapeHtml(alert.message)}</div>
-                            <div class="alert-time">${alert.datetime}</div>
-                        </div>
-                        <div class="alert-level level-${alert.level.toLowerCase()}">${alert.level}</div>
-                    </div>
-                    
-                    <div class="alert-message">${escapeHtml(alert.message)}</div>
-                    
-                    <div class="alert-details">
-                        <div class="detail-row">
-                            <span class="detail-label">危险级别:</span>
-                            <span class="detail-value">${alert.danger_level}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">来源类型:</span>
-                            <span class="detail-value">${alert.source_type}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">处理状态:</span>
-                            <span class="detail-value">${alert.acknowledged ? '已处理' : '未处理'}</span>
-                        </div>
-                        ${alert.details && alert.details.location ? `
-                        <div class="detail-row">
-                            <span class="detail-label">位置信息:</span>
-                            <span class="detail-value">${escapeHtml(alert.details.location.description || '未知')}</span>
-                        </div>
-                        ` : ''}
-                        ${alert.details && alert.details.person_id ? `
-                        <div class="detail-row">
-                            <span class="detail-label">触发对象:</span>
-                            <span class="detail-value">ID: ${alert.details.person_id}</span>
-                        </div>
-                        ` : ''}
-                    </div>
-                    
-                    ${alert.images && alert.images.thumbnail ? `
-                    <img src="/alerts/${alert.id}_thumb.jpg" alt="告警截图" class="alert-image" 
-                         onerror="this.style.display='none'">
-                    ` : ''}
-                    
-                    <div class="alert-actions">
-                        ${!alert.acknowledged ? 
-                            `<button class="btn btn-success btn-sm" onclick="acknowledgeAlert('${alert.id}')">✅ 标记已处理</button>` :
-                            `<button class="btn btn-warning btn-sm" onclick="unacknowledgeAlert('${alert.id}')">🔄 取消处理</button>`
-                        }
-                    </div>
-                </div>
-            `).join('');
+            tbody.innerHTML = '';
+            alerts.forEach(alert => {
+                let levelText = '';
+                if (alert.danger_level === 'low') levelText = '低';
+                else if (alert.danger_level === 'medium') levelText = '中';
+                else if (alert.danger_level === 'high') levelText = '高';
+                else levelText = alert.danger_level || '';
+                tbody.innerHTML += `
+                  <tr>
+                    <td>${alert.id}</td>
+                    <td>${alert.source_type || ''}</td>
+                    <td>${levelText}</td>
+                    <td>${alert.datetime || alert.event_time || ''}</td>
+                    <td>${alert.message || ''}</td>
+                    <td>
+                      ${(alert.acknowledged === 1 || alert.acknowledged === true) ? '<span style="color:#27ae60;font-weight:bold;">已处理</span>' : '<span style="color:#e74c3c;font-weight:bold;">未处理</span>'}
+                    </td>
+                  </tr>
+                `;
+            });
         }
         
         // 更新分页信息
@@ -647,8 +655,10 @@
         function updateStats(stats) {
             document.getElementById('totalAlerts').textContent = stats.total_alerts || 0;
             document.getElementById('unhandledAlerts').textContent = stats.unhandled_alerts || 0;
-            document.getElementById('highLevelAlerts').textContent = stats.high_level_alerts || 0;
             document.getElementById('todayAlerts').textContent = stats.today_alerts || 0;
+            document.getElementById('highLevelAlerts').textContent = stats.high_level_alerts || 0;
+            document.getElementById('mediumLevelAlerts').textContent = stats.medium_level_alerts || 0;
+            document.getElementById('lowLevelAlerts').textContent = stats.low_level_alerts || 0;
         }
         
         // 切换页面

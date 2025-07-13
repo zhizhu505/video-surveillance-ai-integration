@@ -249,6 +249,20 @@
                 margin-top: 20px;
             }
         }
+        .history-btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 4px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-top: 4px;
+        }
+        .history-btn:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -311,6 +325,11 @@
                 </div>
                 <div class="alert-list" id="alert-list">
                     <!-- 告警列表会通过JavaScript动态添加 -->
+                </div>
+                <div style="text-align: right; margin-top: 12px;">
+                  <button onclick="window.location.href='/alerts/history'" class="history-btn">
+                    查看历史告警
+                  </button>
                 </div>
                 <!-- 告警详情弹窗 -->
                 <div id="alert-modal" style="display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:999;align-items:center;justify-content:center;">
