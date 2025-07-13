@@ -118,7 +118,7 @@ class DangerRecognizer:
         self.config['dwell_time_threshold_s'] = value
         logger.info(f"停留时间阈值已更新为: {value}秒")
     
-    def add_alert_region(self, region, name="警戒区"):
+    def add_alert_region(self, region, name="Alert Zone"):
         """添加告警区域
         
         Args:
@@ -128,16 +128,16 @@ class DangerRecognizer:
         self.alert_regions.append({
             'points': np.array(region, dtype=np.int32),
             'name': name,
-            'color': (0, 0, 255),  # 红色
+            'color': (255, 0, 0),  # 蓝色
             'thickness': 2
         })
-        logger.info(f"已添加告警区域: {name}")
+        logger.info(f"Added alert region: {name}")
         return len(self.alert_regions) - 1  # 返回区域ID
     
     def clear_alert_regions(self):
         """清除所有告警区域"""
         self.alert_regions.clear()
-        logger.info("已清除所有告警区域")
+        logger.info("Cleared all alert regions")
     
     def _calculate_distance_to_region(self, bbox, region_points):
         """计算边界框到危险区域的距离
@@ -220,9 +220,9 @@ class DangerRecognizer:
         current_frame = self.current_frame
         
         # 打印所有危险区域坐标
-        print("[调试] 当前危险区域设置:")
-        for i, region in enumerate(self.alert_regions):
-            print(f"  区域{i}: {region['points'].tolist()}")
+        # print("[调试] 当前危险区域设置:")
+        # for i, region in enumerate(self.alert_regions):
+        #     print(f"  区域{i}: {region['points'].tolist()}")
         
         # 检查每个检测到的对象
         for obj in object_detections:
@@ -230,7 +230,7 @@ class DangerRecognizer:
                 continue
             
             bbox = obj['bbox']
-            print(f"[调试] 检测到person方框: {bbox}")
+            # print(f"[调试] 检测到person方框: {bbox}")
             object_id = f"{obj.get('class', 'person')}_{hash(tuple(bbox))}"
             
             # 检查是否在危险区域内
@@ -240,12 +240,12 @@ class DangerRecognizer:
             for i, region in enumerate(self.alert_regions):
                 # 检查边界框是否与危险区域有重合
                 is_overlap = self._check_bbox_intersection(bbox, region['points'])
-                print(f"[调试] 检查person方框 {bbox} 与区域{i} 是否重合: {is_overlap}")
+                # print(f"[调试] 检查person方框 {bbox} 与区域{i} 是否重合: {is_overlap}")
                 if is_overlap:
                     in_danger_zone = True
                     region_id = i
                     # 只要有重合就输出一次告警
-                    print(f"[告警] person方框 {bbox} 已进入危险区域{i}！")
+                    # print(f"[告警] person方框 {bbox} 已进入危险区域{i}！")
                     break
             
             if in_danger_zone:
@@ -716,21 +716,21 @@ class DangerRecognizer:
         # 在图像上添加告警信息
         vis_frame = frame.copy()
         
-        # 绘制告警信息
-        alert_text = f"{alert['type']} ({alert['confidence']:.2f})"
-        cv2.putText(vis_frame, alert_text, (10, vis_frame.shape[0] - 20), 
-                  cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        # 绘制告警信息 - 已移除文字显示
+        # alert_text = f"{alert['type']} ({alert['confidence']:.2f})"
+        # cv2.putText(vis_frame, alert_text, (10, vis_frame.shape[0] - 20), 
+        #           cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
         
-        # 添加告警标识（不再使用全局红色边框）
-        cv2.putText(vis_frame, "ALERT DETECTED", (10, 30), 
-                  cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+        # 添加告警标识（不再使用全局红色边框）- 已移除
+        # cv2.putText(vis_frame, "ALERT DETECTED", (10, 30), 
+        #           cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
         
-        # 添加更多的调试信息
-        y_offset = 30
-        for key, value in self.debug_info.items():
-            text = f"{key}: {value:.2f}" if isinstance(value, float) else f"{key}: {value}"
-            cv2.putText(vis_frame, text, (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-            y_offset += 20
+        # 添加更多的调试信息 - 已移除
+        # y_offset = 30
+        # for key, value in self.debug_info.items():
+        #     text = f"{key}: {value:.2f}" if isinstance(value, float) else f"{key}: {value}"
+        #     cv2.putText(vis_frame, text, (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        #     y_offset += 20
         
         # 绘制警戒区域
         for region in self.alert_regions:
@@ -793,41 +793,42 @@ class DangerRecognizer:
         
         vis_frame = frame.copy()
         
-        # 绘制警戒区域 - 始终显示为蓝色
+        # 绘制警戒区域 - 始终显示为蓝色，不显示名称
         for region in self.alert_regions:
             region_color = (255, 0, 0)  # 蓝色
             cv2.polylines(vis_frame, [region['points']], True, region_color, region['thickness'])
-            # 添加区域名称
-            x, y = region['points'].mean(axis=0).astype(int)
-            cv2.putText(vis_frame, region['name'], (x, y), 
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, region_color, 1)
+            # 移除区域名称显示
+            # x, y = region['points'].mean(axis=0).astype(int)
+            # cv2.putText(vis_frame, region['name'], (x, y), 
+            #           cv2.FONT_HERSHEY_SIMPLEX, 0.5, region_color, 1)
         
-        # 显示危险区域停留时间信息
-        if self.danger_zone_trackers:
-            y_offset = 60  # 从顶部开始显示
-            for obj_id, tracker in self.danger_zone_trackers.items():
-                dwell_time = time.time() - tracker['start_time']
-                region_id = tracker['region_id']
-                # 修正：region_id 可能为 None 或超出范围，需检查
-                if isinstance(region_id, int) and 0 <= region_id < len(self.alert_regions):
-                    region_name = self.alert_regions[region_id]['name']
-                else:
-                    region_name = str(region_id)
-                text = f"停留时间: {dwell_time:.1f}s - {region_name}"
-                cv2.putText(vis_frame, text, (10, y_offset), 
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
-                y_offset += 20
+        # 显示危险区域停留时间信息 - 已移除文字显示
+        # if self.danger_zone_trackers:
+        #     y_offset = 60  # 从顶部开始显示
+        #     for obj_id, tracker in self.danger_zone_trackers.items():
+        #         dwell_time = time.time() - tracker['start_time']
+        #         region_id = tracker['region_id']
+        #         # 修正：region_id 可能为 None 或超出范围，需检查
+        #         if isinstance(region_id, int) and 0 <= region_id < len(self.alert_regions):
+        #             region_name = self.alert_regions[region_id]['name']
+        #         else:
+        #             region_name = str(region_id)
+        #         # 使用英文避免中文显示问题
+        #         text = f"Dwell: {dwell_time:.1f}s - {region_name}"
+        #         cv2.putText(vis_frame, text, (10, y_offset), 
+        #                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1)
+        #         y_offset += 20
         
-        # 智能告警可视化
-        if alerts:
-            # 显示告警文本（顶部）
-            for i, alert in enumerate(alerts):
-                alert_text = f"{alert['type']} ({alert['confidence']:.2f})"
-                text_size = cv2.getTextSize(alert_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
-                cv2.rectangle(vis_frame, (10, 10 + i*35), (10 + text_size[0] + 10, 10 + i*35 + text_size[1] + 10), 
-                            (0, 0, 0), -1)
-                cv2.putText(vis_frame, alert_text, (15, 10 + i*35 + text_size[1]), 
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+        # 智能告警可视化 - 移除告警文本显示
+        # if alerts:
+        #     # 显示告警文本（顶部）
+        #     for i, alert in enumerate(alerts):
+        #         alert_text = f"{alert['type']} ({alert['confidence']:.2f})"
+        #         text_size = cv2.getTextSize(alert_text, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)[0]
+        #         cv2.rectangle(vis_frame, (10, 10 + i*35), (10 + text_size[0] + 10, 10 + i*35 + text_size[1] + 10), 
+        #                     (0, 0, 0), -1)
+        #         cv2.putText(vis_frame, alert_text, (15, 10 + i*35 + text_size[1]), 
+        #                   cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
         # 优化：使用告警对象跟踪来精确显示红框
         if detections:
@@ -838,10 +839,10 @@ class DangerRecognizer:
                     pid = det.get('person_id', -1)
                     color = (0, 255, 0)  # 绿色 - 告警状态或危险区域
                     thickness = 3
-                    # 添加告警标识
-                    if pid != -1: # 只有当有ID时才显示
-                        cv2.putText(vis_frame, f"ID:{pid}", (x1, y1 - 25),
-                                  cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    # 添加告警标识 - 已移除ID显示
+                    # if pid != -1: # 只有当有ID时才显示
+                    #     cv2.putText(vis_frame, f"ID:{pid}", (x1, y1 - 25),
+                    #               cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                     # 在危险区域内或处于告警状态的person显示红框
                     if pid != -1: # 只有当有ID时才检查
                         is_alerted = self.is_object_alerted(det)
@@ -861,28 +862,29 @@ class DangerRecognizer:
                     color = (0, 255, 0)  # 绿色 - 非person对象
                     thickness = 2
                     cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, thickness)
+                    # 保留非person对象的文字显示
                     cv2.putText(vis_frame, f"{det.get('class', 'unknown')} {det.get('confidence', 0.8):.2f}", (x1, y1 - 10),
                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         
-        # 显示调试信息
-        if show_debug:
-            y_offset = 30
-            for key, value in self.debug_info.items():
-                text = f"{key}: {value:.2f}" if isinstance(value, float) else f"{key}: {value}"
-                cv2.putText(vis_frame, text, (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-                y_offset += 20
-            
-            # 显示告警对象统计
-            alerted_count = len([obj for obj in self.alerted_objects.values() if obj['class'] == 'person'])
-            cv2.putText(vis_frame, f"Alerted Objects: {alerted_count}", (10, y_offset), 
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
-            y_offset += 20
-            
-            for i, (alert_type, count) in enumerate(self.alerts_count.items()):
-                if count > 0:
-                    cv2.putText(vis_frame, f"{alert_type}: {count}", (vis_frame.shape[1] - 180, y_offset), 
-                              cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
-                    y_offset += 20
+        # 显示调试信息 - 已移除
+        # if show_debug:
+        #     y_offset = 30
+        #     for key, value in self.debug_info.items():
+        #         text = f"{key}: {value:.2f}" if isinstance(value, float) else f"{key}: {value}"
+        #         cv2.putText(vis_frame, text, (10, y_offset), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
+        #         y_offset += 20
+        #     
+        #     # 显示告警对象统计
+        #     alerted_count = len([obj for obj in self.alerted_objects.values() if obj['class'] == 'person'])
+        #     cv2.putText(vis_frame, f"Alerted Objects: {alerted_count}", (10, y_offset), 
+        #               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
+        #     y_offset += 20
+        #     
+        #     for i, (alert_type, count) in enumerate(self.alerts_count.items()):
+        #         if count > 0:
+        #             cv2.putText(vis_frame, f"{alert_type}: {count}", (vis_frame.shape[1] - 180, y_offset), 
+        #                       cv2.FONT_HERSHEY_SIMPLEX, 0.4, (0, 255, 0), 1)
+        #             y_offset += 20
         return vis_frame
     
     def get_alert_stats(self):

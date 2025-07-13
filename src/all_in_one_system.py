@@ -151,7 +151,7 @@ class AllInOneSystem:
             try:
                 regions = eval(args.alert_region)
                 if isinstance(regions, list) and len(regions) >= 3:
-                    self.danger_recognizer.add_alert_region(regions, "警戒区")
+                    self.danger_recognizer.add_alert_region(regions, "Alert Zone")
             except Exception as e:
                 logger.error(f"解析警戒区域失败: {str(e)}")
 
@@ -356,7 +356,7 @@ class AllInOneSystem:
                 
                 # 清除现有警戒区域并添加新的
                 self.danger_recognizer.clear_alert_regions()
-                self.danger_recognizer.add_alert_region(region, "用户框选警戒区")
+                self.danger_recognizer.add_alert_region(region, "User Selected Zone")
                 logger.info(f"警戒区域已更新: {region}")
                 return jsonify({'success': True, 'message': '警戒区域设置成功'})
             except Exception as e:
@@ -767,6 +767,7 @@ class AllInOneSystem:
 
                     color = (0, 255, 0)  # 绿色 - 正常对象
                     cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, 2)
+                    # 保留AI检测结果的文字显示
                     cv2.putText(vis_frame, f"{cls} {conf:.2f}", (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                 except Exception as e:
@@ -781,23 +782,23 @@ class AllInOneSystem:
         """添加系统状态信息到帧"""
         h, w = frame.shape[:2]
 
-        # 不再绘制任何右上角系统状态文字
-        # info_items = [
-        #     f"FPS: {self.fps:.1f}",
-        #     f"Frames: {self.frame_count}",
-        #     f"Processed: {self.processed_count}",
-        #     f"Uptime: {int(time.time() - self.start_time)} s"
-        # ]
-        # for i, info in enumerate(info_items):
-        #     color = (255, 255, 255)
-        #     cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
-        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+        # 绘制右上角系统状态文字
+        info_items = [
+            f"FPS: {self.fps:.1f}",
+            f"Frames: {self.frame_count}",
+            f"Processed: {self.processed_count}",
+            f"Uptime: {int(time.time() - self.start_time)} s"
+        ]
+        for i, info in enumerate(info_items):
+            color = (255, 255, 255)
+            cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
         h, w = frame.shape[:2]
 
-        # 仅在左上角显示FPS和告警数
+        # 显示FPS和告警数
         cv2.putText(frame, f"FPS: {self.fps:.1f}", (10, 25),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
 
