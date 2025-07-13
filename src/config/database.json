@@ -1,9 +1,9 @@
 {
     "mysql": {
         "host": "localhost",
-        "port": 3306,
+        "port": 3310,
         "user": "root",
-        "password": "cangshu606",
+        "password": "@zsq2004",
         "database": "video_surveillance_alerts",
         "charset": "utf8mb4",
         "autocommit": true,

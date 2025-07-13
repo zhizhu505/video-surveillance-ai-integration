@@ -1090,6 +1090,22 @@ class AllInOneSystem:
             if count > 0:
                 report += f"  - {alert_type}: {count}\n"
 
+        # 新增：行为检测统计（包括不生成告警的行为）
+        behavior_stats = self.danger_recognizer.get_behavior_stats()
+        report += "\n行为检测统计:\n"
+        if behavior_stats['sudden_motion_count'] > 0:
+            report += f"  - Sudden Motion: {behavior_stats['sudden_motion_count']}\n"
+        if behavior_stats['large_area_motion_count'] > 0:
+            report += f"  - Large Area Motion: {behavior_stats['large_area_motion_count']}\n"
+        if behavior_stats['fall_count'] > 0:
+            report += f"  - Fall Detection: {behavior_stats['fall_count']}\n"
+        if behavior_stats['danger_zone_dwell_count'] > 0:
+            report += f"  - Danger Zone Dwell: {behavior_stats['danger_zone_dwell_count']}\n"
+        if behavior_stats['fighting_count'] > 0:
+            report += f"  - Fighting Detection: {behavior_stats['fighting_count']}\n"
+        if all(count == 0 for count in behavior_stats.values()):
+            report += "  - 无\n"
+
         # 新增：告警处理统计
         report += "\n告警处理统计:\n"
         report += f"  - 总告警数: {self.alert_handling_stats['total_alerts']}\n"
