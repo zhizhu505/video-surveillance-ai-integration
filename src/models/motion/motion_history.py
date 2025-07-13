@@ -9,18 +9,18 @@ from models.motion.motion_feature_base import MotionFeature, MotionFeatureExtrac
 
 
 class MotionHistoryExtractor(MotionFeatureExtractor):
-    """Extract motion history features from consecutive frames."""
+    """从连续帧中提取运动历史特征。"""
     
     def __init__(self, history_length: int = 20, threshold: int = 30,
                  max_val: float = 1.0, min_val: float = 0.05):
         """
-        Initialize the motion history extractor.
+        初始化运动历史特征提取器。
         
         Args:
-            history_length: Length of motion history in frames
-            threshold: Threshold for motion detection
-            max_val: Maximum value of motion history
-            min_val: Minimum value of motion history
+            history_length: 运动历史长度（帧数）
+            threshold: 运动检测阈值
+            max_val: 运动历史最大值
+            min_val: 运动历史最小值
         """
         super().__init__()
         
@@ -31,12 +31,12 @@ class MotionHistoryExtractor(MotionFeatureExtractor):
             self.max_val = max_val
             self.min_val = min_val
             
-            # Initialize motion history image
+            # 初始化运动历史图像
             self.mhi = None
             self.prev_gray = None
             self.last_timestamp = 0
             
-            # Check if motempl module is available
+            # 检查motempl模块是否可用
             self.use_legacy_motempl = False
             try:
                 if hasattr(cv2, 'motempl'):
@@ -88,22 +88,22 @@ class MotionHistoryExtractor(MotionFeatureExtractor):
     
     def _extract_impl(self, frame, prev_frame, **kwargs):
         """
-        Implementation of the motion history extraction.
+        运动历史特征提取的实现。
         
         Args:
-            frame: Current frame
-            prev_frame: Previous frame
-            **kwargs: Additional parameters including tracks
+            frame: 当前帧
+            prev_frame: 上一帧
+            **kwargs: 额外参数，包括轨迹
             
         Returns:
-            List of motion features
+            运动特征列表
         """
         tracks = kwargs.get('tracks', None)
         
         if frame is None or prev_frame is None:
             return []
         
-        # Convert frames to grayscale
+        # 将帧转换为灰度图像
         if len(frame.shape) == 3:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         else:
@@ -119,7 +119,7 @@ class MotionHistoryExtractor(MotionFeatureExtractor):
             self.logger.debug(f"Converting prev_gray from {prev_gray.dtype} to {gray.dtype}")
             prev_gray = prev_gray.astype(gray.dtype)
             
-        # Compute frame difference
+        # 计算帧差
         try:
             frame_diff = cv2.absdiff(gray, prev_gray)
         except cv2.error as e:
@@ -129,11 +129,11 @@ class MotionHistoryExtractor(MotionFeatureExtractor):
             gray = gray.astype(np.uint8)
             frame_diff = cv2.absdiff(gray, prev_gray)
 
-        # Threshold the difference
+        # 阈值化帧差
         _, motion_mask = cv2.threshold(frame_diff, self.threshold, 1, cv2.THRESH_BINARY)
         motion_mask = motion_mask.astype(np.uint8)
         
-        # Update timestamp
+        # 更新时间戳
         timestamp = time.time()
         if self.last_timestamp == 0:
             self.last_timestamp = timestamp
@@ -144,49 +144,49 @@ class MotionHistoryExtractor(MotionFeatureExtractor):
             self.mhi = np.zeros((h, w), dtype=np.float32)
             self.logger.info(f"Initialized MHI: {w}x{h}")
         
-        # Update motion history
+        # 更新运动历史
         self.mhi = self.update_motion_history(motion_mask, self.mhi, timestamp, self.history_length)
         
-        # Save the previous grayscale image
+        # 保存上一帧灰度图像
         self.prev_gray = gray
         
-        # Calculate motion features on a grid
+        # 在网格上计算运动特征
         h, w = self.mhi.shape
-        step = 16  # Grid step
+        step = 16  # 网格步长
         y_indices, x_indices = np.mgrid[step//2:h:step, step//2:w:step].reshape(2, -1).astype(int)
         
         features = []
         
         try:
-            # Get motion history at sampled locations
+            # 在采样位置获取运动历史
             for i, (x, y) in enumerate(zip(x_indices, y_indices)):
-                # Skip if outside frame
+                # 如果超出帧范围，则跳过
                 if x >= w or y >= h:
                     continue
                 
-                # Get motion value from MHI
+                # 从MHI获取运动值
                 motion_val = self.mhi[y, x]
                 
-                # Skip if no motion
+                # 如果无运动，则跳过
                 if motion_val <= 0:
                     continue
                 
-                # Calculate orientation
-                # Use Sobel derivatives to get orientation if available
+                # 计算方向
+                # 如果可用，使用Sobel导数获取方向
                 gradient_size = 3
                 try:
                     dx = cv2.Sobel(self.mhi, cv2.CV_32F, 1, 0, ksize=gradient_size)
                     dy = cv2.Sobel(self.mhi, cv2.CV_32F, 0, 1, ksize=gradient_size)
                     
                     mag = np.sqrt(dx[y, x]**2 + dy[y, x]**2)
-                    angle = np.arctan2(dy[y, x], dx[y, x]) * 180 / np.pi  # Convert to degrees
+                    angle = np.arctan2(dy[y, x], dx[y, x]) * 180 / np.pi  # 转换为度
                     
                 except Exception as e:
                     self.logger.error(f"Error calculating orientation: {str(e)}")
                     mag = 0
                     angle = 0
                 
-                # Create motion feature
+                # 创建运动特征
                 from models.motion.motion_feature_base import MotionFeature
                 
 
@@ -209,15 +209,15 @@ class MotionHistoryExtractor(MotionFeatureExtractor):
     
     def extract(self, frame, prev_frame=None, tracks=None):
         """
-        Extract motion history features from frame.
+        从帧中提取运动历史特征。
         
         Args:
-            frame: Current frame
-            prev_frame: Previous frame (if None, will use cached previous frame)
-            tracks: Object tracks from object tracker (optional)
+            frame: 当前帧
+            prev_frame: 上一帧（如果为None，将使用缓存的前一帧）
+            tracks: 对象跟踪器中的对象轨迹（可选）
             
         Returns:
-            List of motion features
+            运动特征列表
         """
         if not self.is_initialized:
             self.logger.error("Extractor not initialized")
@@ -251,19 +251,19 @@ class MotionHistoryExtractor(MotionFeatureExtractor):
 
     def get_motion_history_image(self) -> np.ndarray:
         """
-        Get the current motion history image.
+        获取当前的运动历史图像。
         
         Returns:
-            Motion history image normalized to [0, 255] for visualization
+            归一化到[0, 255]的运动历史图像，用于可视化
         """
         if self.mhi is None:
             return None
         
-        # Normalize to [0, 255]
+        # 归一化到[0, 255]
         return cv2.normalize(self.mhi, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
 
     def reset(self):
-        """Reset the motion history extractor."""
+        """重置运动历史提取器。"""
         self.prev_gray = None
         self.mhi = None
         self.last_timestamp = 0

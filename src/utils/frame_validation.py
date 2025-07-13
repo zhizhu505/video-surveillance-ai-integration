@@ -7,14 +7,14 @@ from datetime import datetime
 
 def validate_frame(frame, frame_number):
     """
-    Validate a video frame and return diagnostic information.
+    验证视频帧并返回诊断信息。
     
-    Args:
-        frame: The OpenCV frame to validate
-        frame_number: The frame number
+    参数:
+        frame: 要验证的OpenCV帧
+        frame_number: 帧序号
         
-    Returns:
-        dict: Dictionary with frame validation results
+    返回:
+        dict: 包含帧验证结果的字典
     """
     if frame is None:
         return {
@@ -23,16 +23,16 @@ def validate_frame(frame, frame_number):
             'frame_number': frame_number
         }
     
-    # Check frame dimensions
+    # 检查帧维度
     height, width = frame.shape[:2]
     
-    # Check if frame has content (not completely black or white)
+    # 检查帧是否有内容（不是完全黑色或白色）
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) if len(frame.shape) == 3 else frame
     brightness = np.mean(gray)
     std_dev = np.std(gray)
-    has_content = std_dev > 5.0  # Threshold for determining if frame has content
+    has_content = std_dev > 5.0  # 确定帧是否有内容的阈值
     
-    # Check for corruption (NaN values)
+    # 检查是否损坏（NaN值）
     has_nan = np.isnan(frame).any()
     
     return {
@@ -48,23 +48,23 @@ def validate_frame(frame, frame_number):
 
 def save_frame_sample(frame, frame_number, output_dir="frame_samples"):
     """
-    Save a sample frame to disk for manual inspection.
+    将样本帧保存到磁盘以供手动检查。
     
-    Args:
-        frame: OpenCV frame to save
-        frame_number: Frame number for filename
-        output_dir: Directory where frames should be saved
+    参数:
+        frame: 要保存的OpenCV帧
+        frame_number: 文件名中的帧序号
+        output_dir: 帧应保存的目录
     
-    Returns:
-        str: Path to saved frame or None if saving failed
+    返回:
+        str: 保存的帧的路径或None（如果保存失败）
     """
     if frame is None:
         return None
         
-    # Create output directory if it doesn't exist
+    # 如果目录不存在，则创建输出目录
     os.makedirs(output_dir, exist_ok=True)
     
-    # Generate filename with timestamp
+    # 生成带有时间戳的文件名
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{output_dir}/frame_{frame_number}_{timestamp}.jpg"
     
@@ -78,22 +78,22 @@ def save_frame_sample(frame, frame_number, output_dir="frame_samples"):
 
 def draw_diagnostics(frame, diagnostics):
     """
-    Draw diagnostic information on the frame.
+    在帧上绘制诊断信息。
     
-    Args:
-        frame: The OpenCV frame to annotate
-        diagnostics: Dictionary with diagnostic information
+    参数:
+        frame: 要注释的OpenCV帧
+        diagnostics: 包含诊断信息的字典
         
-    Returns:
-        frame: The annotated frame
+    返回:
+        frame: 注释后的帧
     """
     if frame is None:
         return None
         
-    # Create a copy of the frame
+    # 创建帧的副本
     annotated = frame.copy()
     
-    # Draw frame number
+    # 绘制帧序号
     cv2.putText(
         annotated,
         f"Frame: {diagnostics['frame_number']}",
@@ -104,7 +104,7 @@ def draw_diagnostics(frame, diagnostics):
         2
     )
     
-    # Draw dimensions
+    # 绘制维度
     cv2.putText(
         annotated,
         f"Dimensions: {diagnostics['dimensions'][0]}x{diagnostics['dimensions'][1]}",
@@ -115,7 +115,7 @@ def draw_diagnostics(frame, diagnostics):
         1
     )
     
-    # Draw brightness info
+    # 绘制亮度信息
     cv2.putText(
         annotated,
         f"Brightness: {diagnostics['brightness']:.1f}, StdDev: {diagnostics['std_dev']:.1f}",
@@ -126,7 +126,7 @@ def draw_diagnostics(frame, diagnostics):
         1
     )
     
-    # Draw validation status
+    # 绘制验证状态
     status_color = (0, 255, 0) if diagnostics['valid'] else (0, 0, 255)
     cv2.putText(
         annotated,
@@ -138,7 +138,7 @@ def draw_diagnostics(frame, diagnostics):
         1
     )
     
-    # Draw timestamp
+    # 绘制时间戳
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     cv2.putText(
         annotated,

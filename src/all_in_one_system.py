@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-教室视频监控系统 - 整合所有已开发模块的综合系统
+全功能视频监控系统 - 整合所有已开发模块的综合系统
 结合了运动特征提取、危险行为识别、Web界面等功能
 """
 
@@ -18,6 +18,8 @@ import json
 from queue import Queue
 from datetime import datetime
 import traceback
+import collections
+import uuid
 
 # 配置日志
 logging.basicConfig(
@@ -47,6 +49,16 @@ try:
 except ImportError as e:
     logger.error(f"导入DangerRecognizer失败: {str(e)}")
     sys.exit(1)
+
+# 导入告警数据库模块
+try:
+    from models.alert.alert_database import AlertDatabase
+    from models.alert.mysql_database import MySQLAlertDatabase
+    logger.info("成功导入AlertDatabase和MySQLAlertDatabase")
+except ImportError as e:
+    logger.error(f"导入AlertDatabase或MySQLAlertDatabase失败: {str(e)}")
+    AlertDatabase = None
+    MySQLAlertDatabase = None
 
 # （可选）尝试导入Web界面模块,导入 Flask 相关组件（用于网页端流媒体服务、控制接口）
 try:
@@ -80,7 +92,7 @@ except ImportError as e:
 
 
 class AllInOneSystem:
-    """教室视频监控系统 - 整合所有模块"""
+    """全功能视频监控系统 - 整合所有模块"""
 
     def __init__(self, args):
         """初始化系统"""
@@ -103,7 +115,7 @@ class AllInOneSystem:
         self.start_time = time.time()  # 启动时间戳，用于计算运行时长
         self.recognized_behaviors = []  # 存储识别到的行为信息
         self.recognized_interactions = []  # 存储识别到的交互信息
-        self.recent_alerts = []  # 记录最近10条告警
+        self.recent_alerts = collections.deque(maxlen=1000)  # 记录最近1000条告警
         # 新增：全历史告警列表
         self.all_alerts = []  # 保存所有历史告警
         
@@ -114,6 +126,22 @@ class AllInOneSystem:
             'unhandled_alerts': 0
         }  # 告警处理统计
         self.alert_lock = threading.Lock()  # 告警数据锁
+        
+        # 初始化告警数据库（强制只用MySQL测试）
+        from models.alert.mysql_database import MySQLAlertDatabase
+        try:
+            self.alert_database = MySQLAlertDatabase(
+                host='localhost',
+                port=3306,
+                user='root',
+                password='cangshu606',
+                database='video_surveillance_alerts',
+                charset='utf8mb4'
+            )
+            logger.info("MySQL告警数据库初始化成功")
+        except Exception as e:
+            logger.error(f"MySQL告警数据库初始化失败: {str(e)}")
+            self.alert_database = None
 
         # 线程和队列设置
         self.frame_queue = Queue(maxsize=30)  # 存储「捕获线程 → 处理线程」的帧（缓冲队列）
@@ -187,7 +215,7 @@ class AllInOneSystem:
         else:
             logger.info("未启用音频监控")
 
-        logger.info("教室视频监控系统初始化完成")
+        logger.info("全功能视频监控系统初始化完成")
 
     def init_web_server(self):
         """初始化Web服务器"""
@@ -218,32 +246,42 @@ class AllInOneSystem:
 
         @self.app.route('/alerts')
         def alerts():
-            # 返回最近10条告警详情，过滤掉 Intrusion Alert
-            alerts_data = []
-            for alert in self.recent_alerts[-10:][::-1]:
-                if alert.get('type', '') == 'Intrusion Alert':
-                    continue
-                alert_data = {
-                    'id': alert.get('id', ''),
-                    'type': alert.get('type', ''),
-                    'danger_level': alert.get('danger_level', 'medium'),
-                    'time': alert.get('time', ''),
-                    'confidence': alert.get('confidence', 0),
-                    'frame': alert.get('frame', 0),
-                    'desc': alert.get('desc', ''),
-                    'handled': alert.get('handled', False),
-                    'handled_time': alert.get('handled_time', None),
-                    'person_id': alert.get('person_id', ''),
-                    'person_class': alert.get('person_class', '')
-                }
-                alerts_data.append(alert_data)
-            return jsonify(alerts_data)
+            # 过滤掉 Intrusion Alert 和 Large Area Motion，取全历史最新10条有效告警
+            with self.alert_lock:
+                filtered_alerts = [alert for alert in self.all_alerts[::-1]
+                                   if alert.get('type', '') not in ['Intrusion Alert', 'Large Area Motion']]
+                alerts_data = []
+                for alert in filtered_alerts[:10]:
+                    alert_data = {
+                        'id': alert.get('id', ''),
+                        'type': alert.get('type', ''),
+                        'danger_level': alert.get('danger_level', 'medium'),
+                        'time': alert.get('time', ''),
+                        'confidence': alert.get('confidence', 0),
+                        'frame': alert.get('frame', 0),
+                        'desc': alert.get('desc', ''),
+                        'handled': alert.get('handled', False),
+                        'handled_time': alert.get('handled_time', None),
+                        'person_id': alert.get('person_id', ''),
+                        'person_class': alert.get('person_class', ''),
+                        # 添加位置信息
+                        'location': alert.get('location', {
+                            'x': 0,
+                            'y': 0,
+                            'rel_x': 0,
+                            'rel_y': 0,
+                            'description': '未知位置',
+                            'region_name': alert.get('region_name', '')
+                        })
+                    }
+                    alerts_data.append(alert_data)
+                return jsonify(alerts_data)
 
         @self.app.route('/alerts/stats')
         def alert_stats():
-            # 返回告警处理统计，过滤掉 Intrusion Alert
+            # 统计时也过滤掉 Intrusion Alert 和 Large Area Motion，基于 all_alerts
             with self.alert_lock:
-                filtered_alerts = [a for a in self.all_alerts if a.get('type', '') != 'Intrusion Alert']
+                filtered_alerts = [a for a in self.all_alerts if a.get('type', '') not in ['Intrusion Alert', 'Large Area Motion']]
                 total = len(filtered_alerts)
                 handled = sum(1 for a in filtered_alerts if a.get('handled', False))
                 unhandled = total - handled
@@ -255,35 +293,213 @@ class AllInOneSystem:
 
         @self.app.route('/alerts/handle', methods=['POST'])
         def handle_alert():
-            # 处理告警（标记为已处理）
+            # 处理告警（标记为已处理，同时更新数据库）
             data = request.json
             alert_id = data.get('alert_id')
+
+            # 先更新数据库
+            db_success = False
+            if self.alert_database:
+                db_success = self.alert_database.acknowledge_alert(alert_id)
+
             with self.alert_lock:
+                # 查找并更新告警状态
                 for alert in self.all_alerts:
                     if alert.get('id') == alert_id:
                         if not alert.get('handled', False):
                             alert['handled'] = True
                             alert['handled_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-                            return jsonify({'status': 'success', 'message': 'Alert marked as handled'})
+                            self.alert_handling_stats['handled_alerts'] += 1
+                            self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
+                            if db_success:
+                                return jsonify({'status': 'success', 'message': 'Alert marked as handled and database updated'})
+                            else:
+                                return jsonify({'status': 'warning', 'message': 'Alert marked as handled, but database update failed'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already handled'})
+
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/alerts/unhandle', methods=['POST'])
         def unhandle_alert():
-            # 取消处理告警（标记为未处理）
+            # 取消处理告警（标记为未处理，同时更新数据库）
             data = request.json
             alert_id = data.get('alert_id')
+
+            # 先更新数据库
+            db_success = False
+            if self.alert_database:
+                db_success = self.alert_database.unacknowledge_alert(alert_id)
+
             with self.alert_lock:
+                # 查找并更新告警状态
                 for alert in self.all_alerts:
                     if alert.get('id') == alert_id:
                         if alert.get('handled', False):
                             alert['handled'] = False
                             alert.pop('handled_time', None)
-                            return jsonify({'status': 'success', 'message': 'Alert marked as unhandled'})
+                            self.alert_handling_stats['handled_alerts'] = max(0, self.alert_handling_stats['handled_alerts'] - 1)
+                            self.alert_handling_stats['unhandled_alerts'] += 1
+                            if db_success:
+                                return jsonify({'status': 'success', 'message': 'Alert marked as unhandled and database updated'})
+                            else:
+                                return jsonify({'status': 'warning', 'message': 'Alert marked as unhandled, but database update failed'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already unhandled'})
+
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
+
+        @self.app.route('/alerts/history')
+        def alerts_history():
+            # 告警历史页面
+            return render_template('alerts_history.html')
+        
+        @self.app.route('/api/alerts/history')
+        def api_alerts_history():
+            # 告警历史API
+            if not self.alert_database:
+                return jsonify({'success': False, 'message': '数据库未初始化'})
+            
+            try:
+                import datetime
+                # 分页参数
+                page = int(request.args.get('page', 1))
+                limit = int(request.args.get('limit', 10))
+                offset = (page - 1) * limit
+                # 新增筛选参数
+                danger_level = request.args.get('danger_level')
+                source_type = request.args.get('source_type')
+                acknowledged = request.args.get('acknowledged')
+                start_time = request.args.get('start_time', type=float)
+                end_time = request.args.get('end_time', type=float)
+                # 时间戳转DATETIME字符串
+                def ts2dtstr(ts):
+                    if ts:
+                        return datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                    return None
+                start_time_str = ts2dtstr(start_time) if start_time else None
+                end_time_str = ts2dtstr(end_time) if end_time else None
+                # 处理 acknowledged 字符串转布尔
+                if acknowledged == 'true':
+                    acknowledged = True
+                elif acknowledged == 'false':
+                    acknowledged = False
+                else:
+                    acknowledged = None
+                alerts = self.alert_database.get_alert_events(
+                    limit=limit,
+                    offset=offset,
+                    danger_level=danger_level,
+                    source_type=source_type,
+                    acknowledged=acknowledged,
+                    start_time=start_time_str,
+                    end_time=end_time_str
+                )
+                total = self.alert_database.get_alert_count(
+                    danger_level=danger_level,
+                    source_type=source_type,
+                    acknowledged=acknowledged,
+                    start_time=start_time_str,
+                    end_time=end_time_str
+                )
+                pages = (total + limit - 1) // limit
+                
+                return jsonify({
+                    'success': True,
+                    'alerts': alerts,
+                    'total': total,
+                    'page': page,
+                    'pages': pages
+                })
+                
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})
+        
+        @self.app.route('/api/alerts/statistics')
+        def api_alerts_statistics():
+            if not self.alert_database:
+                return jsonify({'success': False, 'message': '数据库未初始化'})
+            try:
+                days = int(request.args.get('days', 30))
+                stats = self.alert_database.get_alert_statistics(days)
+                # 今日告警数
+                import datetime
+                today = datetime.date.today()
+                today_start_dt = datetime.datetime.combine(today, datetime.time.min)
+                today_start_str = today_start_dt.strftime('%Y-%m-%d %H:%M:%S')
+                today_alerts = self.alert_database.get_alert_count(start_time=today_start_str)
+                # 计算未处理告警数
+                unhandled_alerts = self.alert_database.get_alert_count(acknowledged=False)
+                # 计算高级别告警数
+                high_level_alerts = self.alert_database.get_alert_count(level='CRITICAL')
+                stats.update({
+                    'today_alerts': today_alerts,
+                    'unhandled_alerts': unhandled_alerts,
+                    'high_level_alerts': high_level_alerts
+                })
+                return jsonify({
+                    'success': True,
+                    'stats': stats
+                })
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})
+        
+        @self.app.route('/api/alerts/acknowledge', methods=['POST'])
+        def api_acknowledge_alert():
+            # 确认告警API
+            if not self.alert_database:
+                return jsonify({'success': False, 'message': '数据库未初始化'})
+            
+            try:
+                data = request.get_json()
+                alert_id = data.get('alert_id')
+                
+                if not alert_id:
+                    return jsonify({'success': False, 'message': '缺少告警ID'})
+                
+                success = self.alert_database.acknowledge_alert(alert_id)
+                
+                if success:
+                    return jsonify({'success': True, 'message': '告警已确认'})
+                else:
+                    return jsonify({'success': False, 'message': '告警不存在'})
+                    
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})
+        
+        @self.app.route('/api/alerts/unacknowledge', methods=['POST'])
+        def api_unacknowledge_alert():
+            # 取消确认告警API
+            if not self.alert_database:
+                return jsonify({'success': False, 'message': '数据库未初始化'})
+            
+            try:
+                data = request.get_json()
+                alert_id = data.get('alert_id')
+                
+                if not alert_id:
+                    return jsonify({'success': False, 'message': '缺少告警ID'})
+                
+                success = self.alert_database.unacknowledge_alert(alert_id)
+                
+                if success:
+                    return jsonify({'success': True, 'message': '告警已取消确认'})
+                else:
+                    return jsonify({'success': False, 'message': '告警不存在'})
+                    
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})
+
+        @self.app.route('/api/alerts/source_types')
+        def api_alert_source_types():
+            try:
+                with self.alert_database._get_connection() as conn:
+                    with conn.cursor() as cursor:
+                        cursor.execute("SELECT DISTINCT source_type FROM alert_events")
+                        types = [row['source_type'] for row in cursor.fetchall() if row['source_type']]
+                return jsonify({'success': True, 'types': types})
+            except Exception as e:
+                return jsonify({'success': False, 'message': str(e)})
 
         @self.app.route('/control', methods=['POST'])
         def control():
@@ -336,7 +552,7 @@ class AllInOneSystem:
         process_thread.start()
         self.threads.append(process_thread)
 
-        logger.info("教室视频监控系统已启动")
+        logger.info("全功能视频监控系统已启动")
 
         # 如果没有Web界面，则使用显示循环
         if not (self.args.web_interface and HAS_FLASK):
@@ -370,7 +586,7 @@ class AllInOneSystem:
         # 生成报告
         self.generate_report()
 
-        logger.info("教室视频监控系统已停止")
+        logger.info("全功能视频监控系统已停止")
 
     def capture_thread_func(self):
         """视频捕获线程"""
@@ -520,7 +736,7 @@ class AllInOneSystem:
                     object_detections = None
                     if self.ai_model is not None and (frame_id - last_ai_frame) >= self.args.ai_interval:
                         try:
-                            results = self.ai_model(process_frame)
+                            results = self.ai_model(process_frame, verbose=False)
                             object_detections = self._parse_ai_results(results)
                             last_ai_frame = frame_id
                         except Exception as e:
@@ -532,7 +748,7 @@ class AllInOneSystem:
                     # 更新all_alerts和recent_alerts
                     for alert in alerts:
                         alert_info = {
-                            'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
+                            'id': str(uuid.uuid4()),  # 使用UUID生成唯一ID
                             'type': alert.get('type', ''),
                             'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -542,7 +758,16 @@ class AllInOneSystem:
                             'handled': False,  # 默认未处理
                             'handled_time': None,  # 处理时间
                             'person_id': alert.get('person_id', ''),  # 新增：person id
-                            'person_class': alert.get('person_class', '')  # 新增：person类别
+                            'person_class': alert.get('person_class', ''),  # 新增：person类别
+                            # 新增：位置信息
+                            'location': alert.get('location', {
+                                'x': 0,
+                                'y': 0,
+                                'rel_x': 0,
+                                'rel_y': 0,
+                                'description': '未知位置',
+                                'region_name': alert.get('region_name', '')
+                            })
                         }
                         
                         with self.alert_lock:
@@ -551,7 +776,59 @@ class AllInOneSystem:
                             self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
                             self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
                             # recent_alerts只保留最新10条
-                            self.recent_alerts = self.all_alerts[-10:]
+                            self.recent_alerts.append(alert_info)
+                        
+                        # 保存告警到数据库
+                        if self.alert_database:
+                            try:
+                                from models.alert.alert_event import AlertEvent
+                                from models.alert.alert_rule import AlertLevel
+                                
+                                # 创建告警事件对象
+                                # 根据危险级别映射到告警级别
+                                danger_level = alert.get('danger_level', 'medium')
+                                if danger_level == 'high':
+                                    alert_level = AlertLevel.CRITICAL
+                                elif danger_level == 'medium':
+                                    alert_level = AlertLevel.ALERT
+                                else:
+                                    alert_level = AlertLevel.WARNING
+                                
+                                alert_event = AlertEvent.create(
+                                    rule_id=f"rule_{alert.get('type', 'unknown')}",
+                                    level=alert_level,
+                                    danger_level=danger_level,
+                                    source_type=alert.get('type', 'unknown'),
+                                    message=alert.get('desc', ''),
+                                    details={
+                                        'person_id': alert.get('person_id', ''),
+                                        'person_class': alert.get('person_class', ''),
+                                        'confidence': alert.get('confidence', 0),
+                                        'frame': alert.get('frame', 0),
+                                        'location': alert.get('location', {}),
+                                        'region_name': alert.get('region_name', '')
+                                    },
+                                    frame_idx=alert.get('frame', 0),
+                                    frame=process_frame if self.args.save_alerts else None
+                                )
+                                
+                                # 保存到数据库
+                                image_paths = None
+                                if self.args.save_alerts and process_frame is not None:
+                                    # 保存告警图像
+                                    alert_dir = os.path.join(self.args.output, 'alerts')
+                                    os.makedirs(alert_dir, exist_ok=True)
+                                    image_paths = alert_event.save_images(alert_dir)
+                                
+                                logger.info(f"准备写入告警到数据库: {alert_event.message}")
+                                new_id = self.alert_database.save_alert_event(alert_event)
+                                logger.info(f"写入数据库返回id: {new_id}")
+                                if new_id is not None:
+                                    alert_info['id'] = new_id  # 用数据库自增id覆盖原id
+                            except Exception as e:
+                                logger.error(f"保存告警到数据库失败: {str(e)}")
+                        else:
+                            logger.error("self.alert_database 未初始化，无法写入告警！")
 
                     # 可视化结果
                     vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
@@ -561,7 +838,7 @@ class AllInOneSystem:
                     # 更新recent_alerts
                     for alert in alerts:
                         alert_info = {
-                            'id': f"alert_{self.alert_count}_{int(time.time())}",  # 唯一ID
+                            'id': str(uuid.uuid4()),  # 使用UUID生成唯一ID
                             'type': alert.get('type', ''),
                             'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
                             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -580,7 +857,7 @@ class AllInOneSystem:
                             self.alert_handling_stats['unhandled_alerts'] += 1
                             
                             if len(self.recent_alerts) > 10:
-                                removed_alert = self.recent_alerts.pop(0)
+                                removed_alert = self.recent_alerts.popleft()
                                 # 如果移除的告警未处理，减少未处理计数
                                 if not removed_alert.get('handled', False):
                                     self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
@@ -736,7 +1013,7 @@ class AllInOneSystem:
             while self.running:
                 # 显示处理后的帧
                 if self.processed_frame is not None:
-                    cv2.imshow("教室视频监控系统", self.processed_frame)
+                    cv2.imshow("全功能视频监控系统", self.processed_frame)
 
                 # 检查键盘输入
                 key = cv2.waitKey(1) & 0xFF
@@ -788,6 +1065,7 @@ class AllInOneSystem:
         report += f"总帧数: {self.frame_count}\n"
         report += f"处理帧数: {self.processed_count} ({processed_ratio:.1f}%)\n"
         report += f"平均帧率: {avg_fps:.2f} FPS\n"
+        report += f"告警总数: {self.alert_count}\n"
 
         # 添加识别到的行为信息到报告
         report += "\n识别到的行为:\n"
@@ -814,14 +1092,10 @@ class AllInOneSystem:
 
         # 新增：告警处理统计
         report += "\n告警处理统计:\n"
-        with self.alert_lock:
-            total = len(self.all_alerts)
-            handled = sum(1 for alert in self.all_alerts if alert.get('handled', False))
-            unhandled = total - handled
-        report += f"  - 总告警数: {total}\n"
-        report += f"  - 已处理: {handled}\n"
-        report += f"  - 未处理: {unhandled}\n"
-        report += f"  - 处理率: {(handled / max(1, total) * 100):.1f}%\n"
+        report += f"  - 总告警数: {self.alert_handling_stats['total_alerts']}\n"
+        report += f"  - 已处理: {self.alert_handling_stats['handled_alerts']}\n"
+        report += f"  - 未处理: {self.alert_handling_stats['unhandled_alerts']}\n"
+        report += f"  - 处理率: {(self.alert_handling_stats['handled_alerts'] / max(1, self.alert_handling_stats['total_alerts']) * 100):.1f}%\n"
 
         # 新增：详细告警处理记录
         report += "\n详细告警处理记录:\n"
@@ -858,7 +1132,7 @@ class AllInOneSystem:
     def add_audio_alert(self, label, score):
         """供音频监控模块调用，推送声学异常告警"""
         alert_info = {
-            'id': f"audio_alert_{int(time.time())}",
+            'id': str(uuid.uuid4()),
             'type': '声学异常',
             'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
             'confidence': float(score),
@@ -874,12 +1148,12 @@ class AllInOneSystem:
             self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
             self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
             self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
-            self.recent_alerts = self.all_alerts[-10:]
+            self.recent_alerts.append(alert_info)
 
 
 def parse_args():
     """解析命令行参数"""
-    parser = argparse.ArgumentParser(description='教室视频监控系统')
+    parser = argparse.ArgumentParser(description='全功能视频监控系统')
 
     # 输入参数
     parser.add_argument('--source', type=str, default='0', help='视频源 (0表示摄像头, 或者是视频文件路径)')

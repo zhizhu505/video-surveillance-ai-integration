@@ -10,8 +10,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 from typing import Dict, List, Any, Optional, Callable
 
-from models.alert_event import AlertEvent
-from models.alert_rule import AlertLevel
+from models.alert.alert_event import AlertEvent
+from models.alert.alert_rule import AlertLevel
 
 
 class AlertNotifier(abc.ABC):

@@ -116,49 +116,39 @@
         }
         /* 危险等级颜色 */
         .alert-item.danger-low {
-            border-left-color: #27ae60;
-            background-color: #e8f5e8;
+            border-left-color: #ffd600; /* 黄色 */
+            background-color: #fffde7;
         }
         .alert-item.danger-medium {
-            border-left-color: #f39c12;
-            background-color: #fef9e7;
+            border-left-color: #2196f3; /* 蓝色 */
+            background-color: #e3f2fd;
         }
         .alert-item.danger-high {
-            border-left-color: #e74c3c;
+            border-left-color: #e74c3c; /* 红色 */
             background-color: #fdf2f2;
         }
-        .alert-item.danger-low.handled {
-            border-left-color: #27ae60;
-            background-color: #e8f5e8;
+        .alert-item.handled {
+            border-left-color: #27ae60 !important; /* 绿色 */
+            background-color: #e8f5e8 !important;
         }
-        .alert-item.danger-medium.handled {
-            border-left-color: #f39c12;
-            background-color: #fef9e7;
-        }
+        .alert-item.danger-low.handled,
+        .alert-item.danger-medium.handled,
         .alert-item.danger-high.handled {
-            border-left-color: #e74c3c;
-            background-color: #fdf2f2;
-        }
-        .alert-time {
-            font-size: 12px;
-            color: #7f8c8d;
-        }
-        .alert-type {
-            font-weight: bold;
-            color: #e74c3c;
-        }
-        .alert-item.handled .alert-type {
-            color: #27ae60;
+            border-left-color: #27ae60 !important;
+            background-color: #e8f5e8 !important;
         }
         /* 危险等级文字颜色 */
         .alert-item.danger-low .alert-type {
-            color: #27ae60;
+            color: #ffd600;
         }
         .alert-item.danger-medium .alert-type {
-            color: #f39c12;
+            color: #2196f3;
         }
         .alert-item.danger-high .alert-type {
             color: #e74c3c;
+        }
+        .alert-item.handled .alert-type {
+            color: #27ae60 !important;
         }
         .alert-desc {
             margin-top: 5px;
@@ -259,6 +249,20 @@
                 margin-top: 20px;
             }
         }
+        .history-btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 4px;
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+            margin-top: 4px;
+        }
+        .history-btn:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -321,6 +325,11 @@
                 </div>
                 <div class="alert-list" id="alert-list">
                     <!-- 告警列表会通过JavaScript动态添加 -->
+                </div>
+                <div style="text-align: right; margin-top: 12px;">
+                  <button onclick="window.location.href='/alerts/history'" class="history-btn">
+                    查看历史告警
+                  </button>
                 </div>
                 <!-- 告警详情弹窗 -->
                 <div id="alert-modal" style="display:none;position:fixed;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.4);z-index:999;align-items:center;justify-content:center;">
@@ -512,21 +521,32 @@
                                 'high': '高危险'
                             };
                             const levelColor = {
-                                'low': '#27ae60',
-                                'medium': '#f39c12',
-                                'high': '#e74c3c'
+                                'low': '#ffd600', // 黄色
+                                'medium': '#2196f3', // 蓝色
+                                'high': '#e74c3c' // 红色
                             };
-                            html += `<div><b>危险等级：</b><span style="color: ${levelColor[alert.danger_level]};">${levelText[alert.danger_level]}</span></div>`;
+                            // 若已处理，显示绿色
+                            let color = alert.handled ? '#27ae60' : levelColor[alert.danger_level];
+                            html += `<div><b>危险等级：</b><span style=\"color: ${color};\">${levelText[alert.danger_level]}</span></div>`;
                         }
                         
                         html += `<div><b>置信度：</b>${alert.confidence}</div>`;
                         html += `<div><b>帧号：</b>${alert.frame}</div>`;
                         html += `<div><b>描述：</b>${alert.desc||'无'}</div>`;
-                        if(alert.person_id || alert.person_class){
-                            html += `<div><b>触发对象：</b>`;
-                            if(alert.person_id) html += `ID: ${alert.person_id} `;
-                            if(alert.person_class) html += `类别: ${alert.person_class}`;
-                            html += `</div>`;
+
+                        // 添加位置信息显示
+                        if (alert.location) {
+                            html += `<div><b>发生位置：</b>${alert.location.description || '未知位置'}</div>`;
+                            if (alert.location.region_name) {
+                                html += `<div><b>区域名称：</b>${alert.location.region_name}</div>`;
+                            }
+                            html += `<div><b>相对位置：</b>X: ${alert.location.rel_x?.toFixed(1)}%, Y: ${alert.location.rel_y?.toFixed(1)}%</div>`;
+                        }
+                        // 统一显示触发对象（ID），只显示一次
+                        if(alert.trigger_id !== undefined && alert.trigger_id !== null){
+                            html += `<div><b>触发对象：</b>ID: ${alert.trigger_id}</div>`;
+                        } else if(alert.person_id !== undefined && alert.person_id !== null){
+                            html += `<div><b>触发对象：</b>ID: ${alert.person_id}</div>`;
                         }
                         html += `<div><b>状态：</b><span style="color: ${alert.handled ? '#27ae60' : '#e74c3c'};">${alert.handled ? '已处理' : '未处理'}</span></div>`;
                         if (alert.handled && alert.handled_time) {

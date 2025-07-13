@@ -6,19 +6,19 @@ from typing import Dict, List, Tuple, Optional, Union, Any
 
 
 class Detection:
-    """Class representing a detected object."""
+    """表示检测到的目标对象的类。"""
     
     def __init__(self, x1, y1, x2, y2, class_id=0, class_name="unknown", confidence=0.0, id=None):
         """
-        Initialize a Detection object.
+        初始化一个Detection对象。
         
         Args:
             x1, y1: Top-left corner coordinates
             x2, y2: Bottom-right corner coordinates
-            class_id: Class ID
-            class_name: Class name
-            confidence: Detection confidence
-            id: Object ID (optional, used for tracking)
+            class_id: 类别ID
+            class_name: 类别名称
+            confidence: 检测置信度
+            id: 对象ID（可选，用于跟踪）
         """
         self.x1 = x1
         self.y1 = y1
@@ -32,13 +32,13 @@ class Detection:
     @classmethod
     def from_dict(cls, detection_dict):
         """
-        Create a Detection object from a detection dictionary.
+        从检测字典创建Detection对象。
         
         Args:
-            detection_dict: Dictionary with detection data
+            detection_dict: 包含检测数据的字典
             
         Returns:
-            Detection object
+            Detection对象
         """
         x1, y1, x2, y2 = detection_dict['box']
         return cls(
@@ -54,10 +54,10 @@ class Detection:
     
     def to_dict(self):
         """
-        Convert to dictionary.
+        转换为字典。
         
         Returns:
-            Dictionary representation
+            字典表示
         """
         return {
             'box': [self.x1, self.y1, self.x2, self.y2],
@@ -69,19 +69,19 @@ class Detection:
     
     def get_center(self):
         """
-        Get the center point of the detection.
+        获取检测的中心点。
         
         Returns:
-            (center_x, center_y)
+            (center_x, center_y): 中心点坐标
         """
         return ((self.x1 + self.x2) / 2, (self.y1 + self.y2) / 2)
     
     def get_area(self):
         """
-        Get the area of the detection.
+        获取检测的面积。
         
         Returns:
-            Area in pixels
+            像素面积
         """
         return (self.x2 - self.x1) * (self.y2 - self.y1)
     
@@ -90,39 +90,39 @@ class Detection:
 
 
 class DetectionModel:
-    """Base class for object detection models."""
+    """对象检测模型的基类。"""
     
     def __init__(self):
         self.is_initialized = False
     
     def detect(self, frame: np.ndarray) -> List[Dict[str, Any]]:
         """
-        Detect objects in a frame.
+        在帧中检测对象。
         
         Args:
-            frame: Input frame
+            frame: 输入帧
             
         Returns:
-            List of detection dictionaries with keys:
+            包含检测字典的列表，包含以下键：
             - 'box': [x1, y1, x2, y2]
-            - 'score': confidence score
-            - 'class_id': class ID
-            - 'class_name': class name
+            - 'score': 置信度得分
+            - 'class_id': 类别ID
+            - 'class_name': 类别名称
         """
         raise NotImplementedError("Subclasses must implement this method")
 
 
 class ObjectTracker:
-    """Base class for object tracking."""
+    """对象跟踪的基类。"""
     
     def __init__(self, confidence_threshold=0.5, nms_threshold=0.4, use_gpu=False):
         """
-        Initialize the object tracker.
+        初始化对象跟踪器。
         
         Args:
-            confidence_threshold: Confidence threshold for detection
-            nms_threshold: Non-maximum suppression threshold
-            use_gpu: Whether to use GPU for detection
+            confidence_threshold: 检测置信度阈值
+            nms_threshold: 非极大值抑制阈值
+            use_gpu: 是否使用GPU进行检测
         """
         # Configure logging
         logging.basicConfig(
@@ -135,7 +135,7 @@ class ObjectTracker:
         self.nms_threshold = nms_threshold
         self.use_gpu = use_gpu
         
-        # Initialize detector and tracker components
+        # 初始化检测器和跟踪器组件
         self.detector = OpenCVDetector(
             model_type='yolov4',
             confidence_threshold=confidence_threshold,
@@ -153,22 +153,22 @@ class ObjectTracker:
     
     def detect(self, frame):
         """
-        Detect objects in a frame.
+        在帧中检测对象。
         
         Args:
-            frame: Input frame
+            frame: 输入帧
             
         Returns:
-            List of Detection objects
+            Detection对象列表
         """
         if not self.is_initialized:
             self.logger.error("Detector not initialized")
             return []
         
-        # Run detector
+        # 运行检测器
         detection_dicts = self.detector.detect(frame)
         
-        # Convert to Detection objects
+        # 转换为Detection对象
         detections = []
         for det_dict in detection_dicts:
             detection = Detection.from_dict(det_dict)
@@ -178,25 +178,25 @@ class ObjectTracker:
     
     def update(self, detections):
         """
-        Update tracks with new detections.
+        更新跟踪器。
         
         Args:
-            detections: List of Detection objects
+            detections: Detection对象列表
             
         Returns:
-            List of tracked Detection objects
+            Detection对象列表
         """
         if not self.is_initialized:
             self.logger.error("Tracker not initialized")
             return []
         
-        # Convert Detection objects to dictionaries for the tracker
+        # 将Detection对象转换为字典，用于跟踪器
         detection_dicts = [det.to_dict() for det in detections]
         
-        # Update tracker
+        # 更新跟踪器
         track_dicts = self.centroid_tracker.update(detection_dicts)
         
-        # Convert track dictionaries to Detection objects
+        # 将跟踪字典转换为Detection对象
         tracked_detections = []
         for track_dict in track_dicts:
             detection = Detection.from_dict(track_dict)
@@ -205,29 +205,29 @@ class ObjectTracker:
         return tracked_detections
     
     def reset(self):
-        """Reset the tracker state."""
+        """重置跟踪器状态。"""
         self.centroid_tracker.reset()
 
 
 class OpenCVDetector(DetectionModel):
-    """Object detector using OpenCV's DNN module with pre-trained models."""
+    """使用OpenCV的DNN模块和预训练模型进行对象检测。"""
     
     SUPPORTED_MODELS = ['yolov4', 'ssd_mobilenet', 'faster_rcnn']
     
     def __init__(self, model_type: str = 'yolov4', confidence_threshold: float = 0.5, 
                  nms_threshold: float = 0.4, device: str = None):
         """
-        Initialize the OpenCV-based detector.
+        初始化基于OpenCV的检测器。
         
         Args:
-            model_type: Type of model to use (yolov4, ssd_mobilenet, faster_rcnn)
-            confidence_threshold: Minimum confidence for detection
-            nms_threshold: Non-maximum suppression threshold
-            device: Device to run inference on ('cpu', 'cuda', or None for auto-detection)
+            model_type: 使用的模型类型（yolov4, ssd_mobilenet, faster_rcnn）
+            confidence_threshold: 检测的最小置信度
+            nms_threshold: 非极大值抑制阈值
+            device: 运行推理的设备（'cpu', 'cuda', 或None用于自动检测）
         """
         super().__init__()
         
-        # Configure logging
+        # 配置日志记录
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -238,14 +238,14 @@ class OpenCVDetector(DetectionModel):
         self.confidence_threshold = confidence_threshold
         self.nms_threshold = nms_threshold
         
-        # Set device
+        # 设置设备
         if device is None:
             self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
         else:
             self.device = device
         self.logger.info(f"Using device: {self.device}")
         
-        # Initialize model based on type
+        # 根据类型初始化模型
         if self.model_type not in self.SUPPORTED_MODELS:
             self.logger.error(f"Unsupported model type: {model_type}")
             return
@@ -257,13 +257,13 @@ class OpenCVDetector(DetectionModel):
             self.logger.error(f"Error initializing model: {str(e)}")
     
     def _load_model(self):
-        """Load the detection model."""
-        # This implementation uses models available in OpenCV's DNN module
+        """加载检测模型。"""
+        # 这个实现使用OpenCV的DNN模块中的模型
         if self.model_type == 'yolov4':
-            # YOLOv4 model
+            # YOLOv4模型
             self.net = cv2.dnn.readNet('models/weights/yolov4.weights', 'models/weights/yolov4.cfg')
             
-            # Load class names
+            # 加载类别名称
             with open('models/weights/coco.names', 'r') as f:
                 self.classes = [line.strip() for line in f.readlines()]
             
