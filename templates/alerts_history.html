@@ -489,6 +489,7 @@
                         <th>时间</th>
                         <th>详情</th>
                         <th>处理情况</th>
+                        <th>操作</th>
                       </tr>
                     </thead>
                     <tbody id="alerts-tbody">
@@ -503,6 +504,8 @@
                 <button class="page-btn" id="prevPage" onclick="changePage(-1)">上一页</button>
                 <span id="pageInfo">第 1 页，共 1 页</span>
                 <button class="page-btn" id="nextPage" onclick="changePage(1)">下一页</button>
+                <input type="number" id="gotoPageInput" min="1" style="width:60px;margin-left:10px;" placeholder="页码">
+                <button class="page-btn" onclick="gotoPage()">跳转</button>
             </div>
         </div>
     </div>
@@ -622,13 +625,91 @@
                     <td>${alert.datetime || alert.event_time || ''}</td>
                     <td>${alert.message || ''}</td>
                     <td>
-                      ${(alert.acknowledged === 1 || alert.acknowledged === true) ? '<span style="color:#27ae60;font-weight:bold;">已处理</span>' : '<span style="color:#e74c3c;font-weight:bold;">未处理</span>'}
+                      ${(alert.acknowledged === 1 || alert.acknowledged === true) 
+                        ? `<button class='btn btn-sm btn-warning' onclick='unacknowledgeAlert(${alert.id})'>取消处理</button>` 
+                        : `<button class='btn btn-sm btn-success' onclick='acknowledgeAlert(${alert.id})'>标记处理</button>`}
                     </td>
                   </tr>
                 `;
             });
         }
         
+        // 更新统计信息
+        function updateStats(stats) {
+            document.getElementById('totalAlerts').textContent = stats.total_alerts || '-';
+            document.getElementById('unhandledAlerts').textContent = stats.unhandled_alerts || '-';
+            document.getElementById('todayAlerts').textContent = stats.today_alerts || '-';
+            document.getElementById('highLevelAlerts').textContent = stats.high_level_alerts || '-';
+            document.getElementById('mediumLevelAlerts').textContent = stats.medium_level_alerts || '-';
+            document.getElementById('lowLevelAlerts').textContent = stats.low_level_alerts || '-';
+        }
+        
+        // 更新告警总数
+        function updateAlertsCount(total) {
+            document.getElementById('alertsCount').textContent = `共 ${total} 条告警`;
+        }
+        
+        // 处理告警 (标记为已处理)
+        function acknowledgeAlert(alertId) {
+            fetch('/api/alerts/acknowledge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ alert_id: alertId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadAlerts();
+                    loadStats && loadStats();
+                } else {
+                    alert('标记处理失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('标记处理失败: ' + error.message);
+            });
+        }
+        
+        // 取消处理告警 (标记为未处理)
+        function unacknowledgeAlert(alertId) {
+            fetch('/api/alerts/unacknowledge', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ alert_id: alertId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    loadAlerts();
+                    loadStats && loadStats();
+                } else {
+                    alert('取消处理失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('取消处理失败: ' + error.message);
+            });
+        }
+        
+        // 分页功能
+        function changePage(direction) {
+            currentPage += direction;
+            if (currentPage < 1) currentPage = 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            loadAlerts();
+        }
+        
+        // 重置搜索表单
+        function resetSearch() {
+            document.getElementById('sourceFilter').value = '';
+            document.getElementById('levelFilter').value = '';
+            document.getElementById('acknowledgedFilter').value = '';
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            currentPage = 1;
+            loadAlerts();
+        }
+
         // 更新分页信息
         function updatePagination(total, page, pages) {
             const pagination = document.getElementById('pagination');
@@ -645,90 +726,15 @@
             
             pagination.style.display = pages > 1 ? 'flex' : 'none';
         }
-        
-        // 更新告警数量
-        function updateAlertsCount(total) {
-            document.getElementById('alertsCount').textContent = `共 ${total} 条告警`;
-        }
-        
-        // 更新统计信息
-        function updateStats(stats) {
-            document.getElementById('totalAlerts').textContent = stats.total_alerts || 0;
-            document.getElementById('unhandledAlerts').textContent = stats.unhandled_alerts || 0;
-            document.getElementById('todayAlerts').textContent = stats.today_alerts || 0;
-            document.getElementById('highLevelAlerts').textContent = stats.high_level_alerts || 0;
-            document.getElementById('mediumLevelAlerts').textContent = stats.medium_level_alerts || 0;
-            document.getElementById('lowLevelAlerts').textContent = stats.low_level_alerts || 0;
-        }
-        
-        // 切换页面
-        function changePage(delta) {
-            const newPage = currentPage + delta;
-            if (newPage >= 1 && newPage <= totalPages) {
-                currentPage = newPage;
-                loadAlerts();
-            }
-        }
-        
-        // 重置搜索
-        function resetSearch() {
-            document.getElementById('searchForm').reset();
-            currentPage = 1;
+
+        function gotoPage() {
+            const input = document.getElementById('gotoPageInput');
+            let page = parseInt(input.value);
+            if (isNaN(page) || page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+            currentPage = page;
             loadAlerts();
-        }
-        
-        // 确认告警
-        function acknowledgeAlert(alertId) {
-            fetch('/api/alerts/acknowledge', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ alert_id: alertId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    loadAlerts();
-                    loadStats();
-                } else {
-                    alert('操作失败: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('操作失败: ' + error.message);
-            });
-        }
-        
-        // 取消确认告警
-        function unacknowledgeAlert(alertId) {
-            fetch('/api/alerts/unacknowledge', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ alert_id: alertId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    loadAlerts();
-                    loadStats();
-                } else {
-                    alert('操作失败: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('操作失败: ' + error.message);
-            });
-        }
-        
-        // HTML转义
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
     </script>
 </body>
-</html> 
+</html>
