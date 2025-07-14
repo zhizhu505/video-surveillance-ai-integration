@@ -345,6 +345,7 @@
             <div class="video-container">
                 <div class="loading">正在连接视频流...</div>
                 <img class="video-stream" src="{{ url_for('video_feed') }}" alt="视频流" id="video-stream">
+                <canvas id="region-canvas" style="position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:10;"></canvas>
                 <div class="selection-box" id="selection-box" style="display: none;"></div>
             </div>
             <div class="info-panel">
@@ -360,10 +361,15 @@
                         <label class="config-label">停留时间阈值（秒）:</label>
                         <input type="number" class="config-input" id="dwell-time-threshold" value="1.0" min="0.1" max="60.0" step="0.1">
                     </div>
+                    <div class="config-item">
+                        <label class="config-label">接近危险区域距离阈值（像素）:</label>
+                        <input type="number" class="config-input" id="approach-distance-threshold" value="50" min="1" max="500" step="1">
+                    </div>
                     <div class="config-buttons">
                         <button class="config-btn primary" id="set-threshold-btn">设置阈值</button>
                         <button class="config-btn secondary" id="start-selection-btn">开始框选</button>
                         <button class="config-btn danger" id="reset-region-btn">重置区域</button>
+                        <button class="config-btn primary" id="set-approach-threshold-btn">设置接近距离阈值</button>
                     </div>
                     <div style="margin-top: 10px; font-size: 12px; color: #6c757d;">
                         提示：点击"开始框选"后在视频上拖拽鼠标框选警戒区域
@@ -747,6 +753,37 @@
             startSelectionBtn.addEventListener('click', startSelection);
             resetRegionBtn.addEventListener('click', resetAlertRegion);
             
+            // 新增：设置接近危险区域距离阈值
+            const approachDistanceThresholdInput = document.getElementById('approach-distance-threshold');
+            const setApproachThresholdBtn = document.getElementById('set-approach-threshold-btn');
+            function setApproachDistanceThreshold() {
+                const threshold = parseInt(approachDistanceThresholdInput.value);
+                if (isNaN(threshold) || threshold <= 0) {
+                    alert('请输入有效的距离阈值（大于0的数字）');
+                    return;
+                }
+                fetch('/config/approach_distance_threshold', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ threshold: threshold }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('接近距离阈值设置成功！');
+                    } else {
+                        alert('设置失败：' + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error('设置接近距离阈值失败:', err);
+                    alert('设置失败，请检查网络连接');
+                });
+            }
+            setApproachThresholdBtn.addEventListener('click', setApproachDistanceThreshold);
+            
             // 新增：绑定坐标点按钮事件
             addPointBtn.addEventListener('click', addCoordinatePoint);
             createPolygonBtn.addEventListener('click', createPolygonRegion);
@@ -1014,6 +1051,55 @@
             fetchStats();
             fetchAlerts();
             fetchAlertStats(); // 初始获取一次告警统计
+
+            // 新增canvas相关
+            const regionCanvas = document.getElementById('region-canvas');
+            const regionCtx = regionCanvas.getContext('2d');
+            let alertRegion = [];
+            // canvas尺寸同步
+            function resizeCanvasToVideo() {
+                regionCanvas.width = videoElement.clientWidth;
+                regionCanvas.height = videoElement.clientHeight;
+            }
+            // 拉取警戒区域
+            function fetchAlertRegion() {
+                fetch('/config/alert_region')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success && Array.isArray(data.region)) {
+                            alertRegion = data.region;
+                        } else {
+                            alertRegion = [];
+                        }
+                    });
+            }
+            // 绘制多边形
+            function drawAlertRegion() {
+                resizeCanvasToVideo();
+                regionCtx.clearRect(0, 0, regionCanvas.width, regionCanvas.height);
+                if (alertRegion.length >= 3) {
+                    // 坐标缩放
+                    const scaleX = regionCanvas.width / videoElement.naturalWidth;
+                    const scaleY = regionCanvas.height / videoElement.naturalHeight;
+                    regionCtx.save();
+                    regionCtx.strokeStyle = 'blue';
+                    regionCtx.lineWidth = 2;
+                    regionCtx.beginPath();
+                    regionCtx.moveTo(alertRegion[0][0] * scaleX, alertRegion[0][1] * scaleY);
+                    for (let i = 1; i < alertRegion.length; i++) {
+                        regionCtx.lineTo(alertRegion[i][0] * scaleX, alertRegion[i][1] * scaleY);
+                    }
+                    regionCtx.closePath();
+                    regionCtx.stroke();
+                    regionCtx.restore();
+                }
+            }
+            // 定时拉取和绘制
+            setInterval(fetchAlertRegion, 1000);
+            setInterval(drawAlertRegion, 100);
+            // 视频尺寸变化时同步canvas
+            window.addEventListener('resize', resizeCanvasToVideo);
+            videoElement.addEventListener('load', resizeCanvasToVideo);
         });
     </script>
 </body>
