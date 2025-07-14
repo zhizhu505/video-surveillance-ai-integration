@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Any, Union
 from datetime import datetime
 
-from models.alert_rule import AlertLevel
+from models.alert.alert_rule import AlertLevel
 
 
 @dataclass
@@ -15,10 +15,10 @@ class AlertEvent:
     """
     告警事件数据结构，包含一次告警的所有信息。
     """
-<<<<<<< HEAD
     id: str                      # 唯一事件标识符
     rule_id: str                 # 触发该告警的规则ID
     level: AlertLevel            # 告警级别
+    danger_level: str            # 危险级别 (low, medium, high)
     source_type: str             # 触发告警的来源类型
     timestamp: float             # 告警生成时的Unix时间戳
     message: str                 # 可读的告警信息
@@ -30,23 +30,6 @@ class AlertEvent:
     # 附加元数据
     acknowledged: bool = False   # 告警是否已被确认
     related_events: List[str] = field(default_factory=list)  # 相关事件的ID列表
-=======
-    id: str                      # Unique event identifier
-    rule_id: str                 # ID of the rule that triggered this alert
-    level: AlertLevel            # Alert level
-    danger_level: str            # Danger level: low, medium, high
-    source_type: str             # Type of source that triggered the alert
-    timestamp: float             # Unix timestamp when the alert was generated
-    message: str                 # Human-readable message
-    details: Dict[str, Any]      # Detailed information about the alert
-    frame_idx: int               # Frame index when the alert was triggered
-    frame: Optional[np.ndarray] = None  # Frame image when the alert was triggered
-    thumbnail: Optional[np.ndarray] = None  # Small thumbnail of the frame
-    
-    # Additional metadata
-    acknowledged: bool = False   # Whether the alert has been acknowledged
-    related_events: List[str] = field(default_factory=list)  # IDs of related events
->>>>>>> origin/zsq
     
     # 创建告警事件
     @classmethod
@@ -226,7 +209,7 @@ class AlertEventStore:
                 return event
         return None
     # 批量获取（筛选）告警事件
-    def get_events(self, count: int = None, level: Optional[AlertLevel] = None, 
+    def get_events(self, count: Optional[int] = None, level: Optional[AlertLevel] = None, 
                   source_type: Optional[str] = None, 
                   acknowledged: Optional[bool] = None) -> List[AlertEvent]:
         """

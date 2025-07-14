@@ -26,17 +26,19 @@ class DangerRecognizer:
         'intrusion': 'Intrusion Alert',
         'loitering': 'Loitering',
         'danger_zone_dwell': 'Danger Zone Dwell',  # 新增：危险区域停留告警
+        'fighting': 'Fighting Detection',  # 新增：打架检测
     }
     
     # 危险等级映射
     DANGER_LEVELS = {
         'sudden_motion': 'low',
         'large_area_motion': 'low',
-        'fall': 'high',
+        'fall': 'medium',  # 修改：摔倒检测改为中危险
         'abnormal_pattern': 'medium',
         'intrusion': 'medium',
         'loitering': 'medium',
-        'danger_zone_dwell': 'medium',
+        'danger_zone_dwell': 'low',  # 修改：危险区域停留改为低风险
+        'fighting': 'high',  # 打架检测保持高危险
     }
     
     def __init__(self, config=None):
@@ -47,11 +49,11 @@ class DangerRecognizer:
         """
         # 默认配置
         self.config = {
-            'feature_count_threshold': 50,      # 提高特征点数量阈值，减少误报
-            'feature_change_ratio': 1.5,        # 提高特征变化率阈值，减少误报
-            'motion_magnitude_threshold': 5,    # 提高运动幅度阈值，减少误报
-            'motion_area_threshold': 0.25,      # 25%画面有大幅运动才告警
-            'fall_motion_threshold': 5,         # 降低摔倒检测阈值，增强灵敏度
+                    'feature_count_threshold': 50,      # 提高特征点数量阈值，减少误报
+        'feature_change_ratio': 1.5,        # 提高特征变化率阈值，减少误报
+        'motion_magnitude_threshold': 5,    # 提高运动幅度阈值，减少误报
+        'motion_area_threshold': 0.25,      # 25%画面有大幅运动才告警
+        'fall_motion_threshold': 5,         # 降低摔倒检测阈值，增强灵敏度
             'alert_cooldown': 15,               # 增加告警冷却时间，减少频繁告警
             'history_length': 30,
             'save_alerts': True,
@@ -62,6 +64,12 @@ class DangerRecognizer:
             'distance_threshold_m': 50,         # 距离区域边界的阈值（像素）
             'dwell_time_threshold_s': 1.0,      # 停留时间阈值（秒）
             'fps': 30,                          # 帧率，用于计算时间
+            # 新增：打架检测配置
+            'fighting_distance_threshold': 60,   # 从80降低到60，要求更近的距离
+            'fighting_motion_threshold': 6,      # 从4提高到6，要求更高的运动强度
+            'fighting_duration_frames': 12,      # 从8提高到12，要求更长的持续时间
+            'fighting_overlap_threshold': 0.1,  # 打架检测重叠面积阈值
+            'fighting_confidence_threshold': 0.7, # 从0.5提高到0.7，要求更高的置信度
         }
         
         # 更新用户配置
@@ -98,6 +106,31 @@ class DangerRecognizer:
         self.next_person_id = 1
         self.tracking_max_distance = 50  # 最大中心点距离，判定为同一人
         self.tracking_max_missing = 30   # 最大丢失帧数
+        
+        # 新增：跟踪稳定性参数
+        self.tracking_iou_threshold = 0.3  # IOU匹配阈值
+        self.tracking_distance_threshold = 75  # 距离匹配阈值（增加）
+        self.tracking_recent_frames = 10  # 最近帧数限制
+        self.tracking_min_consecutive = 3  # 最小连续跟踪帧数
+        self.tracking_max_consecutive = 100  # 最大连续跟踪帧数（防止ID溢出）
+        
+        # 新增：帧尺寸信息
+        self.frame_width = 640
+        self.frame_height = 480
+        
+        # 新增：行为统计（用于系统报告）
+        self.behavior_stats = {
+            'sudden_motion_count': 0,
+            'large_area_motion_count': 0,
+            'fall_count': 0,
+            'danger_zone_dwell_count': 0,
+            'fighting_count': 0,
+            'audio_event_count': 0  # 新增：声学异常统计
+        }
+        
+        # 新增：打架检测相关
+        self.fighting_history = {}  # 格式: {pair_key: {'start_frame': frame, 'duration': frames, 'motion_history': []}}
+        self.last_fighting_frame = 0  # 打架检测冷却时间
         
         # 添加属性访问器，方便动态更新配置
         self._dwell_time_threshold_s = self.config['dwell_time_threshold_s']
@@ -219,10 +252,12 @@ class DangerRecognizer:
         current_time = time.time()
         current_frame = self.current_frame
         
-        # 打印所有危险区域坐标
-        # print("[调试] 当前危险区域设置:")
-        # for i, region in enumerate(self.alert_regions):
-        #     print(f"  区域{i}: {region['points'].tolist()}")
+        # 首先更新人员跟踪，分配唯一ID
+        self.update_person_tracking(object_detections)
+        
+        # # print("[调试] 当前危险区域设置:")
+        # # for i, region in enumerate(self.alert_regions):
+        # #     print(f"  区域{i}: {region['points'].tolist()}")
         
         # 检查每个检测到的对象
         for obj in object_detections:
@@ -230,8 +265,14 @@ class DangerRecognizer:
                 continue
             
             bbox = obj['bbox']
-            # print(f"[调试] 检测到person方框: {bbox}")
-            object_id = f"{obj.get('class', 'person')}_{hash(tuple(bbox))}"
+            # # print(f"[调试] 检测到person方框: {bbox}")
+            
+            # 使用分配的唯一person_id，如果没有则使用哈希ID作为备用
+            person_id = obj.get('person_id', None)
+            if person_id is not None:
+                object_id = f"person_{person_id}"  # 使用唯一ID
+            else:
+                object_id = f"{obj.get('class', 'person')}_{hash(tuple(bbox))}"  # 备用哈希ID
             
             # 检查是否在危险区域内
             in_danger_zone = False
@@ -256,7 +297,8 @@ class DangerRecognizer:
                         'start_time': current_time,
                         'start_frame': current_frame,
                         'region_id': region_id,
-                        'bbox': bbox.copy()
+                        'bbox': bbox.copy(),
+                        'person_id': person_id  # 保存person_id
                     }
                     logger.info(f"对象 {object_id} 进入危险区域 {region_id}")
                 else:
@@ -273,17 +315,26 @@ class DangerRecognizer:
                             region_name = self.alert_regions[region_id]['name']
                         else:
                             region_name = str(region_id)
+                        
+                        # 生成告警描述
+                        if person_id is not None:
+                            desc = f"检测到人员（ID: {person_id}）在{region_name}内停留超过{self.config['dwell_time_threshold_s']}秒（实际{dwell_time:.1f}秒）"
+                        else:
+                            desc = f"检测到人员在{region_name}内停留超过{self.config['dwell_time_threshold_s']}秒（实际{dwell_time:.1f}秒）"
+                        
                         alert = {
                             'type': self.DANGER_TYPES['danger_zone_dwell'],
                             'danger_level': self.DANGER_LEVELS['danger_zone_dwell'],
                             'confidence': 0.9,  # 高置信度
                             'frame': current_frame,
                             'object_id': object_id,
+                            'person_id': person_id,  # 添加person_id
                             'region_id': region_id,
                             'region_name': region_name,
                             'dwell_time': dwell_time,
-                            'threshold': self.dwell_time_threshold_s,
-                            'bbox': bbox
+                            'threshold': self.config['dwell_time_threshold_s'],
+                            'bbox': bbox,
+                            'desc': desc  # 添加描述
                         }
                         alerts.append(alert)
                         
@@ -291,6 +342,8 @@ class DangerRecognizer:
                         self.dwell_alert_cooldown[object_id] = current_frame
                         
                         logger.info(f"危险区域停留告警: 对象 {object_id} 在区域 {region_id} 停留 {dwell_time:.2f}秒")
+                        # 增加行为统计
+                        self.behavior_stats['danger_zone_dwell_count'] += 1
             else:
                 # 对象不在危险区域内，清除跟踪
                 if object_id in self.danger_zone_trackers:
@@ -327,6 +380,9 @@ class DangerRecognizer:
         """
         self.current_frame += 1
         frame_shape = frame.shape if frame is not None else (480, 640, 3)
+        
+        # 更新帧尺寸信息
+        self.frame_height, self.frame_width = frame_shape[:2]
         
         # 提取当前帧的运动统计
         motion_stats = self._extract_motion_stats(features, (frame_shape[1], frame_shape[0]))
@@ -443,264 +499,632 @@ class DangerRecognizer:
         return stats
     
     def _analyze_danger(self, frame, features, object_detections=None):
-        """分析危险行为
-        
-        Args:
-            frame: 当前视频帧
-            features: 特征列表
-            object_detections: 物体检测结果
-            
-        Returns:
-            alerts: 告警列表
-        """
+        """分析危险行为"""
         if len(self.history) < 3:
             return []
         
-        # 检查冷却时间（摔倒检测除外）
-        if self.current_frame - self.last_alert_frame <= self.config['alert_cooldown']:
-            # 即使有冷却时间，也要检查摔倒检测
-            fall_alerts = []
-            if len(self.history) >= 10:  # 需要更多历史记录来判断摔倒事件
-                recent_vertical_motions = [h['vertical_motion'] for h in self.history[-8:]]
-                max_vertical_motion = np.max(recent_vertical_motions)
-                recent_magnitudes = [h['avg_magnitude'] for h in self.history[-8:]]
-                recent_avg = np.mean(recent_magnitudes[-3:])
-                earlier_avg = np.mean(recent_magnitudes[:-3]) if len(recent_magnitudes) > 3 else 0
-                current_features = self.history[-1]['feature_count']
-                prev_features = self.history[-2]['feature_count'] if len(self.history) > 1 else 0
-
-                confidence = 0.0
-                condition_details = []
-                # 条件1：垂直运动大（降低阈值）
-                if max_vertical_motion > 12:
-                    confidence += 0.5
-                    condition_details.append("垂直运动大")
-                # 条件2：运动后静止（放宽判据）
-                if earlier_avg > 6 and recent_avg < 3:
-                    confidence += 0.5
-                    condition_details.append("运动后静止")
-                # 条件3：特征点突增（可选，权重降低）
-                if prev_features > 0 and current_features > prev_features * 1.5 and current_features > 5:
-                    confidence += 0.2
-                    condition_details.append("特征点突增")
-                # 条件4：垂直运动持续（可选，权重降低）
-                vertical_motion_count = sum(1 for v in recent_vertical_motions if v > 8)
-                if vertical_motion_count >= 2:
-                    confidence += 0.2
-                    condition_details.append("垂直运动持续")
-
-                fall_cooldown_frames = 10
-                cooldown_ok = self.current_frame - getattr(self, 'last_fall_frame', 0) > fall_cooldown_frames
-                if (confidence >= 0.8 and cooldown_ok):
-                    print(f"[调试] 摔倒事件检测触发: 置信度={confidence:.2f}, 满足条件: {condition_details}")
-                    print(f"[调试] 详细参数: max_vertical_motion={max_vertical_motion:.2f}, earlier_avg={earlier_avg:.2f}, recent_avg={recent_avg:.2f}, vertical_motion_count={vertical_motion_count}")
-                    fall_alerts.append({
-                        'type': self.DANGER_TYPES['fall'],
-                        'danger_level': self.DANGER_LEVELS['fall'],
-                        'confidence': confidence,
-                        'frame': self.current_frame,
-                        'vertical_motion': max_vertical_motion,
-                        'threshold': self.config['fall_motion_threshold'],
-                        'event_id': f"fall_{self.current_frame}",
-                    })
-                    self.last_fall_frame = self.current_frame
-                elif confidence >= 0.5:
-                    print(f"[调试] 摔倒检测接近触发但未达到阈值: 置信度={confidence:.2f}, 满足条件: {condition_details}")
-                    print(f"[调试] 详细参数: max_vertical_motion={max_vertical_motion:.2f}, earlier_avg={earlier_avg:.2f}, recent_avg={recent_avg:.2f}, vertical_motion_count={vertical_motion_count}, cooldown_ok={cooldown_ok}")
-                    if not cooldown_ok:
-                        print(f"[调试] 冷却时间阻止: 当前帧={self.current_frame}, 上次摔倒帧={getattr(self, 'last_fall_frame', 0)}, 需要等待={fall_cooldown_frames - (self.current_frame - getattr(self, 'last_fall_frame', 0))}帧")
-            return fall_alerts  # 只返回摔倒检测结果
-        
         alerts = []
-        feature_count = len(features) if features else 0
-        # 调试输出每帧特征
-        print(f"[调试] 帧号: {self.current_frame}, 特征点数: {feature_count}, "
-              f"平均幅度: {self.history[-1]['avg_magnitude'] if self.history else 0:.2f}, "
-              f"最大幅度: {self.history[-1]['max_magnitude'] if self.history else 0:.2f}, "
-              f"运动面积: {self.history[-1]['motion_area'] if self.history else 0:.4f}, "
-              f"垂直运动: {self.history[-1]['vertical_motion'] if self.history else 0:.2f}")
+        frame_height, frame_width = frame.shape[:2]  # 获取帧的尺寸
         
-        # 摔倒检测独立冷却时间（更短，确保及时检测）
-        fall_cooldown = 5  # 摔倒检测冷却时间设为5帧
-        last_fall_frame = getattr(self, 'last_fall_frame', 0)
-        can_detect_fall = self.current_frame - last_fall_frame > fall_cooldown
+        # 检查冷却时间（摔倒检测除外）
+        in_cooldown = self.current_frame - self.last_alert_frame <= self.config['alert_cooldown']
         
-        # 1. 特征数量检测（优化版）
-        if feature_count > self.config['feature_count_threshold']:
-            # 检查历史记录，避免持续的高特征点数量触发告警
-            if len(self.history) >= 3:
-                recent_features = [h['feature_count'] for h in self.history[-3:]]
-                avg_recent_features = sum(recent_features) / len(recent_features)
-                
-                # 只有当当前特征点数量显著高于最近平均值时才告警
-                if feature_count > avg_recent_features * 1.5:  # 当前特征点比平均值高50%以上
-                    confidence = min(1.0, feature_count / (self.config['feature_count_threshold'] * 3))
-                    if confidence >= self.config['min_confidence']:
-                        print(f"[判定] Sudden Motion: 特征点数={feature_count}, 阈值={self.config['feature_count_threshold']}, 置信度={confidence:.2f}, 平均特征点={avg_recent_features:.1f}")
-                        alerts.append({
-                            'type': self.DANGER_TYPES['sudden_motion'],
-                            'danger_level': self.DANGER_LEVELS['sudden_motion'],
-                            'confidence': confidence,
-                            'frame': self.current_frame,
-                            'feature_count': feature_count,
-                            'threshold': self.config['feature_count_threshold'],
-                            'avg_recent_features': avg_recent_features,
-                        })
-            else:
-                # 历史记录不足时，使用简单阈值
-                confidence = min(1.0, feature_count / (self.config['feature_count_threshold'] * 3))
-                if confidence >= self.config['min_confidence']:
-                    print(f"[判定] Sudden Motion: 特征点数={feature_count}, 阈值={self.config['feature_count_threshold']}, 置信度={confidence:.2f}")
-                    alerts.append({
-                        'type': self.DANGER_TYPES['sudden_motion'],
-                        'danger_level': self.DANGER_LEVELS['sudden_motion'],
-                        'confidence': confidence,
-                        'frame': self.current_frame,
-                        'feature_count': feature_count,
-                        'threshold': self.config['feature_count_threshold'],
-                    })
-        
-        # 2. 特征变化率检测
-        if self.last_features_count > 0:
-            feature_change_ratio = feature_count / max(1, self.last_features_count)
-            if (feature_change_ratio > self.config['feature_change_ratio'] and 
-                feature_count > self.config['feature_count_threshold'] / 2):
-                
-                confidence = min(1.0, (feature_change_ratio - 1) / self.config['feature_change_ratio'])
-                if confidence >= self.config['min_confidence']:
-                    print(f"[判定] Feature Change: 变化率={feature_change_ratio:.2f}, 阈值={self.config['feature_change_ratio']}, 置信度={confidence:.2f}")
-                    alerts.append({
-                        'type': self.DANGER_TYPES['sudden_motion'],
-                        'danger_level': self.DANGER_LEVELS['sudden_motion'],
-                        'confidence': confidence,
-                        'frame': self.current_frame,
-                        'change_ratio': feature_change_ratio,
-                        'threshold': self.config['feature_change_ratio'],
-                    })
-        
-        # 3. 运动幅度检测
-        current = self.history[-1]['avg_magnitude']
-        if len(self.history) >= 5:
-            prev_avg = sum(h['avg_magnitude'] for h in self.history[-6:-1]) / 5
-            magnitude_ratio = current / max(0.1, prev_avg)
-            
-            if (magnitude_ratio > 1.2 and 
-                current > self.config['motion_magnitude_threshold']):
-                
-                confidence = min(1.0, current / (self.config['motion_magnitude_threshold'] * 2))
-                if confidence >= self.config['min_confidence']:
-                    print(f"[判定] Motion Magnitude: 当前={current:.2f}, 阈值={self.config['motion_magnitude_threshold']}, 置信度={confidence:.2f}")
-                    alerts.append({
-                        'type': self.DANGER_TYPES['sudden_motion'],
-                        'danger_level': self.DANGER_LEVELS['sudden_motion'],
-                        'confidence': confidence,
-                        'frame': self.current_frame,
-                        'magnitude': current,
-                        'threshold': self.config['motion_magnitude_threshold'],
-                    })
-        
-        # 4. 大面积运动检测（简化版）
-        motion_area = self.history[-1]['motion_area']
-        if motion_area > self.config['motion_area_threshold']:
-            print(f"[判定] Large Area Motion: 面积={motion_area:.4f}, 阈值={self.config['motion_area_threshold']}, 置信度={min(1.0, motion_area / self.config['motion_area_threshold']):.2f}")
-            confidence = min(1.0, motion_area / self.config['motion_area_threshold'])
-            if confidence >= self.config['min_confidence']:
-                alerts.append({
-                    'type': self.DANGER_TYPES['large_area_motion'],
-                    'danger_level': self.DANGER_LEVELS['large_area_motion'],
-                    'confidence': confidence,
-                    'frame': self.current_frame,
-                    'area': motion_area,
-                    'threshold': self.config['motion_area_threshold'],
-                })
-        else:
-            print(f"[调试] 大面积运动检测: 当前面积={motion_area:.4f} 未超过阈值={self.config['motion_area_threshold']:.4f}")
-        
-        # 5. 检测警戒区域入侵和停留时间
-        if object_detections and self.alert_regions:
-            # 5.1 检测危险区域停留时间
-            dwell_alerts = self._track_danger_zone_dwell(object_detections)
-            alerts.extend(dwell_alerts)
-            
-            # 5.2 检测警戒区域入侵（原有的中心点检测）
-            for obj in object_detections:
-                if 'bbox' in obj:  # 确保对象有边界框
-                    x1, y1, x2, y2 = obj['bbox']
-                    center_x = (x1 + x2) // 2
-                    center_y = (y1 + y2) // 2
-                    
-                    for region_idx, region in enumerate(self.alert_regions):
-                        if cv2.pointPolygonTest(region['points'], (center_x, center_y), False) >= 0:
-                            print(f"[判定] Intrusion Alert: 目标={obj.get('class', 'unknown')}, 区域={region['name']}, 置信度={obj.get('confidence', 0.8):.2f}")
-                            # 目标在警戒区域内
-                            alerts.append({
-                                'type': self.DANGER_TYPES['intrusion'],
-                                'danger_level': self.DANGER_LEVELS['intrusion'],
-                                'confidence': obj.get('confidence', 0.8),
-                                'frame': self.current_frame,
-                                'object': obj.get('class', 'unknown'),
-                                'region': region_idx,
-                                'region_name': region['name'],
-                            })
-        
-        # 6. 摔倒检测（事件级检测）
+        # 摔倒检测（不受冷却时间限制）
+        fall_alerts = []
         if len(self.history) >= 10:  # 需要更多历史记录来判断摔倒事件
-            recent_vertical_motions = [h['vertical_motion'] for h in self.history[-8:]]
-            max_vertical_motion = np.max(recent_vertical_motions)
-            avg_vertical_motion = np.mean(recent_vertical_motions)
-            recent_magnitudes = [h['avg_magnitude'] for h in self.history[-8:]]
-            recent_avg = np.mean(recent_magnitudes[-3:])
-            earlier_avg = np.mean(recent_magnitudes[:-3]) if len(recent_magnitudes) > 3 else 0
-            current_features = self.history[-1]['feature_count']
-            prev_features = self.history[-2]['feature_count'] if len(self.history) > 1 else 0
+            # 新增：检查是否有人员存在，避免摄像设备运动被误判
+            has_person = False
+            if object_detections:
+                persons = [det for det in object_detections if str(det.get('class', '')).lower() == 'person']
+                has_person = len(persons) > 0
+            # 只有在检测到人员时才进行摔倒检测
+            if has_person:
+                # 新增：预过滤条件，确保有足够的运动强度
+                recent_magnitudes = [h['avg_magnitude'] for h in self.history[-8:]]
+                avg_magnitude = np.mean(recent_magnitudes)
+                
+                # 如果平均运动幅度太小，直接跳过摔倒检测
+                if avg_magnitude < 2.0:  # 新增：最小运动幅度要求
+                    pass
+                else:
+                    recent_vertical_motions = [h['vertical_motion'] for h in self.history[-8:]]
+                    max_vertical_motion = np.max(recent_vertical_motions)
+                    
+                    # 新增：检查是否有明显的垂直向下运动
+                    downward_motion_count = sum(1 for v in recent_vertical_motions if v > 3)
+                    if downward_motion_count < 2:  # 至少需要2帧有明显的向下运动
+                        pass  # 跳过摔倒检测
+                    else:
+                        # 新增：统计水平方向运动
+                        recent_horizontal_motions = []
+                        if isinstance(features, dict) and 'motion_vectors' in features:
+                            for v in features['motion_vectors']:
+                                if len(v) >= 3:
+                                    recent_horizontal_motions.append(v[2])  # fx
+                        elif features:
+                            for f in features:
+                                if hasattr(f, 'data') and len(f.data) >= 1:
+                                    recent_horizontal_motions.append(f.data[0])  # dx
+                        if recent_horizontal_motions:
+                            max_horizontal_motion = np.max(np.abs(recent_horizontal_motions))
+                        else:
+                            max_horizontal_motion = 0
+                        recent_magnitudes = [h['avg_magnitude'] for h in self.history[-8:]]
+                        recent_avg = np.mean(recent_magnitudes[-3:])
+                        earlier_avg = np.mean(recent_magnitudes[:-3]) if len(recent_magnitudes) > 3 else 0
+                        current_features = self.history[-1]['feature_count']
+                        prev_features = self.history[-2]['feature_count'] if len(self.history) > 1 else 0
 
-            confidence = 0.0
-            condition_details = []
-            
-            # 条件1：垂直运动大
-            if max_vertical_motion > 12:
-                confidence += 0.5
-                condition_details.append("垂直运动大")
-            # 条件2：运动后静止
-            if earlier_avg > 6 and recent_avg < 3:
-                confidence += 0.5
-                condition_details.append("运动后静止")
-            # 条件3：特征点突增（可选，权重降低）
-            if prev_features > 0 and current_features > prev_features * 1.5 and current_features > 5:
-                confidence += 0.2
-                condition_details.append("特征点突增")
-            # 条件4：垂直运动持续（可选，权重降低）
-            vertical_motion_count = sum(1 for v in recent_vertical_motions if v > 8)
-            if vertical_motion_count >= 2:
-                confidence += 0.2
-                condition_details.append("垂直运动持续")
+                        # 新增：检测摄像头移动（避免误判）
+                        camera_motion_detected = False
+                        if len(self.history) >= 5:
+                            # 检查最近几帧的运动模式
+                            recent_motion_areas = [h['motion_area'] for h in self.history[-5:]]
+                            avg_motion_area = np.mean(recent_motion_areas)
+                            
+                            # 如果运动面积很大且持续，可能是摄像头移动
+                            if avg_motion_area > 0.4:  # 40%以上的画面都在运动
+                                camera_motion_detected = True
+                            
+                            # 检查运动方向的一致性（摄像头移动通常有方向性）
+                            if isinstance(features, dict) and 'motion_vectors' in features:
+                                motion_vectors = features['motion_vectors']
+                                if len(motion_vectors) > 10:
+                                    # 计算运动向量的方向一致性
+                                    directions = []
+                                    for v in motion_vectors:
+                                        if len(v) >= 4:
+                                            dx, dy = v[2], v[3]
+                                            if abs(dx) > 0.1 or abs(dy) > 0.1:
+                                                directions.append((dx, dy))
+                            
+                                    if len(directions) > 5:
+                                        # 计算方向的一致性
+                                        avg_dx = np.mean([d[0] for d in directions])
+                                        avg_dy = np.mean([d[1] for d in directions])
+                                        direction_consistency = np.sqrt(avg_dx**2 + avg_dy**2)
+                                        
+                                        # 如果方向一致性很高，可能是摄像头移动
+                                        if direction_consistency > 3.0:
+                                            camera_motion_detected = True
 
-            fall_cooldown_frames = 10
-            cooldown_ok = self.current_frame - getattr(self, 'last_fall_frame', 0) > fall_cooldown_frames
+                        confidence = 0.0
+                        condition_details = []
+                        
+                        # 只有在没有检测到摄像头移动时才进行摔倒检测
+                        if not camera_motion_detected:
+                            # 条件1：垂直向下运动大 或 水平运动特别大（提高水平阈值）
+                            if max_vertical_motion > 8 or max_horizontal_motion > 15:  # 水平阈值从8提高到15
+                                confidence += 0.4
+                                if max_vertical_motion > 8:
+                                    condition_details.append("垂直向下运动大")
+                                if max_horizontal_motion > 15:
+                                    condition_details.append("水平运动大（横向倒地）")
+                            # 条件2：运动后静止（保持原有或更严格）
+                            if earlier_avg > 5 and recent_avg < 1.5:
+                                confidence += 0.4
+                                condition_details.append("运动后静止")
+                            # 条件3：特征点突增（提高权重和阈值）
+                            if prev_features > 0 and current_features > prev_features * 1.5 and current_features > 5:  # 从1.2/3提高到1.5/5
+                                confidence += 0.3
+                                condition_details.append("特征点突增")
+                            # 条件4：垂直运动持续（提高阈值）
+                            vertical_motion_count = sum(1 for v in recent_vertical_motions if v > 5)  # 从3提高到5
+                            horizontal_motion_count = sum(1 for v in recent_horizontal_motions if abs(v) > 5)  # 从3提高到5
+                            if vertical_motion_count >= 3 or horizontal_motion_count >= 3:  # 从2提高到3
+                                confidence += 0.3
+                                condition_details.append("运动持续")
+                            # 新增条件5：要求更明显的运动幅度
+                            if max_vertical_motion > 12 or max_horizontal_motion > 12:  # 新增高幅度运动条件
+                                confidence += 0.2
+                                condition_details.append("高幅度运动")
+                        else:
+                            # 检测到摄像头移动，降低置信度
+                            confidence = 0.0
+                            condition_details.append("检测到摄像头移动，忽略摔倒检测")
+
+                        fall_cooldown_frames = 20  # 从10提高到20帧
+                        cooldown_ok = self.current_frame - getattr(self, 'last_fall_frame', 0) > fall_cooldown_frames
+                        if (confidence >= 0.8 and cooldown_ok):  # 从0.6提高到0.8
+                            print(f"[调试] 摔倒事件检测触发: 置信度={confidence:.2f}, 满足条件: {condition_details}")
+                            print(f"[调试] 详细参数: max_vertical_motion={max_vertical_motion:.2f}, earlier_avg={earlier_avg:.2f}, recent_avg={recent_avg:.2f}, vertical_motion_count={vertical_motion_count}")
+                            # ========== 新增：补充摔倒检测的位置信息和描述 ==========
+                            if object_detections:
+                                self.update_person_tracking(object_detections)
+                            location = {'x': 0, 'y': 0, 'rel_x': 0.0, 'rel_y': 0.0, 'description': '未知位置'}
+                            person_id = None
+                            if object_detections:
+                                persons = [det for det in object_detections if str(det.get('class', '')).lower() == 'person']
+                                if persons:
+                                    # 选最大bbox面积的person
+                                    person = max(persons, key=lambda d: (d['bbox'][2]-d['bbox'][0])*(d['bbox'][3]-d['bbox'][1]))
+                                    bbox = person['bbox']
+                                    center_x = (bbox[0] + bbox[2]) // 2
+                                    center_y = (bbox[1] + bbox[3]) // 2
+                                    rel_x = round(center_x / frame_width * 100, 2)
+                                    rel_y = round(center_y / frame_height * 100, 2)
+                                    x_desc = "左侧" if rel_x < 33.33 else "右侧" if rel_x > 66.67 else "中间"
+                                    y_desc = "上方" if rel_y < 33.33 else "下方" if rel_y > 66.67 else "中间"
+                                    location = {
+                                        'x': center_x,
+                                        'y': center_y,
+                                        'rel_x': rel_x,
+                                        'rel_y': rel_y,
+                                        'description': f"画面{x_desc}{y_desc}"
+                                    }
+                                    person_id = person.get('person_id', None)
+                                    if person_id is None:
+                                        # 兜底分配
+                                        person_id = f"temp_{hash(tuple(bbox))}"
+                            id_str = f"（ID: {person_id}）" if person_id else ""
+                            desc = f"检测到人员{id_str}在{location['description']}发生摔倒"
+                            # ========== End ==========
+                            fall_alerts.append({
+                                'type': self.DANGER_TYPES['fall'],
+                                'danger_level': self.DANGER_LEVELS['fall'],
+                                'confidence': confidence,
+                                'frame': self.current_frame,
+                                'vertical_motion': max_vertical_motion,
+                                'threshold': self.config['fall_motion_threshold'],
+                                'event_id': f"fall_{self.current_frame}",
+                                'location': location,
+                                'desc': desc,
+                                'person_id': person_id,
+                                'trigger_id': person_id,  # 新增：用于前端"触发对象"显示
+                            })
+                            self.last_fall_frame = self.current_frame
+                            # 增加行为统计
+                            self.behavior_stats['fall_count'] += 1
+        
+        # 如果在冷却时间内，只返回摔倒检测结果
+        if in_cooldown:
+            return fall_alerts
+        
+        # 其他类型的告警处理
+        # 1. 检测突然运动（仅统计，不告警）
+        current_features = self.history[-1]['feature_count']
+        prev_features = self.history[-2]['feature_count'] if len(self.history) > 1 else 0
+        feature_change_ratio = current_features / prev_features if prev_features > 0 else 1.0
+
+        if (feature_change_ratio > self.config['feature_change_ratio'] and 
+            current_features > self.config['feature_count_threshold']):
+            # 仅更新统计，不生成告警
+            with self.alert_lock:
+                self.behavior_stats['sudden_motion_count'] += 1
+
+        # 2. 检测大面积运动（仅统计，不告警）
+        if features:
+            motion_area_ratio = len([f for f in features if hasattr(f, 'magnitude') and 
+                                   f.magnitude > self.config['motion_magnitude_threshold']]) / len(features)
             
-            if (confidence >= 0.8 and cooldown_ok):
-                print(f"[调试] 摔倒事件检测触发: 置信度={confidence:.2f}, 满足条件: {condition_details}")
-                print(f"[调试] 详细参数: max_vertical_motion={max_vertical_motion:.2f}, earlier_avg={earlier_avg:.2f}, recent_avg={recent_avg:.2f}, vertical_motion_count={vertical_motion_count}")
-                alerts.append({
-                    'type': self.DANGER_TYPES['fall'],
-                    'confidence': confidence,
-                    'frame': self.current_frame,
-                    'vertical_motion': max_vertical_motion,
-                    'threshold': self.config['fall_motion_threshold'],
-                    'event_id': f"fall_{self.current_frame}",
-                })
-                self.last_fall_frame = self.current_frame
-            elif confidence >= 0.5:
-                print(f"[调试] 摔倒检测接近触发但未达到阈值: 置信度={confidence:.2f}, 满足条件: {condition_details}")
-                print(f"[调试] 详细参数: max_vertical_motion={max_vertical_motion:.2f}, earlier_avg={earlier_avg:.2f}, recent_avg={recent_avg:.2f}, vertical_motion_count={vertical_motion_count}, cooldown_ok={cooldown_ok}")
-                if not cooldown_ok:
-                    print(f"[调试] 冷却时间阻止: 当前帧={self.current_frame}, 上次摔倒帧={getattr(self, 'last_fall_frame', 0)}, 需要等待={fall_cooldown_frames - (self.current_frame - getattr(self, 'last_fall_frame', 0))}帧")
+            if motion_area_ratio > self.config['motion_area_threshold']:
+                # 仅更新统计，不生成告警
+                with self.alert_lock:
+                    self.behavior_stats['large_area_motion_count'] += 1
+
+        # 3. 检测警戒区域入侵和停留时间
+        if object_detections and self.alert_regions:
+            # 3.1 检测危险区域停留时间
+            dwell_alerts = self._track_danger_zone_dwell(object_detections)
+            # 移除重复统计，只在_track_danger_zone_dwell中统计
+            for alert in dwell_alerts:
+                if 'bbox' in alert:
+                    bbox = alert['bbox']
+                    center_x = (bbox[0] + bbox[2]) // 2
+                    center_y = (bbox[1] + bbox[3]) // 2
+                    rel_x = round(center_x / frame_width * 100, 2)
+                    rel_y = round(center_y / frame_height * 100, 2)
+                    x_desc = "左侧" if rel_x < 33.33 else "右侧" if rel_x > 66.67 else "中间"
+                    y_desc = "上方" if rel_y < 33.33 else "下方" if rel_y > 66.67 else "中间"
+                    alert['location'] = {
+                        'x': center_x,
+                        'y': center_y,
+                        'rel_x': rel_x,
+                        'rel_y': rel_y,
+                        'description': f"画面{x_desc}{y_desc}",
+                        'region_name': alert.get('region_name', '未知区域')
+                    }
+                # 自动生成描述
+                if alert.get('type') == self.DANGER_TYPES['danger_zone_dwell']:
+                    # 优先使用person_id（唯一ID），如果没有则使用object_id（哈希ID）
+                    person_id = alert.get('person_id', None)
+                    if person_id is not None:
+                        id_str = f"（ID: {person_id}）"
+                    else:
+                        object_id = alert.get('object_id', '')
+                        id_str = f"（ID: {object_id}）" if object_id else ""
+                    
+                    region_name = alert.get('region_name', '警戒区')
+                    dwell_time = alert.get('dwell_time', 0)
+                    threshold = alert.get('threshold', 0)
+                    alert['desc'] = f"检测到人员{id_str}在{region_name}内停留超过{threshold}秒（实际{dwell_time:.1f}秒）"
+            alerts.extend(dwell_alerts)
+
+        # 将摔倒告警添加到总告警列表中
+        alerts.extend(fall_alerts)
+        
+        # 4. 打架检测
+        if object_detections:
+            # 移除重复统计，只在_detect_fighting中统计
+            fighting_alerts = self._detect_fighting(object_detections, features)
+            alerts.extend(fighting_alerts)
         
         # 如果有告警，更新最后告警帧
         if alerts:
             self.last_alert_frame = self.current_frame
         
         return alerts
+    
+    def _detect_fighting(self, object_detections, features):
+        """检测打架行为 - 改进版本
+        
+        改进点：
+        1. 实际距离估算：基于人物在画面中的位置和大小
+        2. 持续性检测：要求持续一定时间的斗殴行为
+        3. 运动模式分析：分析人物的运动模式
+        4. 更灵敏的检测：优化阈值和检测条件
+        
+        Args:
+            object_detections: 对象检测结果列表
+            features: 运动特征
+            
+        Returns:
+            alerts: 打架检测告警列表
+        """
+        alerts = []
+        
+        # 获取所有人员检测结果
+        persons = [det for det in object_detections if str(det.get('class', '')).lower() == 'person']
+        
+        if len(persons) < 2:
+            return alerts  # 至少需要2个人才能打架
+        
+        # 检查冷却时间
+        if self.current_frame - self.last_fighting_frame <= 45:  # 从30帧提高到45帧冷却
+            return alerts
+        
+        # 分析运动特征
+        motion_intensity = 0
+        if isinstance(features, dict) and 'flow_mean_magnitude' in features:
+            motion_intensity = features['flow_mean_magnitude']
+        elif features:
+            magnitudes = [f.magnitude for f in features if hasattr(f, 'magnitude')]
+            if magnitudes:
+                motion_intensity = np.mean(magnitudes)
+        
+        # 计算人员之间的距离和运动特征
+        person_pairs = []
+        for i in range(len(persons)):
+            for j in range(i + 1, len(persons)):
+                person1 = persons[i]
+                person2 = persons[j]
+                
+                # 计算两个人员边界框中心点之间的距离
+                bbox1 = person1['bbox']
+                bbox2 = person2['bbox']
+                center1_x = (bbox1[0] + bbox1[2]) // 2
+                center1_y = (bbox1[1] + bbox1[3]) // 2
+                center2_x = (bbox2[0] + bbox2[2]) // 2
+                center2_y = (bbox2[1] + bbox2[3]) // 2
+                
+                # 计算像素距离
+                pixel_distance = np.sqrt((center1_x - center2_x)**2 + (center1_y - center2_y)**2)
+                
+                # 估算实际距离（基于人物在画面中的位置和大小）
+                estimated_real_distance = self._estimate_real_distance(bbox1, bbox2, center1_x, center1_y, center2_x, center2_y)
+                
+                # 计算边界框的重叠面积
+                overlap_area = self._calculate_overlap_area(bbox1, bbox2)
+                
+                # 计算人物大小（用于距离估算）
+                person1_size = (bbox1[2] - bbox1[0]) * (bbox1[3] - bbox1[1])
+                person2_size = (bbox2[2] - bbox2[0]) * (bbox2[3] - bbox2[1])
+                
+                person_pairs.append({
+                    'person1': person1,
+                    'person2': person2,
+                    'pixel_distance': pixel_distance,
+                    'real_distance': estimated_real_distance,
+                    'overlap_area': overlap_area,
+                    'center1': (center1_x, center1_y),
+                    'center2': (center2_x, center2_y),
+                    'person1_size': person1_size,
+                    'person2_size': person2_size,
+                    'motion_intensity': motion_intensity
+                })
+        
+        # 持续性打架检测
+        current_time = time.time()
+        fighting_detected = False
+        confidence = 0.0
+        condition_details = []
+        
+        for pair in person_pairs:
+            # 新增：必须有重叠面积>500 或 距离<40px，否则直接跳过
+            if pair['overlap_area'] < 500 and pair['pixel_distance'] > 40:
+                continue
+            # 必须有剧烈运动
+            motion_threshold = self.config['fighting_motion_threshold']
+            if pair['motion_intensity'] <= motion_threshold:
+                continue
+            # 生成配对键（用于跟踪持续性）
+            person1_id = pair['person1'].get('person_id', 'unknown')
+            person2_id = pair['person2'].get('person_id', 'unknown')
+            pair_key = f"{min(person1_id, person2_id)}_{max(person1_id, person2_id)}"
+            
+            # 检查是否满足打架条件
+            pair_confidence = 0.0
+            pair_conditions = []
+            
+            # 条件1：实际距离很近（考虑人物大小和位置）
+            distance_threshold = self.config['fighting_distance_threshold']
+            if pair['pixel_distance'] < distance_threshold:
+                # 根据人物大小调整距离权重
+                avg_size = (pair['person1_size'] + pair['person2_size']) / 2
+                size_factor = min(avg_size / 10000, 2.0)  # 人物越大，距离权重越高
+                adjusted_distance_score = max(0, 1 - pair['pixel_distance'] / (distance_threshold * size_factor))
+                pair_confidence += adjusted_distance_score * 0.3
+                pair_conditions.append(f"距离很近({pair['pixel_distance']:.1f}px)")
+            
+            # 条件2：边界框有重叠（人员接触）
+            if pair['overlap_area'] > 0:
+                overlap_score = min(pair['overlap_area'] / 1000, 1.0)  # 重叠面积越大，分数越高
+                pair_confidence += overlap_score * 0.4
+                pair_conditions.append(f"人员接触(重叠{pair['overlap_area']:.1f})")
+            
+            # 条件3：剧烈运动（运动强度大于阈值）
+            motion_threshold = self.config['fighting_motion_threshold']
+            if pair['motion_intensity'] > motion_threshold:
+                motion_score = min((pair['motion_intensity'] - motion_threshold) / motion_threshold, 1.0)
+                pair_confidence += motion_score * 0.3
+                pair_conditions.append(f"剧烈运动({pair['motion_intensity']:.1f})")
+            
+            # 条件4：多个人员同时运动（轻微排除摔倒场景）
+            if len(persons) >= 2:
+                # 检查是否为摔倒场景：如果运动主要是垂直向下或水平运动，可能是摔倒
+                is_fall_scenario = False
+                if isinstance(features, dict) and 'motion_vectors' in features:
+                    vertical_motions = []
+                    horizontal_motions = []
+                    for v in features['motion_vectors']:
+                        if len(v) >= 4:
+                            vertical_motions.append(v[3])  # dy
+                            horizontal_motions.append(v[2])  # dx
+                    
+                    if vertical_motions and horizontal_motions:
+                        avg_vertical = np.mean(vertical_motions)
+                        avg_horizontal = np.mean(horizontal_motions)
+                        # 提高阈值，减少误判
+                        if abs(avg_vertical) > 6 or abs(avg_horizontal) > 6:  # 从5提高到6
+                            is_fall_scenario = True
+                
+                # 只有在不是摔倒场景时才加分
+                if not is_fall_scenario:
+                    pair_confidence += 0.2
+                    pair_conditions.append("多人同时运动")
+                else:
+                    pair_conditions.append("检测到可能的摔倒场景，轻微降低打架置信度")
+                    pair_confidence -= 0.05  # 轻微降低置信度
+            
+            # 新增条件5：检查人物大小是否合理（避免误判远处的人物）
+            person1_size = pair['person1_size']
+            person2_size = pair['person2_size']
+            min_reasonable_size = 2000  # 从1000提高到2000，要求更大的人物大小
+            if person1_size > min_reasonable_size and person2_size > min_reasonable_size:
+                pair_confidence += 0.1
+                pair_conditions.append("人物大小合理")
+            
+            # 新增条件6：检查运动模式（避免静态或缓慢移动被误判）
+            if pair['motion_intensity'] > motion_threshold * 2.0:  # 从1.5提高到2.0，要求更高的运动强度
+                pair_confidence += 0.2
+                pair_conditions.append("高强度运动")
+            
+            # 新增条件7：排除摔倒场景（检查运动特征，更宽松）
+            fall_indicators = 0
+            if isinstance(features, dict) and 'motion_vectors' in features:
+                # 检查是否有大量垂直向下运动（提高阈值）
+                vertical_down_motions = 0
+                for v in features['motion_vectors']:
+                    if len(v) >= 4 and v[3] > 3:  # dy > 3 表示明显的向下运动
+                        vertical_down_motions += 1
+                
+                if vertical_down_motions > len(features['motion_vectors']) * 0.4:  # 40%以上明显向下运动
+                    fall_indicators += 1
+                
+                # 检查运动后是否静止（更严格的条件）
+                if len(self.history) >= 5:
+                    recent_magnitudes = [h['avg_magnitude'] for h in self.history[-3:]]
+                    earlier_magnitudes = [h['avg_magnitude'] for h in self.history[-5:-3]]
+                    if earlier_magnitudes and recent_magnitudes:
+                        if np.mean(earlier_magnitudes) > 5 and np.mean(recent_magnitudes) < 1.5:
+                            fall_indicators += 1
+            
+            # 如果有摔倒指标，适度降低打架置信度
+            if fall_indicators >= 2:
+                pair_confidence -= 0.3
+                pair_conditions.append(f"检测到{fall_indicators}个摔倒指标，适度降低打架置信度")
+            elif fall_indicators == 1:
+                pair_confidence -= 0.1
+                pair_conditions.append("检测到1个摔倒指标，轻微降低打架置信度")
+            
+            # 持续性检测
+            if pair_key not in self.fighting_history:
+                # 新配对，初始化历史记录
+                if pair_confidence >= self.config['fighting_confidence_threshold'] * 0.9:  # 从0.8提高到0.9，提高初始阈值
+                    self.fighting_history[pair_key] = {
+                        'start_frame': self.current_frame,
+                        'duration': 1,
+                        'motion_history': [pair['motion_intensity']],
+                        'confidence_history': [pair_confidence],
+                        'last_update': current_time
+                    }
+            else:
+                # 更新现有配对的历史记录
+                history = self.fighting_history[pair_key]
+                
+                # 检查时间连续性（允许短暂中断）
+                time_gap = current_time - history['last_update']
+                frame_gap = self.current_frame - history['start_frame'] - history['duration']
+                
+                if time_gap < 2.0 and frame_gap < 10:  # 允许2秒或10帧的短暂中断
+                    # 更新历史记录
+                    history['duration'] += 1
+                    history['motion_history'].append(pair['motion_intensity'])
+                    history['confidence_history'].append(pair_confidence)
+                    history['last_update'] = current_time
+                    
+                    # 保持历史记录长度
+                    if len(history['motion_history']) > 30:
+                        history['motion_history'] = history['motion_history'][-30:]
+                        history['confidence_history'] = history['confidence_history'][-30:]
+                    
+                    # 检查是否满足持续性要求
+                    duration_threshold = self.config['fighting_duration_frames']
+                    if history['duration'] >= duration_threshold:
+                        # 计算平均置信度
+                        avg_confidence = np.mean(history['confidence_history'][-duration_threshold:])
+                        if avg_confidence >= self.config['fighting_confidence_threshold']:
+                            fighting_detected = True
+                            confidence = avg_confidence
+                            condition_details = pair_conditions
+                            condition_details.append(f"持续{history['duration']}帧")
+                            
+                            # 生成告警信息
+                            center_x = (pair['center1'][0] + pair['center2'][0]) // 2
+                            center_y = (pair['center1'][1] + pair['center2'][1]) // 2
+                            
+                            # 使用类的帧尺寸属性
+                            rel_x = round(center_x / self.frame_width * 100, 2)
+                            rel_y = round(center_y / self.frame_height * 100, 2)
+                            x_desc = "左侧" if rel_x < 33.33 else "右侧" if rel_x > 66.67 else "中间"
+                            y_desc = "上方" if rel_y < 33.33 else "下方" if rel_y > 66.67 else "中间"
+                            
+                            location = {
+                                'x': center_x,
+                                'y': center_y,
+                                'rel_x': rel_x,
+                                'rel_y': rel_y,
+                                'description': f"画面{x_desc}{y_desc}"
+                            }
+                            
+                            desc = f"检测到人员（ID: {person1_id}）和人员（ID: {person2_id}）在{location['description']}发生持续性打架行为"
+                            
+                            alert = {
+                                'type': self.DANGER_TYPES['fighting'],
+                                'danger_level': self.DANGER_LEVELS['fighting'],
+                                'confidence': confidence,
+                                'frame': self.current_frame,
+                                'location': location,
+                                'desc': desc,
+                                'person1_id': person1_id,
+                                'person2_id': person2_id,
+                                'pixel_distance': pair['pixel_distance'],
+                                'real_distance': pair['real_distance'],
+                                'motion_intensity': pair['motion_intensity'],
+                                'duration': history['duration'],
+                                'condition_details': condition_details
+                            }
+                            alerts.append(alert)
+                            # 增加行为统计
+                            self.behavior_stats['fighting_count'] += 1
+                            self.last_fighting_frame = self.current_frame
+                else:
+                    # 时间间隔太长，重置历史记录
+                    del self.fighting_history[pair_key]
+        
+        # 清理过期的打架历史记录
+        self._cleanup_fighting_history()
+        
+        return alerts
+    
+    def _estimate_real_distance(self, bbox1, bbox2, center1_x, center1_y, center2_x, center2_y):
+        """估算两个人物之间的实际距离
+        
+        改进的距离估算方法：
+        1. 考虑人物在画面中的相对位置
+        2. 考虑人物大小与距离的关系
+        3. 考虑画面透视效果
+        4. 更保守的距离估算，减少误判
+        
+        Args:
+            bbox1, bbox2: 两个边界框
+            center1_x, center1_y, center2_x, center2_y: 两个中心点坐标
+            
+        Returns:
+            estimated_distance: 估算的实际距离（相对单位）
+        """
+        # 计算人物大小
+        size1 = (bbox1[2] - bbox1[0]) * (bbox1[3] - bbox1[1])
+        size2 = (bbox2[2] - bbox2[0]) * (bbox2[3] - bbox2[1])
+        
+        # 计算人物在画面中的位置（距离画面中心的距离）
+        frame_center_x = self.frame_width / 2
+        frame_center_y = self.frame_height / 2
+        
+        distance1_to_center = np.sqrt((center1_x - frame_center_x)**2 + (center1_y - frame_center_y)**2)
+        distance2_to_center = np.sqrt((center2_x - frame_center_x)**2 + (center2_y - frame_center_y)**2)
+        
+        # 计算像素距离
+        pixel_distance = np.sqrt((center1_x - center2_x)**2 + (center1_y - center2_y)**2)
+        
+        # 改进的距离因子计算
+        # 1. 人物大小因子：人物越大，距离因子越小（更近）
+        avg_size = (size1 + size2) / 2
+        size_factor = min(avg_size / 8000, 1.5)  # 限制大小因子的影响
+        
+        # 2. 位置因子：距离画面中心越远，距离因子越大（更远）
+        avg_distance_to_center = (distance1_to_center + distance2_to_center) / 2
+        position_factor = 1 + (avg_distance_to_center / 200)  # 位置影响
+        
+        # 3. 大小差异因子：如果两个人物大小差异很大，可能距离较远
+        size_ratio = max(size1, size2) / min(size1, size2) if min(size1, size2) > 0 else 1
+        size_diff_factor = min(size_ratio / 2, 1.5)  # 限制大小差异的影响
+        
+        # 4. 综合距离因子（更保守的估算）
+        combined_factor = (size_factor + position_factor + size_diff_factor) / 3
+        
+        # 估算实际距离（更保守）
+        estimated_distance = pixel_distance * combined_factor * 1.2  # 增加1.2倍保守系数
+        
+        return estimated_distance
+    
+    def _cleanup_fighting_history(self):
+        """清理过期的打架历史记录"""
+        current_time = time.time()
+        to_delete = []
+        
+        for pair_key, history in self.fighting_history.items():
+            # 如果超过5秒没有更新，删除记录
+            if current_time - history['last_update'] > 5.0:
+                to_delete.append(pair_key)
+        
+        for pair_key in to_delete:
+            del self.fighting_history[pair_key]
+    
+    def _calculate_overlap_area(self, bbox1, bbox2):
+        """计算两个边界框的重叠面积
+        
+        Args:
+            bbox1: [x1, y1, x2, y2] 第一个边界框
+            bbox2: [x1, y1, x2, y2] 第二个边界框
+            
+        Returns:
+            overlap_area: 重叠面积
+        """
+        x1_1, y1_1, x2_1, y2_1 = bbox1
+        x1_2, y1_2, x2_2, y2_2 = bbox2
+        
+        # 计算重叠区域
+        x_left = max(x1_1, x1_2)
+        y_top = max(y1_1, y1_2)
+        x_right = min(x2_1, x2_2)
+        y_bottom = min(y2_1, y2_2)
+        
+        if x_right < x_left or y_bottom < y_top:
+            return 0  # 没有重叠
+        
+        overlap_area = (x_right - x_left) * (y_bottom - y_top)
+        return overlap_area
     
     def _save_alert_frame(self, frame, alert):
         """保存告警帧
@@ -741,40 +1165,130 @@ class DangerRecognizer:
         logger.info(f"已保存告警帧: {filepath}")
     
     def update_person_tracking(self, detections):
+        """改进的人员跟踪方法
+        
+        使用更稳定的跟踪算法：
+        1. IOU匹配（优先）
+        2. 中心点距离匹配（备用）
+        3. 外观特征匹配（可选）
+        4. 状态管理（处理遮挡和重新出现）
+        """
         # 只处理person
         persons = [det for det in detections if str(det.get('class', '')).lower() == 'person']
         updated_ids = set()
+        
+        # 计算当前帧所有检测框的IOU矩阵
+        current_bboxes = [det['bbox'] for det in persons]
+        if not current_bboxes:
+            return
+        
+        # 与历史跟踪的IOU匹配
         for det in persons:
             bbox = det['bbox']
             cx = (bbox[0] + bbox[2]) // 2
             cy = (bbox[1] + bbox[3]) // 2
-            matched_id = None
-            min_dist = float('inf')
-            # 匹配已有ID
+            
+            best_match_id = None
+            best_iou = self.tracking_iou_threshold  # 使用配置的IOU阈值
+            best_distance = float('inf')
+            
+            # 1. 优先使用IOU匹配
             for pid, info in self.tracked_persons.items():
                 prev_bbox = info['bbox']
-                pcx = (prev_bbox[0] + prev_bbox[2]) // 2
-                pcy = (prev_bbox[1] + prev_bbox[3]) // 2
-                dist = ((cx - pcx) ** 2 + (cy - pcy) ** 2) ** 0.5
-                if dist < self.tracking_max_distance and dist < min_dist:
-                    min_dist = dist
-                    matched_id = pid
-            if matched_id is not None:
+                iou = self._calculate_iou(bbox, prev_bbox)
+                
+                if iou > best_iou:
+                    best_iou = iou
+                    best_match_id = pid
+            
+            # 2. 如果IOU匹配失败，使用距离匹配
+            if best_match_id is None:
+                for pid, info in self.tracked_persons.items():
+                    prev_bbox = info['bbox']
+                    pcx = (prev_bbox[0] + prev_bbox[2]) // 2
+                    pcy = (prev_bbox[1] + prev_bbox[3]) // 2
+                    dist = ((cx - pcx) ** 2 + (cy - pcy) ** 2) ** 0.5
+                    
+                    # 使用配置的距离阈值和帧数限制
+                    if (dist < self.tracking_distance_threshold and 
+                        dist < best_distance and
+                        self.current_frame - info['last_seen'] < self.tracking_recent_frames):
+                        best_distance = dist
+                        best_match_id = pid
+            
+            # 3. 分配ID
+            if best_match_id is not None:
                 # 更新已有ID
-                self.tracked_persons[matched_id] = {'bbox': bbox, 'last_seen': self.current_frame}
-                det['person_id'] = matched_id
-                updated_ids.add(matched_id)
+                self.tracked_persons[best_match_id] = {
+                    'bbox': bbox, 
+                    'last_seen': self.current_frame,
+                    'consecutive_frames': self.tracked_persons[best_match_id].get('consecutive_frames', 0) + 1
+                }
+                det['person_id'] = best_match_id
+                updated_ids.add(best_match_id)
             else:
                 # 分配新ID
                 pid = self.next_person_id
                 self.next_person_id += 1
-                self.tracked_persons[pid] = {'bbox': bbox, 'last_seen': self.current_frame}
+                self.tracked_persons[pid] = {
+                    'bbox': bbox, 
+                    'last_seen': self.current_frame,
+                    'consecutive_frames': 1
+                }
                 det['person_id'] = pid
                 updated_ids.add(pid)
-        # 清理长时间未出现的ID
-        to_del = [pid for pid, info in self.tracked_persons.items() if self.current_frame - info['last_seen'] > self.tracking_max_missing]
+        
+        # 4. 清理长时间未出现的ID（更宽松的清理策略）
+        to_del = []
+        for pid, info in self.tracked_persons.items():
+            frames_missing = self.current_frame - info['last_seen']
+            consecutive_frames = info.get('consecutive_frames', 0)
+            
+            # 根据连续跟踪帧数调整清理策略
+            if consecutive_frames < self.tracking_min_consecutive:
+                max_missing = 15  # 15帧
+            else:
+                max_missing = self.tracking_max_missing  # 30帧
+            
+            # 防止连续帧数过多导致ID溢出
+            if consecutive_frames > self.tracking_max_consecutive:
+                to_del.append(pid)
+            elif frames_missing > max_missing:
+                to_del.append(pid)
+        
         for pid in to_del:
             del self.tracked_persons[pid]
+    
+    def _calculate_iou(self, bbox1, bbox2):
+        """计算两个边界框的IOU
+        
+        Args:
+            bbox1: [x1, y1, x2, y2]
+            bbox2: [x1, y1, x2, y2]
+            
+        Returns:
+            iou: IOU值 (0-1)
+        """
+        x1_1, y1_1, x2_1, y2_1 = bbox1
+        x1_2, y1_2, x2_2, y2_2 = bbox2
+        
+        # 计算交集
+        x1_i = max(x1_1, x1_2)
+        y1_i = max(y1_1, y1_2)
+        x2_i = min(x2_1, x2_2)
+        y2_i = min(y2_1, y2_2)
+        
+        if x2_i <= x1_i or y2_i <= y1_i:
+            return 0.0
+        
+        intersection = (x2_i - x1_i) * (y2_i - y1_i)
+        
+        # 计算并集
+        area1 = (x2_1 - x1_1) * (y2_1 - y1_1)
+        area2 = (x2_2 - x1_2) * (y2_2 - y1_2)
+        union = area1 + area2 - intersection
+        
+        return intersection / union if union > 0 else 0.0
     
     def visualize(self, frame, alerts=None, features=None, show_debug=True, detections=None):
         """可视化危险行为检测结果
@@ -837,7 +1351,6 @@ class DangerRecognizer:
                 if str(det.get('class', '')).lower() == 'person':
                     x1, y1, x2, y2 = det['bbox']
                     pid = det.get('person_id', -1)
-                    color = (0, 255, 0)  # 绿色 - 告警状态或危险区域
                     thickness = 3
                     # 添加告警标识 - 已移除ID显示
                     # if pid != -1: # 只有当有ID时才显示
@@ -877,7 +1390,20 @@ class DangerRecognizer:
         #     alerted_count = len([obj for obj in self.alerted_objects.values() if obj['class'] == 'person'])
         #     cv2.putText(vis_frame, f"Alerted Objects: {alerted_count}", (10, y_offset), 
         #               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
-        #     y_offset += 20
+            y_offset += 20
+            
+            # 新增：显示跟踪统计信息
+            tracked_count = len(self.tracked_persons)
+            cv2.putText(vis_frame, f"Tracked Persons: {tracked_count}", (10, y_offset), 
+                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+            y_offset += 20
+            
+            # 显示跟踪质量信息
+            if self.tracked_persons:
+                avg_consecutive = np.mean([info.get('consecutive_frames', 0) for info in self.tracked_persons.values()])
+                cv2.putText(vis_frame, f"Avg Consecutive: {avg_consecutive:.1f}", (10, y_offset), 
+                          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+            #     y_offset += 20
         #     
         #     for i, (alert_type, count) in enumerate(self.alerts_count.items()):
         #         if count > 0:
@@ -895,10 +1421,33 @@ class DangerRecognizer:
         with self.alert_lock:
             return self.alerts_count.copy()
     
+    def get_behavior_stats(self):
+        """获取行为统计（包括不生成告警的行为）
+        
+        Returns:
+            stats: 行为统计信息
+        """
+        # 确保所有行为类型都在统计中
+        stats = self.behavior_stats.copy()
+        # 补全所有类型，防止外部遗漏
+        for k in ['sudden_motion_count', 'large_area_motion_count', 'fall_count', 'danger_zone_dwell_count', 'fighting_count']:
+            if k not in stats:
+                stats[k] = 0
+        return stats
+    
     def reset_stats(self):
         """重置告警统计"""
         with self.alert_lock:
             self.alerts_count = {danger_type: 0 for danger_type in self.DANGER_TYPES.values()}
+            # 重置行为统计
+            self.behavior_stats = {
+                'sudden_motion_count': 0,
+                'large_area_motion_count': 0,
+                'fall_count': 0,
+                'danger_zone_dwell_count': 0,
+                'fighting_count': 0,
+                'audio_event_count': 0  # 新增：声学异常统计
+            }
     
     def reset(self):
         """重置危险行为识别器"""
@@ -918,6 +1467,9 @@ class DangerRecognizer:
             # 清理多目标跟踪
             self.tracked_persons = {}
             self.next_person_id = 1
+            # 清理打架检测历史
+            self.fighting_history = {}
+            self.last_fighting_frame = 0
             logger.info("危险行为识别器已重置")
 
     def _cleanup_expired_alerts(self):
@@ -943,26 +1495,7 @@ class DangerRecognizer:
             alert_type = alert['type']
             
             # 根据告警类型确定哪些对象应该被标记
-            if alert_type == self.DANGER_TYPES['large_area_motion']:
-                # 大范围移动：标记所有person对象
-                for det in object_detections:
-                    if str(det.get('class', '')).lower() == 'person':
-                        self._add_alerted_object(det, alert_type)
-            
-            elif alert_type == self.DANGER_TYPES['intrusion']:
-                # 入侵告警：只标记在警戒区域内的person
-                for det in object_detections:
-                    if str(det.get('class', '')).lower() == 'person' and 'bbox' in det:
-                        x1, y1, x2, y2 = det['bbox']
-                        center_x = (x1 + x2) // 2
-                        center_y = (y1 + y2) // 2
-                        
-                        for region in self.alert_regions:
-                            if cv2.pointPolygonTest(region['points'], (center_x, center_y), False) >= 0:
-                                self._add_alerted_object(det, alert_type)
-                                break
-            
-            elif alert_type == self.DANGER_TYPES['fall']:
+            if alert_type == self.DANGER_TYPES['fall']:
                 # 摔倒检测：标记所有person（因为摔倒检测是基于整体运动）
                 for det in object_detections:
                     if str(det.get('class', '')).lower() == 'person':
@@ -973,6 +1506,16 @@ class DangerRecognizer:
                 for det in object_detections:
                     if str(det.get('class', '')).lower() == 'person':
                         self._add_alerted_object(det, alert_type)
+            
+            elif alert_type == self.DANGER_TYPES['fighting']:
+                # 打架检测：标记参与打架的人员
+                person1_id = alert.get('person1_id', None)
+                person2_id = alert.get('person2_id', None)
+                for det in object_detections:
+                    if str(det.get('class', '')).lower() == 'person':
+                        det_person_id = det.get('person_id', None)
+                        if det_person_id in [person1_id, person2_id]:
+                            self._add_alerted_object(det, alert_type)
             
             else:
                 # 其他告警类型：标记所有person
