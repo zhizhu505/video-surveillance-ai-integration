@@ -31,11 +31,12 @@
         }
         .video-container {
             flex: 1 1 70%;
-            background-color: #1f2022;
+            /* background-color: #1f2022; */ /* 移除黑色背景 */
             border-radius: 5px;
             overflow: hidden;
             min-height: 480px;
             position: relative;
+            height: 100%; /* 新增：让视频区尽量填满 */
             /* 移除放大和居中样式 */
         }
         .info-panel {
@@ -234,10 +235,10 @@
         }
         .video-stream {
             width: 100%;
-            height: auto;
+            height: 100%; /* 新增：让视频填满容器 */
             display: block;
             object-fit: contain;
-            background: #1f2022;
+            /* background: #1f2022; */ /* 移除黑色背景 */
             cursor: crosshair;
         }
         

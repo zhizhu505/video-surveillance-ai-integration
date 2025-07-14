@@ -578,6 +578,22 @@ class AllInOneSystem:
             except Exception as e:
                 return jsonify(success=False, message=str(e))
 
+        @self.app.route('/control', methods=['POST'])
+        def control():
+            data = request.get_json()
+            action = data.get('action')
+            if action == 'start':
+                self.running = True
+                return jsonify({'success': True, 'message': '系统已启动'})
+            elif action == 'pause':
+                self.paused = not self.paused
+                return jsonify({'success': True, 'message': '系统已暂停' if self.paused else '系统已恢复', 'paused': self.paused})
+            elif action == 'stop':
+                self.running = False
+                return jsonify({'success': True, 'message': '系统已停止'})
+            else:
+                return jsonify({'success': False, 'message': '未知操作'})
+
         def run_web_server():
             """在单独的线程中运行Web服务器"""
             if self.app is not None:
@@ -1038,8 +1054,8 @@ class AllInOneSystem:
                 except Exception as e:
                     logger.error(f"可视化检测结果出错: {str(e)}")
 
-        # 添加系统状态信息
-        self._add_system_info(vis_frame)
+        # 不再添加系统状态信息到帧
+        # self._add_system_info(vis_frame)
 
         return vis_frame
 
