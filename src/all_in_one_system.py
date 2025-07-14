@@ -50,8 +50,6 @@ except ImportError as e:
     logger.error(f"导入DangerRecognizer失败: {str(e)}")
     sys.exit(1)
 
-<<<<<<< HEAD
-=======
 # 导入告警数据库模块
 try:
     from models.alert.alert_database import AlertDatabase
@@ -62,7 +60,6 @@ except ImportError as e:
     AlertDatabase = None
     MySQLAlertDatabase = None
 
->>>>>>> origin/zsq
 # （可选）尝试导入Web界面模块,导入 Flask 相关组件（用于网页端流媒体服务、控制接口）
 try:
     from flask import Flask, render_template, Response, jsonify, request
@@ -129,8 +126,6 @@ class AllInOneSystem:
             'unhandled_alerts': 0
         }  # 告警处理统计
         self.alert_lock = threading.Lock()  # 告警数据锁
-<<<<<<< HEAD
-=======
         
         # 初始化告警数据库（强制只用MySQL测试）
         from models.alert.mysql_database import MySQLAlertDatabase
@@ -147,7 +142,6 @@ class AllInOneSystem:
         except Exception as e:
             logger.error(f"MySQL告警数据库初始化失败: {str(e)}")
             self.alert_database = None
->>>>>>> origin/zsq
 
         # 线程和队列设置
         self.frame_queue = Queue(maxsize=30)  # 存储「捕获线程 → 处理线程」的帧（缓冲队列）
@@ -183,11 +177,7 @@ class AllInOneSystem:
             try:
                 regions = eval(args.alert_region)
                 if isinstance(regions, list) and len(regions) >= 3:
-<<<<<<< HEAD
-                    self.danger_recognizer.add_alert_region(regions, "Alert Zone")
-=======
                     self.danger_recognizer.add_alert_region(regions, "警戒区")
->>>>>>> origin/zsq
             except Exception as e:
                 logger.error(f"解析警戒区域失败: {str(e)}")
 
@@ -209,23 +199,10 @@ class AllInOneSystem:
         # 初始化视频录制器，如果用户传了 --record 参数，就把最终处理后的画面同时录制到视频文件里保存
         self.video_writer = None
         if args.record:
-<<<<<<< HEAD
-            try:
-                # 兼容OpenCV不同版本的VideoWriter_fourcc写法
-                fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')  # type: ignore
-                output_path = os.path.join(args.output, f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.avi")
-                self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, self.args.height))
-                logger.info(f"视频将录制到: {output_path}")
-            except Exception as e:
-                logger.error(f"初始化视频录制器失败: {str(e)}")
-                self.video_writer = None
-=======
-            # 使用标准写法，兼容大多数OpenCV版本
             fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
             output_path = os.path.join(args.output, f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.avi")
             self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, args.height))
             logger.info(f"视频将录制到: {output_path}")
->>>>>>> origin/zsq
 
         # 自动启动音频监控线程（如可用）
         self.audio_thread = None
@@ -285,9 +262,6 @@ class AllInOneSystem:
                         'handled': alert.get('handled', False),
                         'handled_time': alert.get('handled_time', None),
                         'person_id': alert.get('person_id', ''),
-<<<<<<< HEAD
-                        'person_class': alert.get('person_class', '')
-=======
                         'person_class': alert.get('person_class', ''),
                         # 添加位置信息
                         'location': alert.get('location', {
@@ -298,7 +272,6 @@ class AllInOneSystem:
                             'description': '未知位置',
                             'region_name': alert.get('region_name', '')
                         })
->>>>>>> origin/zsq
                     }
                     alerts_data.append(alert_data)
                 return jsonify(alerts_data)
@@ -319,14 +292,6 @@ class AllInOneSystem:
 
         @self.app.route('/alerts/handle', methods=['POST'])
         def handle_alert():
-<<<<<<< HEAD
-            # 处理告警（标记为已处理）
-            data = request.json
-            if data is None:
-                return jsonify({'status': 'error', 'message': 'Invalid JSON data'})
-            alert_id = data.get('alert_id')
-            
-=======
             # 处理告警（标记为已处理，同时更新数据库）
             data = request.json
             alert_id = data.get('alert_id')
@@ -336,7 +301,6 @@ class AllInOneSystem:
             if self.alert_database:
                 db_success = self.alert_database.acknowledge_alert(alert_id)
 
->>>>>>> origin/zsq
             with self.alert_lock:
                 # 查找并更新告警状态
                 for alert in self.all_alerts:
@@ -346,32 +310,17 @@ class AllInOneSystem:
                             alert['handled_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                             self.alert_handling_stats['handled_alerts'] += 1
                             self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
-<<<<<<< HEAD
-                            return jsonify({'status': 'success', 'message': 'Alert marked as handled'})
-                        else:
-                            return jsonify({'status': 'info', 'message': 'Alert already handled'})
-                
-=======
                             if db_success:
                                 return jsonify({'status': 'success', 'message': 'Alert marked as handled and database updated'})
                             else:
                                 return jsonify({'status': 'warning', 'message': 'Alert marked as handled, but database update failed'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already handled'})
-
->>>>>>> origin/zsq
+                
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/alerts/unhandle', methods=['POST'])
         def unhandle_alert():
-<<<<<<< HEAD
-            # 取消处理告警（标记为未处理）
-            data = request.json
-            if data is None:
-                return jsonify({'status': 'error', 'message': 'Invalid JSON data'})
-            alert_id = data.get('alert_id')
-            
-=======
             # 取消处理告警（标记为未处理，同时更新数据库）
             data = request.json
             alert_id = data.get('alert_id')
@@ -381,7 +330,6 @@ class AllInOneSystem:
             if self.alert_database:
                 db_success = self.alert_database.unacknowledge_alert(alert_id)
 
->>>>>>> origin/zsq
             with self.alert_lock:
                 # 查找并更新告警状态
                 for alert in self.all_alerts:
@@ -391,21 +339,6 @@ class AllInOneSystem:
                             alert.pop('handled_time', None)
                             self.alert_handling_stats['handled_alerts'] = max(0, self.alert_handling_stats['handled_alerts'] - 1)
                             self.alert_handling_stats['unhandled_alerts'] += 1
-<<<<<<< HEAD
-                            return jsonify({'status': 'success', 'message': 'Alert marked as unhandled'})
-                        else:
-                            return jsonify({'status': 'info', 'message': 'Alert already unhandled'})
-                
-                return jsonify({'status': 'error', 'message': 'Alert not found'})
-
-        @self.app.route('/control', methods=['POST'])
-        def control():
-            """控制API"""
-            data = request.json
-            if data is None:
-                return jsonify({'status': 'error', 'message': 'Invalid JSON data'})
-            action = data.get('action', '')
-=======
                             if db_success:
                                 return jsonify({'status': 'success', 'message': 'Alert marked as unhandled and database updated'})
                             else:
@@ -571,7 +504,6 @@ class AllInOneSystem:
         def control():
             """控制API"""
             action = request.json.get('action', '')
->>>>>>> origin/zsq
             if action == 'start':
                 self.running = True
                 return jsonify({'status': 'success', 'message': 'System started'})
@@ -583,7 +515,6 @@ class AllInOneSystem:
                 return jsonify({'status': 'success', 'message': f'System {"paused" if self.paused else "resumed"}'})
             return jsonify({'status': 'error', 'message': f'Unknown action: {action}'})
 
-<<<<<<< HEAD
         @self.app.route('/config/dwell_time_threshold', methods=['POST'])
         def set_dwell_time_threshold():
             """设置停留时间阈值"""
@@ -636,13 +567,7 @@ class AllInOneSystem:
 
         def run_web_server():
             """在单独的线程中运行Web服务器"""
-            if self.app is not None:
-                self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
-=======
-        def run_web_server():
-            """在单独的线程中运行Web服务器"""
             self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
->>>>>>> origin/zsq
 
         # 启动Web服务器线程
         web_thread = threading.Thread(target=run_web_server)
@@ -740,14 +665,10 @@ class AllInOneSystem:
         # 设置摄像头参数（仅用于本地摄像头）
         if source == 0 or (isinstance(source, int) and source >= 0):
             # 尝试设置MJPG格式（如果支持）
-<<<<<<< HEAD
             try:
                 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))  # type: ignore
             except Exception as e:
                 logger.warning(f"设置MJPG格式失败: {str(e)}")
-=======
-            cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))
->>>>>>> origin/zsq
             # 尝试设置缓冲区大小最小
             cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
@@ -867,11 +788,7 @@ class AllInOneSystem:
                     object_detections = None
                     if self.ai_model is not None and (frame_id - last_ai_frame) >= self.args.ai_interval:
                         try:
-<<<<<<< HEAD
-                            results = self.ai_model(process_frame)
-=======
                             results = self.ai_model(process_frame, verbose=False)
->>>>>>> origin/zsq
                             object_detections = self._parse_ai_results(results)
                             last_ai_frame = frame_id
                         except Exception as e:
@@ -893,9 +810,6 @@ class AllInOneSystem:
                             'handled': False,  # 默认未处理
                             'handled_time': None,  # 处理时间
                             'person_id': alert.get('person_id', ''),  # 新增：person id
-<<<<<<< HEAD
-                            'person_class': alert.get('person_class', '')  # 新增：person类别
-=======
                             'person_class': alert.get('person_class', ''),  # 新增：person类别
                             # 新增：位置信息
                             'location': alert.get('location', {
@@ -906,7 +820,6 @@ class AllInOneSystem:
                                 'description': '未知位置',
                                 'region_name': alert.get('region_name', '')
                             })
->>>>>>> origin/zsq
                         }
                         
                         with self.alert_lock:
@@ -916,8 +829,6 @@ class AllInOneSystem:
                             self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
                             # recent_alerts只保留最新10条
                             self.recent_alerts.append(alert_info)
-<<<<<<< HEAD
-=======
                         
                         # 保存告警到数据库
                         if self.alert_database:
@@ -970,7 +881,6 @@ class AllInOneSystem:
                                 logger.error(f"保存告警到数据库失败: {str(e)}")
                         else:
                             logger.error("self.alert_database 未初始化，无法写入告警！")
->>>>>>> origin/zsq
 
                     # 可视化结果
                     vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
@@ -1032,11 +942,7 @@ class AllInOneSystem:
                 self.fps = self.frame_count / elapsed if elapsed > 0 else 0
 
                 # 录制视频
-<<<<<<< HEAD
-                if self.video_writer is not None and vis_frame is not None:
-=======
                 if self.video_writer is not None:
->>>>>>> origin/zsq
                     # 确保尺寸匹配
                     if vis_frame.shape[1] != self.args.width or vis_frame.shape[0] != self.args.height:
                         vis_frame_resized = cv2.resize(vis_frame, (self.args.width, self.args.height))
@@ -1112,10 +1018,6 @@ class AllInOneSystem:
 
                     color = (0, 255, 0)  # 绿色 - 正常对象
                     cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, 2)
-<<<<<<< HEAD
-                    # 保留AI检测结果的文字显示
-=======
->>>>>>> origin/zsq
                     cv2.putText(vis_frame, f"{cls} {conf:.2f}", (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                 except Exception as e:
@@ -1130,19 +1032,6 @@ class AllInOneSystem:
         """添加系统状态信息到帧"""
         h, w = frame.shape[:2]
 
-<<<<<<< HEAD
-        # 绘制右上角系统状态文字
-        info_items = [
-            f"FPS: {self.fps:.1f}",
-            f"Frames: {self.frame_count}",
-            f"Processed: {self.processed_count}",
-            f"Uptime: {int(time.time() - self.start_time)} s"
-        ]
-        for i, info in enumerate(info_items):
-            color = (255, 255, 255)
-            cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
-=======
         # 不再绘制任何右上角系统状态文字
         # info_items = [
         #     f"FPS: {self.fps:.1f}",
@@ -1154,17 +1043,12 @@ class AllInOneSystem:
         #     color = (255, 255, 255)
         #     cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
         #                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
->>>>>>> origin/zsq
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
         h, w = frame.shape[:2]
 
-<<<<<<< HEAD
-        # 显示FPS和告警数
-=======
         # 仅在左上角显示FPS和告警数
->>>>>>> origin/zsq
         cv2.putText(frame, f"FPS: {self.fps:.1f}", (10, 25),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
 
@@ -1237,13 +1121,6 @@ class AllInOneSystem:
 
         # 添加识别到的行为信息到报告
         report += "\n识别到的行为:\n"
-<<<<<<< HEAD
-        if behavior_info['behaviors']:
-            for behavior in behavior_info['behaviors']:
-                report += f"  - {behavior}\n"
-        else:
-            report += "  - 无\n"
-=======
         # 直接用行为统计，输出所有类型的计数
         behavior_stats = self.danger_recognizer.get_behavior_stats()
         for k, v in [
@@ -1255,7 +1132,6 @@ class AllInOneSystem:
             ("Abnormal Audio Event", behavior_stats.get('audio_event_count', 0)),  # 新增
         ]:
             report += f"  - {k}: {v}\n"
->>>>>>> origin/zsq
             
         # 添加识别到的交互信息到报告
         report += "\n识别到的交互:\n"
@@ -1272,8 +1148,6 @@ class AllInOneSystem:
             if count > 0:
                 report += f"  - {alert_type}: {count}\n"
 
-<<<<<<< HEAD
-=======
         # 新增：行为检测统计（包括不生成告警的行为）
         report += "\n行为检测统计:\n"
         for k, v in [
@@ -1286,7 +1160,6 @@ class AllInOneSystem:
         ]:
             report += f"  - {k}: {v}\n"
 
->>>>>>> origin/zsq
         # 新增：告警处理统计
         report += "\n告警处理统计:\n"
         report += f"  - 总告警数: {self.alert_handling_stats['total_alerts']}\n"
@@ -1346,13 +1219,10 @@ class AllInOneSystem:
             self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
             self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
             self.recent_alerts.append(alert_info)
-<<<<<<< HEAD
-=======
         # 新增：统计声学异常
         if hasattr(self, 'danger_recognizer') and hasattr(self.danger_recognizer, 'behavior_stats'):
             stats = self.danger_recognizer.behavior_stats
             stats['audio_event_count'] = stats.get('audio_event_count', 0) + 1
->>>>>>> origin/zsq
 
 
 def parse_args():
