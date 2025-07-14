@@ -4,7 +4,7 @@ import tensorflow as tf
 import librosa
 import queue
 import threading
-import time
+import time as time_module
 import os
 import sys
 import importlib
@@ -71,7 +71,9 @@ def detect_audio_event(audio_data, sr):
 # 音频监控主循环
 def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
     q = queue.Queue()
-    def audio_callback(indata, frames, time, status):
+    cooldown_seconds = 3  # 声学告警冷却时间（秒）
+    last_alert_time = 0
+    def audio_callback(indata, frames, t, status):  # 避免参数名time与time_module冲突
         q.put(indata.copy())
     with sd.InputStream(callback=audio_callback, channels=1, samplerate=samplerate):
         print("音频监控中...")
@@ -79,9 +81,11 @@ def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
             audio_chunk = q.get()
             audio_data = audio_chunk.flatten()
             label, score = detect_audio_event(audio_data, samplerate)
-            if label:
+            now = time_module.time()  # 避免与sounddevice的time冲突
+            if label and (now - last_alert_time > cooldown_seconds):
                 print(f"检测到异常声音: {label} (置信度: {score:.2f})")
                 alert_callback(label, score)
+                last_alert_time = now
 
 # 集成到主系统：自动查找AllInOneSystem实例
 main_system = None
@@ -110,4 +114,4 @@ if __name__ == '__main__':
     audio_thread.daemon = True
     audio_thread.start()
     while True:
-        time.sleep(1) 
+        time_module.sleep(1) 

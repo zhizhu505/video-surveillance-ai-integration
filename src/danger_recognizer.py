@@ -38,7 +38,7 @@ class DangerRecognizer:
         'abnormal_pattern': 'medium',
         'intrusion': 'medium',
         'loitering': 'medium',
-        'danger_zone_dwell': 'low',  # 修改：危险区域停留改为低风险
+        'danger_zone_dwell': 'medium',  # 修改：危险区域停留改为中风险
         'fighting': 'high',  # 打架检测保持高危险
         'approaching_danger_zone': 'low',  # 新增
     }
@@ -55,7 +55,7 @@ class DangerRecognizer:
         'feature_change_ratio': 1.5,        # 提高特征变化率阈值，减少误报
         'motion_magnitude_threshold': 5,    # 提高运动幅度阈值，减少误报
         'motion_area_threshold': 0.25,      # 25%画面有大幅运动才告警
-        'fall_motion_threshold': 5,         # 降低摔倒检测阈值，增强灵敏度
+        'fall_motion_threshold': 5,         # 降低运动强度阈值
             'alert_cooldown': 15,               # 增加告警冷却时间，减少频繁告警
             'history_length': 30,
             'save_alerts': True,
@@ -66,12 +66,12 @@ class DangerRecognizer:
             'distance_threshold_m': 50,         # 距离区域边界的阈值（像素）
             'dwell_time_threshold_s': 1.0,      # 停留时间阈值（秒）
             'fps': 30,                          # 帧率，用于计算时间
-            # 新增：打架检测配置
-            'fighting_distance_threshold': 60,   # 从80降低到60，要求更近的距离
-            'fighting_motion_threshold': 6,      # 从4提高到6，要求更高的运动强度
-            'fighting_duration_frames': 12,      # 从8提高到12，要求更长的持续时间
-            'fighting_overlap_threshold': 0.1,  # 打架检测重叠面积阈值
-            'fighting_confidence_threshold': 0.7, # 从0.5提高到0.7，要求更高的置信度
+            # 新增：打架检测配置（大幅提升灵敏度）
+            'fighting_distance_threshold': 100,   # 放宽距离
+            'fighting_motion_threshold': 3.0,    # 降低运动强度要求
+            'fighting_duration_frames': 3,       # 降低持续帧数
+            'fighting_overlap_threshold': 0.02,  # 放宽重叠面积
+            'fighting_confidence_threshold': 0.38, # 降低置信度
             'danger_zone_approach_distance': 50,  # 新增：接近危险区域距离阈值
         }
         
@@ -577,15 +577,19 @@ class DangerRecognizer:
                 avg_magnitude = np.mean(recent_magnitudes)
                 
                 # 如果平均运动幅度太小，直接跳过摔倒检测
-                if avg_magnitude < 2.0:  # 新增：最小运动幅度要求
+                if avg_magnitude < 2.0:  # 降低最小运动幅度要求
                     pass
                 else:
                     recent_vertical_motions = [h['vertical_motion'] for h in self.history[-8:]]
                     max_vertical_motion = np.max(recent_vertical_motions)
                     
                     # 新增：检查是否有明显的垂直向下运动
-                    downward_motion_count = sum(1 for v in recent_vertical_motions if v > 3)
-                    if downward_motion_count < 2:  # 至少需要2帧有明显的向下运动
+                    downward_motion_count = sum(1 for v in recent_vertical_motions if v > 3)  # 降低向下运动阈值
+                    upward_motion_count = sum(1 for v in recent_vertical_motions if v < -4)  # 统计向上（负值）
+                    if upward_motion_count >= 2:
+                        # 如果有多帧明显向上运动，直接跳过摔倒检测
+                        pass
+                    elif downward_motion_count < 2:  # 降低帧数要求
                         pass  # 跳过摔倒检测
                     else:
                         # 新增：统计水平方向运动
@@ -807,7 +811,7 @@ class DangerRecognizer:
             return alerts  # 至少需要2个人才能打架
         
         # 检查冷却时间
-        if self.current_frame - self.last_fighting_frame <= 45:  # 从30帧提高到45帧冷却
+        if self.current_frame - self.last_fighting_frame <= 15:  # 原45帧，缩短冷却
             return alerts
         
         # 分析运动特征
@@ -867,8 +871,8 @@ class DangerRecognizer:
         condition_details = []
         
         for pair in person_pairs:
-            # 新增：必须有重叠面积>500 或 距离<40px，否则直接跳过
-            if pair['overlap_area'] < 500 and pair['pixel_distance'] > 40:
+            # 新增：必须有重叠面积>60 或 距离<80px，否则直接跳过（更宽松）
+            if pair['overlap_area'] < 60 and pair['pixel_distance'] > 80:
                 continue
             # 必须有剧烈运动
             motion_threshold = self.config['fighting_motion_threshold']
@@ -930,13 +934,11 @@ class DangerRecognizer:
                     pair_confidence += 0.2
                     pair_conditions.append("多人同时运动")
                 else:
-                    pair_conditions.append("检测到可能的摔倒场景，轻微降低打架置信度")
-                    pair_confidence -= 0.05  # 轻微降低置信度
+                    pair_conditions.append("检测到可能的摔倒场景，显著降低打架置信度")
+                    pair_confidence -= 0.2  # 原-0.05，扣分更重
             
-            # 新增条件5：检查人物大小是否合理（避免误判远处的人物）
-            person1_size = pair['person1_size']
-            person2_size = pair['person2_size']
-            min_reasonable_size = 2000  # 从1000提高到2000，要求更大的人物大小
+            # 新增条件5：检查人物大小是否合理（更宽松，原2000→800）
+            min_reasonable_size = 800
             if person1_size > min_reasonable_size and person2_size > min_reasonable_size:
                 pair_confidence += 0.1
                 pair_conditions.append("人物大小合理")
@@ -977,7 +979,7 @@ class DangerRecognizer:
             # 持续性检测
             if pair_key not in self.fighting_history:
                 # 新配对，初始化历史记录
-                if pair_confidence >= self.config['fighting_confidence_threshold'] * 0.9:  # 从0.8提高到0.9，提高初始阈值
+                if pair_confidence >= self.config['fighting_confidence_threshold'] * 0.7:  # 原0.9，放宽初始阈值
                     self.fighting_history[pair_key] = {
                         'start_frame': self.current_frame,
                         'duration': 1,
