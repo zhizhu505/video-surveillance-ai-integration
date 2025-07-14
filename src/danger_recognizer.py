@@ -775,7 +775,7 @@ class DangerRecognizer:
         to_del = [pid for pid, info in self.tracked_persons.items() if self.current_frame - info['last_seen'] > self.tracking_max_missing]
         for pid in to_del:
             del self.tracked_persons[pid]
-
+    
     def visualize(self, frame, alerts=None, features=None, show_debug=True, detections=None):
         """可视化危险行为检测结果
         
@@ -854,17 +854,16 @@ class DangerRecognizer:
                                     break
                         if is_alerted or in_danger_zone:
                             cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, thickness)
-                        else:
-                            cv2.rectangle(vis_frame, (x1, y1), (x2, y2), (0, 255, 0), thickness) # 正常状态
                     else:
-                        cv2.rectangle(vis_frame, (x1, y1), (x2, y2), (0, 255, 0), thickness) # 没有ID的person
+                        # 没有ID的person，显示绿色框
+                        cv2.rectangle(vis_frame, (x1, y1), (x2, y2), (0, 255, 0), thickness)
                 else:
                     color = (0, 255, 0)  # 绿色 - 非person对象
                     thickness = 2
-                    cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, thickness)
+                    cv2.rectangle(vis_frame, (det['bbox'][0], det['bbox'][1]), (det['bbox'][2], det['bbox'][3]), color, thickness)
                     # 保留非person对象的文字显示
-                    cv2.putText(vis_frame, f"{det.get('class', 'unknown')} {det.get('confidence', 0.8):.2f}", (x1, y1 - 10),
-                              cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    cv2.putText(vis_frame, f"{det.get('class', 'unknown')} {det.get('confidence', 0.8):.2f}", (det['bbox'][0], det['bbox'][1] - 10),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
         
         # 显示调试信息 - 已移除
         # if show_debug:
@@ -1065,4 +1064,4 @@ if __name__ == "__main__":
     if vis_frame is not None:
         cv2.imshow("Test", vis_frame)
         cv2.waitKey(0)
-        cv2.destroyAllWindows() 
+        cv2.destroyAllWindows()
