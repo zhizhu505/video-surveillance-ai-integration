@@ -49,17 +49,22 @@ def detect_audio_event(audio_data, sr):
     # 预处理到16kHz单通道
     if sr != 16000:
         audio_data = librosa.resample(audio_data, orig_sr=sr, target_sr=16000)
-    waveform = np.expand_dims(audio_data, axis=0)
-    scores, embeddings, spectrogram = yamnet_model(waveform)
-    mean_scores = np.mean(scores, axis=0)
-    top_class = np.argmax(mean_scores)
-    top_score = mean_scores[top_class]
-    top_label = yamnet_classes[top_class]
-    # 检查是否为目标事件
-    for kw in TARGET_KEYWORDS:
-        if kw.lower() in top_label.lower() and top_score > 0.2:
-            return top_label, float(top_score)
-    return None, None
+    # 保证waveform是一维float32
+    waveform = audio_data.astype(np.float32)
+    try:
+        scores, embeddings, spectrogram = yamnet_model(waveform)
+        mean_scores = np.mean(scores, axis=0)
+        top_class = np.argmax(mean_scores)
+        top_score = mean_scores[top_class]
+        top_label = yamnet_classes[top_class]
+        # 检查是否为目标事件
+        for kw in TARGET_KEYWORDS:
+            if kw.lower() in top_label.lower() and top_score > 0.2:
+                return top_label, float(top_score)
+        return None, None
+    except Exception as e:
+        print("[音频监控] 声学事件检测错误:", str(e))
+        return None, None
 
 # 音频监控主循环
 def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):

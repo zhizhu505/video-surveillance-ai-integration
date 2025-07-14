@@ -1069,11 +1069,17 @@ class AllInOneSystem:
 
         # 添加识别到的行为信息到报告
         report += "\n识别到的行为:\n"
-        if behavior_info['behaviors']:
-            for behavior in behavior_info['behaviors']:
-                report += f"  - {behavior}\n"
-        else:
-            report += "  - 无\n"
+        # 直接用行为统计，输出所有类型的计数
+        behavior_stats = self.danger_recognizer.get_behavior_stats()
+        for k, v in [
+            ("Sudden Motion", behavior_stats.get('sudden_motion_count', 0)),
+            ("Large Area Motion", behavior_stats.get('large_area_motion_count', 0)),
+            ("Fall Detection", behavior_stats.get('fall_count', 0)),
+            ("Danger Zone Dwell", behavior_stats.get('danger_zone_dwell_count', 0)),
+            ("Fighting Detection", behavior_stats.get('fighting_count', 0)),
+            ("Abnormal Audio Event", behavior_stats.get('audio_event_count', 0)),  # 新增
+        ]:
+            report += f"  - {k}: {v}\n"
             
         # 添加识别到的交互信息到报告
         report += "\n识别到的交互:\n"
@@ -1091,20 +1097,16 @@ class AllInOneSystem:
                 report += f"  - {alert_type}: {count}\n"
 
         # 新增：行为检测统计（包括不生成告警的行为）
-        behavior_stats = self.danger_recognizer.get_behavior_stats()
         report += "\n行为检测统计:\n"
-        if behavior_stats['sudden_motion_count'] > 0:
-            report += f"  - Sudden Motion: {behavior_stats['sudden_motion_count']}\n"
-        if behavior_stats['large_area_motion_count'] > 0:
-            report += f"  - Large Area Motion: {behavior_stats['large_area_motion_count']}\n"
-        if behavior_stats['fall_count'] > 0:
-            report += f"  - Fall Detection: {behavior_stats['fall_count']}\n"
-        if behavior_stats['danger_zone_dwell_count'] > 0:
-            report += f"  - Danger Zone Dwell: {behavior_stats['danger_zone_dwell_count']}\n"
-        if behavior_stats['fighting_count'] > 0:
-            report += f"  - Fighting Detection: {behavior_stats['fighting_count']}\n"
-        if all(count == 0 for count in behavior_stats.values()):
-            report += "  - 无\n"
+        for k, v in [
+            ("Sudden Motion", behavior_stats.get('sudden_motion_count', 0)),
+            ("Large Area Motion", behavior_stats.get('large_area_motion_count', 0)),
+            ("Fall Detection", behavior_stats.get('fall_count', 0)),
+            ("Danger Zone Dwell", behavior_stats.get('danger_zone_dwell_count', 0)),
+            ("Fighting Detection", behavior_stats.get('fighting_count', 0)),
+            ("Abnormal Audio Event", behavior_stats.get('audio_event_count', 0)),
+        ]:
+            report += f"  - {k}: {v}\n"
 
         # 新增：告警处理统计
         report += "\n告警处理统计:\n"
@@ -1165,6 +1167,10 @@ class AllInOneSystem:
             self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
             self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
             self.recent_alerts.append(alert_info)
+        # 新增：统计声学异常
+        if hasattr(self, 'danger_recognizer') and hasattr(self.danger_recognizer, 'behavior_stats'):
+            stats = self.danger_recognizer.behavior_stats
+            stats['audio_event_count'] = stats.get('audio_event_count', 0) + 1
 
 
 def parse_args():
