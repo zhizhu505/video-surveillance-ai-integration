@@ -177,7 +177,7 @@ class AllInOneSystem:
             try:
                 regions = eval(args.alert_region)
                 if isinstance(regions, list) and len(regions) >= 3:
-                    self.danger_recognizer.add_alert_region(regions, "警戒区")
+                    self.danger_recognizer.add_alert_region(regions, "Alert Zone")
             except Exception as e:
                 logger.error(f"解析警戒区域失败: {str(e)}")
 
@@ -199,10 +199,14 @@ class AllInOneSystem:
         # 初始化视频录制器，如果用户传了 --record 参数，就把最终处理后的画面同时录制到视频文件里保存
         self.video_writer = None
         if args.record:
-            fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
-            output_path = os.path.join(args.output, f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.avi")
-            self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, args.height))
-            logger.info(f"视频将录制到: {output_path}")
+            try:
+                fourcc = cv2.VideoWriter_fourcc('X', 'V', 'I', 'D')
+                output_path = os.path.join(args.output, f"output_{datetime.now().strftime('%Y%m%d_%H%M%S')}.avi")
+                self.video_writer = cv2.VideoWriter(output_path, fourcc, 20.0, (args.width, args.height))
+                logger.info(f"视频将录制到: {output_path}")
+            except Exception as e:
+                logger.error(f"初始化视频录制器失败: {str(e)}")
+                self.video_writer = None
 
         # 自动启动音频监控线程（如可用）
         self.audio_thread = None
@@ -333,7 +337,7 @@ class AllInOneSystem:
                                 return jsonify({'status': 'warning', 'message': 'Alert marked as handled, but database update failed'})
                         else:
                             return jsonify({'status': 'info', 'message': 'Alert already handled'})
-                
+
                 return jsonify({'status': 'error', 'message': 'Alert not found'})
 
         @self.app.route('/alerts/unhandle', methods=['POST'])
@@ -515,21 +519,6 @@ class AllInOneSystem:
             except Exception as e:
                 return jsonify({'success': False, 'message': str(e)})
 
-        @self.app.route('/control', methods=['POST'])
-        def control():
-            """控制API"""
-            action = request.json.get('action', '')
-            if action == 'start':
-                self.running = True
-                return jsonify({'status': 'success', 'message': 'System started'})
-            elif action == 'stop':
-                self.running = False
-                return jsonify({'status': 'success', 'message': 'System stopped'})
-            elif action == 'pause':
-                self.paused = not self.paused
-                return jsonify({'status': 'success', 'message': f'System {"paused" if self.paused else "resumed"}'})
-            return jsonify({'status': 'error', 'message': f'Unknown action: {action}'})
-
         @self.app.route('/config/dwell_time_threshold', methods=['POST'])
         def set_dwell_time_threshold():
             """设置停留时间阈值"""
@@ -580,9 +569,50 @@ class AllInOneSystem:
                 logger.error(f"重置警戒区域失败: {str(e)}")
                 return jsonify({'success': False, 'message': f'重置失败: {str(e)}'})
 
+        @self.app.route('/config/alert_region')
+        def get_alert_region():
+            # 假设danger_recognizer.alert_regions为 [{'points': np.array([...]), ...}, ...]
+            region_points = []
+            if hasattr(self, 'danger_recognizer') and hasattr(self.danger_recognizer, 'alert_regions'):
+                if self.danger_recognizer.alert_regions:
+                    # 只取第一个区域（如有多个可扩展）
+                    pts = self.danger_recognizer.alert_regions[0].get('points', None)
+                    if pts is not None:
+                        # np.array转list
+                        region_points = pts.tolist()
+            return jsonify(success=True, region=region_points)
+
+        @self.app.route('/config/approach_distance_threshold', methods=['POST'])
+        def set_approach_distance_threshold():
+            try:
+                data = request.get_json(force=True)
+                threshold = int(data.get('threshold', 50))
+                if hasattr(self, 'danger_recognizer'):
+                    self.danger_recognizer.config['danger_zone_approach_distance'] = threshold
+                return jsonify(success=True)
+            except Exception as e:
+                return jsonify(success=False, message=str(e))
+
+        @self.app.route('/control', methods=['POST'])
+        def control():
+            data = request.get_json()
+            action = data.get('action')
+            if action == 'start':
+                self.running = True
+                return jsonify({'success': True, 'message': '系统已启动'})
+            elif action == 'pause':
+                self.paused = not self.paused
+                return jsonify({'success': True, 'message': '系统已暂停' if self.paused else '系统已恢复', 'paused': self.paused})
+            elif action == 'stop':
+                self.running = False
+                return jsonify({'success': True, 'message': '系统已停止'})
+            else:
+                return jsonify({'success': False, 'message': '未知操作'})
+
         def run_web_server():
             """在单独的线程中运行Web服务器"""
-            self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
+            if self.app is not None:
+                self.app.run(host='0.0.0.0', port=self.args.web_port, debug=False, threaded=True)
 
         # 启动Web服务器线程
         web_thread = threading.Thread(target=run_web_server)
@@ -983,7 +1013,7 @@ class AllInOneSystem:
                 self.fps = self.frame_count / elapsed if elapsed > 0 else 0
 
                 # 录制视频
-                if self.video_writer is not None:
+                if self.video_writer is not None and vis_frame is not None:
                     # 确保尺寸匹配
                     if vis_frame.shape[1] != self.args.width or vis_frame.shape[0] != self.args.height:
                         vis_frame_resized = cv2.resize(vis_frame, (self.args.width, self.args.height))
@@ -1059,13 +1089,14 @@ class AllInOneSystem:
 
                     color = (0, 255, 0)  # 绿色 - 正常对象
                     cv2.rectangle(vis_frame, (x1, y1), (x2, y2), color, 2)
+                    # 保留AI检测结果的文字显示
                     cv2.putText(vis_frame, f"{cls} {conf:.2f}", (x1, y1 - 10),
                                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
                 except Exception as e:
                     logger.error(f"可视化检测结果出错: {str(e)}")
 
-        # 添加系统状态信息
-        self._add_system_info(vis_frame)
+        # 不再添加系统状态信息到帧
+        # self._add_system_info(vis_frame)
 
         return vis_frame
 
@@ -1073,23 +1104,23 @@ class AllInOneSystem:
         """添加系统状态信息到帧"""
         h, w = frame.shape[:2]
 
-        # 不再绘制任何右上角系统状态文字
-        # info_items = [
-        #     f"FPS: {self.fps:.1f}",
-        #     f"Frames: {self.frame_count}",
-        #     f"Processed: {self.processed_count}",
-        #     f"Uptime: {int(time.time() - self.start_time)} s"
-        # ]
-        # for i, info in enumerate(info_items):
-        #     color = (255, 255, 255)
-        #     cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
-        #                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
+        # 绘制右上角系统状态文字
+        info_items = [
+            f"FPS: {self.fps:.1f}",
+            f"Frames: {self.frame_count}",
+            f"Processed: {self.processed_count}",
+            f"Uptime: {int(time.time() - self.start_time)} s"
+        ]
+        for i, info in enumerate(info_items):
+            color = (255, 255, 255)
+            cv2.putText(frame, info, (w - 230, 25 * (i + 1)),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, color, 2)
 
     def _add_minimal_info(self, frame):
         """添加最小化的系统信息到帧"""
         h, w = frame.shape[:2]
 
-        # 仅在左上角显示FPS和告警数
+        # 显示FPS和告警数
         cv2.putText(frame, f"FPS: {self.fps:.1f}", (10, 25),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 1)
 

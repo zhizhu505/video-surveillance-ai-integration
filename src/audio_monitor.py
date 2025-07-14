@@ -54,6 +54,8 @@ def detect_audio_event(audio_data, sr):
         audio_data = librosa.resample(audio_data, orig_sr=sr, target_sr=16000)
     # 保证waveform是一维float32
     waveform = audio_data.astype(np.float32)
+    if yamnet_model is None:
+        return None, None
     try:
         scores, embeddings, spectrogram = yamnet_model(waveform)
         mean_scores = np.mean(scores, axis=0)

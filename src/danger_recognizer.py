@@ -27,6 +27,7 @@ class DangerRecognizer:
         'loitering': 'Loitering',
         'danger_zone_dwell': 'Danger Zone Dwell',  # 新增：危险区域停留告警
         'fighting': 'Fighting Detection',  # 新增：打架检测
+        'approaching_danger_zone': 'Approaching Danger Zone',  # 新增：接近危险区域
     }
     
     # 危险等级映射
@@ -39,6 +40,7 @@ class DangerRecognizer:
         'loitering': 'medium',
         'danger_zone_dwell': 'low',  # 修改：危险区域停留改为低风险
         'fighting': 'high',  # 打架检测保持高危险
+        'approaching_danger_zone': 'low',  # 新增
     }
     
     def __init__(self, config=None):
@@ -70,6 +72,7 @@ class DangerRecognizer:
             'fighting_duration_frames': 12,      # 从8提高到12，要求更长的持续时间
             'fighting_overlap_threshold': 0.1,  # 打架检测重叠面积阈值
             'fighting_confidence_threshold': 0.7, # 从0.5提高到0.7，要求更高的置信度
+            'danger_zone_approach_distance': 50,  # 新增：接近危险区域距离阈值
         }
         
         # 更新用户配置
@@ -134,6 +137,8 @@ class DangerRecognizer:
         
         # 添加属性访问器，方便动态更新配置
         self._dwell_time_threshold_s = self.config['dwell_time_threshold_s']
+        
+        self.approach_alert_cooldown = {}  # 新增：接近危险区域告警冷却
         
         logger.info(f"危险行为识别器已初始化，特征点阈值:{self.config['feature_count_threshold']}, " + 
                    f"变化率阈值:{self.config['feature_change_ratio']}, " +
@@ -365,6 +370,54 @@ class DangerRecognizer:
         for obj_id in expired_objects:
             del self.dwell_alert_cooldown[obj_id]
         
+        return alerts
+    
+    def _track_danger_zone_approach(self, object_detections):
+        """检测人员接近危险区域但未进入区域的告警"""
+        alerts = []
+        current_frame = self.current_frame
+        cooldown_frames = int(self.config['fps'])  # 1秒冷却
+        approach_distance = self.config.get('danger_zone_approach_distance', 50)
+        for obj in object_detections:
+            if 'bbox' not in obj or str(obj.get('class', '')).lower() != 'person':
+                continue
+            bbox = obj['bbox']
+            person_id = obj.get('person_id', None)
+            object_id = f"person_{person_id}" if person_id is not None else f"person_{hash(tuple(bbox))}"  # 与停留一致
+            in_any_zone = False
+            for region in self.alert_regions:
+                if self._check_bbox_intersection(bbox, region['points']):
+                    in_any_zone = True
+                    break
+            if in_any_zone:
+                # 进入区域后，移除冷却，后续离开可再次触发
+                self.approach_alert_cooldown.pop(object_id, None)
+                continue
+            # 未进入区域，检测距离
+            for i, region in enumerate(self.alert_regions):
+                dist = self._calculate_distance_to_region(bbox, region['points'])
+                if dist < approach_distance:
+                    last_frame = self.approach_alert_cooldown.get(object_id, -10000)
+                    if current_frame - last_frame > cooldown_frames:
+                        region_name = region.get('name', str(i))
+                        desc = f"检测到人员（ID: {person_id}）距离危险区域 '{region_name}' 过近（{dist:.1f} 像素），请注意安全"
+                        alert = {
+                            'type': self.DANGER_TYPES['approaching_danger_zone'],
+                            'danger_level': self.DANGER_LEVELS['approaching_danger_zone'],
+                            'confidence': 0.8,
+                            'frame': current_frame,
+                            'object_id': object_id,
+                            'person_id': person_id,
+                            'region_id': i,
+                            'region_name': region_name,
+                            'distance': dist,
+                            'threshold': approach_distance,
+                            'bbox': bbox,
+                            'desc': desc
+                        }
+                        alerts.append(alert)
+                        self.approach_alert_cooldown[object_id] = current_frame
+                    break  # 只报一次
         return alerts
     
     def process_frame(self, frame, features, object_detections=None):
@@ -704,41 +757,15 @@ class DangerRecognizer:
 
         # 3. 检测警戒区域入侵和停留时间
         if object_detections and self.alert_regions:
+            # 新增：检测接近危险区域
+            approach_alerts = self._track_danger_zone_approach(object_detections)
             # 3.1 检测危险区域停留时间
             dwell_alerts = self._track_danger_zone_dwell(object_detections)
-            # 移除重复统计，只在_track_danger_zone_dwell中统计
+            # 合并两类告警
+            for alert in approach_alerts:
+                alerts.append(alert)
             for alert in dwell_alerts:
-                if 'bbox' in alert:
-                    bbox = alert['bbox']
-                    center_x = (bbox[0] + bbox[2]) // 2
-                    center_y = (bbox[1] + bbox[3]) // 2
-                    rel_x = round(center_x / frame_width * 100, 2)
-                    rel_y = round(center_y / frame_height * 100, 2)
-                    x_desc = "左侧" if rel_x < 33.33 else "右侧" if rel_x > 66.67 else "中间"
-                    y_desc = "上方" if rel_y < 33.33 else "下方" if rel_y > 66.67 else "中间"
-                    alert['location'] = {
-                        'x': center_x,
-                        'y': center_y,
-                        'rel_x': rel_x,
-                        'rel_y': rel_y,
-                        'description': f"画面{x_desc}{y_desc}",
-                        'region_name': alert.get('region_name', '未知区域')
-                    }
-                # 自动生成描述
-                if alert.get('type') == self.DANGER_TYPES['danger_zone_dwell']:
-                    # 优先使用person_id（唯一ID），如果没有则使用object_id（哈希ID）
-                    person_id = alert.get('person_id', None)
-                    if person_id is not None:
-                        id_str = f"（ID: {person_id}）"
-                    else:
-                        object_id = alert.get('object_id', '')
-                        id_str = f"（ID: {object_id}）" if object_id else ""
-                    
-                    region_name = alert.get('region_name', '警戒区')
-                    dwell_time = alert.get('dwell_time', 0)
-                    threshold = alert.get('threshold', 0)
-                    alert['desc'] = f"检测到人员{id_str}在{region_name}内停留超过{threshold}秒（实际{dwell_time:.1f}秒）"
-            alerts.extend(dwell_alerts)
+                alerts.append(alert)
 
         # 将摔倒告警添加到总告警列表中
         alerts.extend(fall_alerts)
