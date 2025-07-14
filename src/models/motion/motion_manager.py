@@ -326,24 +326,26 @@ class MotionFeatureManager:
             if self.optical_flow_method == 'farneback' and isinstance(flow, np.ndarray):
                 # 绘制光流场
                 if 'motion_vectors' in features:
-                    for x, y, fx, fy, mag in features['motion_vectors']:
-                        # 按照运动大小确定颜色（红色到绿色）
-                        color_val = min(255, int(mag * 10))
-                        color = (0, color_val, 255 - color_val)
-                        cv2.arrowedLine(vis_frame, (x, y), (int(x + fx), int(y + fy)), color, 1, tipLength=0.3)
+                    # for x, y, fx, fy, mag in features['motion_vectors']:
+                    #     # 按照运动大小确定颜色（红色到绿色）
+                    #     color_val = min(255, int(mag * 10))
+                    #     color = (0, color_val, 255 - color_val)
+                    #     cv2.arrowedLine(vis_frame, (x, y), (int(x + fx), int(y + fy)), color, 1, tipLength=0.3)
+                    pass
             
             elif self.optical_flow_method == 'sparse' and isinstance(flow, tuple):
                 good_old, good_new = flow
                 # 绘制轨迹
-                for i, (new, old) in enumerate(zip(good_new, good_old)):
-                    a, b = new.ravel()
-                    c, d = old.ravel()
-                    # 计算位移大小，用于确定颜色
-                    mag = np.sqrt((a - c)**2 + (b - d)**2)
-                    color_val = min(255, int(mag * 10))
-                    color = (0, color_val, 255 - color_val)
-                    cv2.line(vis_frame, (int(c), int(d)), (int(a), int(b)), color, 2)
-                    cv2.circle(vis_frame, (int(a), int(b)), 3, color, -1)
+                # for i, (new, old) in enumerate(zip(good_new, good_old)):
+                #     a, b = new.ravel()
+                #     c, d = old.ravel()
+                #     # 计算位移大小，用于确定颜色
+                #     mag = np.sqrt((a - c)**2 + (b - d)**2)
+                #     color_val = min(255, int(mag * 10))
+                #     color = (0, color_val, 255 - color_val)
+                #     cv2.line(vis_frame, (int(c), int(d)), (int(a), int(b)), color, 2)
+                #     cv2.circle(vis_frame, (int(a), int(b)), 3, color, -1)
+                pass
         
         # 可视化轮廓
         if self.use_contour and FeatureType.CONTOUR.value in features:
@@ -360,8 +362,9 @@ class MotionFeatureManager:
         # 可视化关键点
         if self.use_keypoint and FeatureType.KEYPOINT.value in features:
             keypoints = features[FeatureType.KEYPOINT.value]
-            vis_frame = cv2.drawKeypoints(vis_frame, keypoints, None, color=(0, 0, 255),
-                                        flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            # vis_frame = cv2.drawKeypoints(vis_frame, keypoints, None, color=(0, 0, 255),
+            #                             flags=cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+            pass
         
         # 在顶部添加文本信息
         font = cv2.FONT_HERSHEY_SIMPLEX
