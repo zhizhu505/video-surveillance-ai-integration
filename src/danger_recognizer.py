@@ -573,15 +573,15 @@ class DangerRecognizer:
                         
                         # 只有在没有检测到摄像头移动时才进行摔倒检测
                         if not camera_motion_detected:
-                            # 条件1：垂直向下运动大 或 水平运动大（横向倒地）- 提高阈值
-                            if max_vertical_motion > 8 or max_horizontal_motion > 8:  # 从4提高到8
+                            # 条件1：垂直向下运动大 或 水平运动特别大（提高水平阈值）
+                            if max_vertical_motion > 8 or max_horizontal_motion > 15:  # 水平阈值从8提高到15
                                 confidence += 0.4
                                 if max_vertical_motion > 8:
                                     condition_details.append("垂直向下运动大")
-                                if max_horizontal_motion > 8:
+                                if max_horizontal_motion > 15:
                                     condition_details.append("水平运动大（横向倒地）")
-                            # 条件2：运动后静止（提高判据）
-                            if earlier_avg > 5 and recent_avg < 1.5:  # 从3/2提高到5/1.5
+                            # 条件2：运动后静止（保持原有或更严格）
+                            if earlier_avg > 5 and recent_avg < 1.5:
                                 confidence += 0.4
                                 condition_details.append("运动后静止")
                             # 条件3：特征点突增（提高权重和阈值）
@@ -820,6 +820,13 @@ class DangerRecognizer:
         condition_details = []
         
         for pair in person_pairs:
+            # 新增：必须有重叠面积>500 或 距离<40px，否则直接跳过
+            if pair['overlap_area'] < 500 and pair['pixel_distance'] > 40:
+                continue
+            # 必须有剧烈运动
+            motion_threshold = self.config['fighting_motion_threshold']
+            if pair['motion_intensity'] <= motion_threshold:
+                continue
             # 生成配对键（用于跟踪持续性）
             person1_id = pair['person1'].get('person_id', 'unknown')
             person2_id = pair['person2'].get('person_id', 'unknown')
