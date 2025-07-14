@@ -1390,21 +1390,18 @@ class DangerRecognizer:
         #     alerted_count = len([obj for obj in self.alerted_objects.values() if obj['class'] == 'person'])
         #     cv2.putText(vis_frame, f"Alerted Objects: {alerted_count}", (10, y_offset), 
         #               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
-            y_offset += 20
-            
-            # 新增：显示跟踪统计信息
-            tracked_count = len(self.tracked_persons)
-            cv2.putText(vis_frame, f"Tracked Persons: {tracked_count}", (10, y_offset), 
-                      cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-            y_offset += 20
-            
-            # 显示跟踪质量信息
-            if self.tracked_persons:
-                avg_consecutive = np.mean([info.get('consecutive_frames', 0) for info in self.tracked_persons.values()])
-                cv2.putText(vis_frame, f"Avg Consecutive: {avg_consecutive:.1f}", (10, y_offset), 
-                          cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
-            #     y_offset += 20
-        #     
+        #     y_offset += 20
+        #     # 新增：显示跟踪统计信息
+        #     tracked_count = len(self.tracked_persons)
+        #     cv2.putText(vis_frame, f"Tracked Persons: {tracked_count}", (10, y_offset), 
+        #               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+        #     y_offset += 20
+        #     # 显示跟踪质量信息
+        #     if self.tracked_persons:
+        #         avg_consecutive = np.mean([info.get('consecutive_frames', 0) for info in self.tracked_persons.values()])
+        #         cv2.putText(vis_frame, f"Avg Consecutive: {avg_consecutive:.1f}", (10, y_offset), 
+        #                   cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+        #         y_offset += 20
         #     for i, (alert_type, count) in enumerate(self.alerts_count.items()):
         #         if count > 0:
         #             cv2.putText(vis_frame, f"{alert_type}: {count}", (vis_frame.shape[1] - 180, y_offset), 
