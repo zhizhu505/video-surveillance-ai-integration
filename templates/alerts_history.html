@@ -389,8 +389,7 @@
             <h1>🚨 告警历史中心</h1>
             <p>查看和管理所有历史告警信息</p>
             <div class="nav-links">
-                <a href="/">返回监控界面</a>
-                <a href="/alerts">实时告警</a>
+                <a href="/" class="btn-back">返回监控界面</a>
             </div>
         </div>
         
@@ -632,7 +631,7 @@
                       ${(alert.acknowledged === 1 || alert.acknowledged === true) ? `<button class='btn btn-sm btn-warning' onclick='unacknowledgeAlert(${alert.id})'>取消处理</button>` : `<button class='btn btn-sm btn-success' onclick='acknowledgeAlert(${alert.id})'>标记处理</button>`}
                     </td>
                     <td>
-                      <button class='btn btn-sm btn-primary' onclick='showAlertImage("${alert.image_filename}")'>查看</button>
+                      ${alert.images && alert.images.frame ? `<button class='btn btn-sm btn-primary' onclick='showAlertImage("${alert.images.frame}")'>查看</button>` : '<span style="color:#888;">无图片</span>'}
                     </td>
                   </tr>
                 `;
