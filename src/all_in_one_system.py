@@ -218,6 +218,8 @@ class AllInOneSystem:
         else:
             logger.info("未启用音频监控")
 
+        self.recent_audio_events = collections.deque(maxlen=20)  # 缓存最近音频事件（label, score, timestamp）
+
         logger.info("全功能视频监控系统初始化完成")
 
     def init_web_server(self):
@@ -292,7 +294,9 @@ class AllInOneSystem:
                             'rel_y': 0,
                             'description': '未知位置',
                             'region_name': alert.get('region_name', '')
-                        })
+                        }),
+                        # 新增：声学检测结果
+                        'audio_labels': alert.get('audio_labels', None)
                     }
                     alerts_data.append(alert_data)
                 return jsonify(alerts_data)
@@ -842,6 +846,18 @@ class AllInOneSystem:
                     # 检测危险行为
                     alerts = self.danger_recognizer.process_frame(process_frame, features, object_detections)
 
+                    # 音视频联动：如有打架/摔倒告警，合并音频信息
+                    now = time.time()
+                    for alert in alerts:
+                        if alert.get('type') in ['Fighting Detection', 'Fall Detection']:
+                            # 查找1.5秒内的音频事件
+                            audio_msgs = []
+                            for label, score, ts in list(self.recent_audio_events):
+                                if now - ts < 1.5:
+                                    audio_msgs.append(f"声音: {label}({score:.2f})")
+                            if audio_msgs:
+                                alert['desc'] += '；' + '；'.join(audio_msgs)
+                                alert['audio_labels'] = [label for label, score, ts in self.recent_audio_events if now - ts < 1.5]
                     # 更新all_alerts和recent_alerts
                     for alert in alerts:
                         alert_info = {
@@ -864,7 +880,9 @@ class AllInOneSystem:
                                 'rel_y': 0,
                                 'description': '未知位置',
                                 'region_name': alert.get('region_name', '')
-                            })
+                            }),
+                            # 新增：声学检测结果
+                            'audio_labels': alert.get('audio_labels', None)
                         }
                         
                         with self.alert_lock:
@@ -1271,27 +1289,55 @@ class AllInOneSystem:
             'interactions': getattr(self, 'recognized_interactions', [])
         }
 
-    def add_audio_alert(self, label, score):
-        """供音频监控模块调用，推送声学异常告警"""
-        alert_info = {
-            'id': str(uuid.uuid4()),
-            'type': '声学异常',
-            'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'confidence': float(score),
-            'frame': '',
-            'desc': f"检测到异常声音: {label}",
-            'handled': False,
-            'handled_time': None,
-            'person_id': '',
-            'person_class': ''
-        }
+    def add_audio_alert(self, labels, scores):
+        """供音频监控模块调用，推送声学异常告警，支持一人/多人喧哗"""
+        now = time.time()
+        # 记录音频事件到队列
+        if not labels or len(labels) == 0:
+            # 无声音，不生成声学告警，仅在详情中可体现
+            return
+        self.recent_audio_events.append((labels, scores, now))
+        # 检查最近2秒内是否有打架/摔倒类行为告警
+        recent_behavior = False
         with self.alert_lock:
-            self.all_alerts.append(alert_info)
-            self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
-            self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
-            self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
-            self.recent_alerts.append(alert_info)
-        # 新增：统计声学异常
+            for alert in list(self.all_alerts)[-10:]:
+                if alert.get('type') in ['Fighting Detection', 'Fall Detection']:
+                    alert_time = alert.get('time')
+                    try:
+                        alert_ts = time.mktime(time.strptime(alert_time, '%Y-%m-%d %H:%M:%S'))
+                    except:
+                        continue
+                    if now - alert_ts < 2.0:
+                        recent_behavior = True
+                        break
+        if not recent_behavior:
+            # 只检测到声音，区分一人/多人喧哗
+            if len(labels) == 1:
+                alert_type = '一人喧哗'
+                desc = f"检测到一人喧哗：{labels[0]}"
+            else:
+                alert_type = '多人喧哗'
+                desc = f"检测到多人喧哗：{', '.join(labels)}"
+            alert_info = {
+                'id': str(uuid.uuid4()),
+                'type': alert_type,
+                'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'confidence': float(max(scores)) if scores else 0,
+                'frame': '',
+                'desc': desc,
+                'handled': False,
+                'handled_time': None,
+                'person_id': '',
+                'person_class': '',
+                'audio_labels': labels
+            }
+            with self.alert_lock:
+                self.all_alerts.append(alert_info)
+                self.alert_handling_stats['total_alerts'] = len(self.all_alerts)
+                self.alert_handling_stats['handled_alerts'] = sum(1 for a in self.all_alerts if a.get('handled', False))
+                self.alert_handling_stats['unhandled_alerts'] = self.alert_handling_stats['total_alerts'] - self.alert_handling_stats['handled_alerts']
+                self.recent_alerts.append(alert_info)
+        # 新增：统计声学异常（不再生成“声学异常”告警）
         if hasattr(self, 'danger_recognizer') and hasattr(self.danger_recognizer, 'behavior_stats'):
             stats = self.danger_recognizer.behavior_stats
             stats['audio_event_count'] = stats.get('audio_event_count', 0) + 1

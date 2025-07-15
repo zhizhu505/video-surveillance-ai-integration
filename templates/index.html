@@ -971,6 +971,16 @@
                         } else if(alert.person_id !== undefined && alert.person_id !== null){
                             html += `<div><b>触发对象：</b>ID: ${alert.person_id}</div>`;
                         }
+                        // 新增：声学检测结果
+                        if(alert.audio_labels && alert.audio_labels.length > 0){
+                            if(alert.audio_labels.length === 1){
+                                html += `<div><b>声学检测结果：</b>一人喧哗（${alert.audio_labels[0]}）</div>`;
+                            }else{
+                                html += `<div><b>声学检测结果：</b>多人喧哗（${alert.audio_labels.map(l=>l).join('，')}）</div>`;
+                            }
+                        }else{
+                            html += `<div><b>声学检测结果：</b>无声音</div>`;
+                        }
                         html += `<div><b>状态：</b><span style="color: ${alert.handled ? '#27ae60' : '#e74c3c'};">${alert.handled ? '已处理' : '未处理'}</span></div>`;
                         if (alert.handled && alert.handled_time) {
                             html += `<div><b>处理时间：</b>${alert.handled_time}</div>`;

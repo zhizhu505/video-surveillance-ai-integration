@@ -140,6 +140,9 @@ class DangerRecognizer:
         
         self.approach_alert_cooldown = {}  # 新增：接近危险区域告警冷却
         
+        # 新增：每人历史最大高度缓存
+        self.person_max_heights = {}  # person_id: max_height
+        
         logger.info(f"危险行为识别器已初始化，特征点阈值:{self.config['feature_count_threshold']}, " + 
                    f"变化率阈值:{self.config['feature_change_ratio']}, " +
                    f"危险区域停留阈值:{self.config['dwell_time_threshold_s']}秒")
@@ -682,8 +685,41 @@ class DangerRecognizer:
 
                         fall_cooldown_frames = 20  # 从10提高到20帧
                         cooldown_ok = self.current_frame - getattr(self, 'last_fall_frame', 0) > fall_cooldown_frames
-                        if (confidence >= 0.8 and cooldown_ok):  # 从0.6提高到0.8
-                            print(f"[调试] 摔倒事件检测触发: 置信度={confidence:.2f}, 满足条件: {condition_details}")
+                        # 新增倒地判据：宽高比w/h>1.2且高度显著变矮，或底部贴地
+                        lying_down = False
+                        lying_ratio = 0
+                        lying_bbox = None
+                        lying_height = 0
+                        lying_y2 = 0
+                        person_id = None
+                        if object_detections:
+                            persons = [det for det in object_detections if str(det.get('class', '')).lower() == 'person']
+                            if persons:
+                                person = max(persons, key=lambda d: (d['bbox'][2]-d['bbox'][0])*(d['bbox'][3]-d['bbox'][1]))
+                                bbox = person['bbox']
+                                w = bbox[2] - bbox[0]
+                                h = bbox[3] - bbox[1]
+                                lying_ratio = w / h if h > 0 else 0
+                                lying_bbox = bbox
+                                lying_height = h
+                                lying_y2 = bbox[3]
+                                person_id = person.get('person_id', None)
+                                # 维护历史最大高度
+                                if person_id is not None:
+                                    prev_max = self.person_max_heights.get(person_id, 0)
+                                    if h > prev_max:
+                                        self.person_max_heights[person_id] = h
+                                    max_h = self.person_max_heights.get(person_id, h)
+                                else:
+                                    max_h = h
+                                # 判据1：宽高比>1.2且高度小于历史均值0.65
+                                if lying_ratio > 1.2 and lying_height < max_h * 0.65:
+                                    lying_down = True
+                                # 判据2：底部贴地
+                                if lying_y2 > self.frame_height * 0.88:
+                                    lying_down = True
+                        if (confidence >= 0.8 and cooldown_ok and lying_down):  # 只有倒地才告警
+                            print(f"[调试] 摔倒事件检测触发: 置信度={confidence:.2f}, 满足条件: {condition_details}, 倒地判据w/h={lying_ratio:.2f}, h={lying_height}, max_h={max_h}, y2={lying_y2}")
                             print(f"[调试] 详细参数: max_vertical_motion={max_vertical_motion:.2f}, earlier_avg={earlier_avg:.2f}, recent_avg={recent_avg:.2f}, vertical_motion_count={vertical_motion_count}")
                             # ========== 新增：补充摔倒检测的位置信息和描述 ==========
                             if object_detections:

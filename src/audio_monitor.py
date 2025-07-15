@@ -48,28 +48,29 @@ TARGET_KEYWORDS = ['Scream', 'Shout', 'Yell', 'Fight', 'Argument', 'Siren', 'Eme
 def detect_audio_event(audio_data, sr):
     # yamnet_model 为空时直接返回
     if yamnet_model is None:
-        return None, None
+        return [], []
     # 预处理到16kHz单通道
     if sr != 16000:
         audio_data = librosa.resample(audio_data, orig_sr=sr, target_sr=16000)
     # 保证waveform是一维float32
     waveform = audio_data.astype(np.float32)
     if yamnet_model is None:
-        return None, None
+        return [], []
     try:
         scores, embeddings, spectrogram = yamnet_model(waveform)
         mean_scores = np.mean(scores, axis=0)
-        top_class = np.argmax(mean_scores)
-        top_score = mean_scores[top_class]
-        top_label = yamnet_classes[top_class]
-        # 检查是否为目标事件
-        for kw in TARGET_KEYWORDS:
-            if kw.lower() in top_label.lower() and top_score > 0.2:
-                return top_label, float(top_score)
-        return None, None
+        detected_labels = []
+        detected_scores = []
+        for i, score in enumerate(mean_scores):
+            label = yamnet_classes[i]
+            for kw in TARGET_KEYWORDS:
+                if kw.lower() in label.lower() and score > 0.2:
+                    detected_labels.append(label)
+                    detected_scores.append(float(score))
+        return detected_labels, detected_scores
     except Exception as e:
         print("[音频监控] 声学事件检测错误:", str(e))
-        return None, None
+        return [], []
 
 # 音频监控主循环
 def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
@@ -83,11 +84,11 @@ def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
         while True:
             audio_chunk = q.get()
             audio_data = audio_chunk.flatten()
-            label, score = detect_audio_event(audio_data, samplerate)
+            labels, scores = detect_audio_event(audio_data, samplerate)
             now = time_module.time()  # 避免与sounddevice的time冲突
-            if label and (now - last_alert_time > cooldown_seconds):
-                print(f"检测到异常声音: {label} (置信度: {score:.2f})")
-                alert_callback(label, score)
+            if labels and (now - last_alert_time > cooldown_seconds):
+                print(f"检测到异常声音: {labels} (置信度: {scores})")
+                alert_callback(labels, scores)
                 last_alert_time = now
 
 # 集成到主系统：自动查找AllInOneSystem实例
@@ -106,11 +107,11 @@ except Exception as e:
 
 # 修改alert_callback，推送到主系统
 
-def alert_callback(label, score):
+def alert_callback(labels, scores):
     if main_system and hasattr(main_system, 'add_audio_alert'):
-        main_system.add_audio_alert(label, score)
+        main_system.add_audio_alert(labels, scores)
     else:
-        print(f"[ALERT] 声学异常: {label} (置信度: {score:.2f})")
+        print(f"[ALERT] 声学异常: {labels} (置信度: {scores})")
 
 if __name__ == '__main__':
     audio_thread = threading.Thread(target=audio_monitor_callback, args=(alert_callback,))
