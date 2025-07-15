@@ -9,6 +9,7 @@ import os
 import sys
 import importlib
 import tensorflow_hub as hub
+import collections
 
 # 路径配置（请根据实际情况调整）
 YAMNET_MODEL_PATH = os.path.join(os.path.dirname(__file__), 'yamnet.h5')  # 需提前下载YAMNet权重文件
@@ -44,6 +45,15 @@ except Exception as e:
 # 你关心的类别
 TARGET_KEYWORDS = ['Scream', 'Shout', 'Yell', 'Fight', 'Argument', 'Siren', 'Emergency vehicle', 'Whistle', 'Speech', 'Child speech', 'Children shouting', 'Screaming']
 
+# 声学检测参数
+NOISE_DETECT_THRESHOLD = 0.01  # 声音置信度阈值（极低，调试用）
+NOISE_ACCUM_SECONDS = 10.0     # 喧哗累计时长阈值（秒）
+NOISE_VOLUME_THRESHOLD = 0.15  # 音量阈值（需根据实际环境调整）
+NOISE_REQUIRED_RATIO = 0.5     # 10秒内有一半时间为噪音
+NOISE_WINDOW_SIZE = 30         # 30秒滑动窗口，假设每秒采样一次
+NOISE_REQUIRED_SECONDS = 25    # 30秒内有25秒为噪音才告警
+noise_window = collections.deque(maxlen=NOISE_WINDOW_SIZE)
+
 # 声学事件检测
 def detect_audio_event(audio_data, sr):
     # yamnet_model 为空时直接返回
@@ -75,8 +85,13 @@ def detect_audio_event(audio_data, sr):
 # 音频监控主循环
 def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
     q = queue.Queue()
-    cooldown_seconds = 3  # 声学告警冷却时间（秒）
+    cooldown_seconds = 25  # 声学告警冷却时间（秒），与30秒窗口配合，避免频繁告警
     last_alert_time = 0
+    _noise_accum_active = False
+    _noise_accum_start = None
+    _noise_accum_seconds = 0.0
+    _last_noise_time = None
+    global noise_window
     def audio_callback(indata, frames, t, status):  # 避免参数名time与time_module冲突
         q.put(indata.copy())
     with sd.InputStream(callback=audio_callback, channels=1, samplerate=samplerate):
@@ -86,6 +101,20 @@ def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
             audio_data = audio_chunk.flatten()
             labels, scores = detect_audio_event(audio_data, samplerate)
             now = time_module.time()  # 避免与sounddevice的time冲突
+            # 计算音量
+            volume = float(np.max(np.abs(audio_data)))
+            is_noisy = volume > NOISE_VOLUME_THRESHOLD
+            noise_window.append(is_noisy)
+            # 每秒采样一次，30秒窗口内有25秒为噪音则告警
+            if len(noise_window) == NOISE_WINDOW_SIZE and sum(noise_window) >= NOISE_REQUIRED_SECONDS:
+                if now - last_alert_time > cooldown_seconds:
+                    print(f"检测到30秒内有25秒为噪音，触发Classroom Noise告警，音量={volume:.3f}")
+                    alert_callback(['Classroom Noise'], [volume])
+                    last_alert_time = now
+                    noise_window.clear()
+            # 兼容原有Speech累计逻辑（可选）
+            # if 'Speech' in labels:
+            #     ...
             if labels and (now - last_alert_time > cooldown_seconds):
                 print(f"检测到异常声音: {labels} (置信度: {scores})")
                 alert_callback(labels, scores)

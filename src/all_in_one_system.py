@@ -1311,13 +1311,9 @@ class AllInOneSystem:
                         recent_behavior = True
                         break
         if not recent_behavior:
-            # 只检测到声音，区分一人/多人喧哗
-            if len(labels) == 1:
-                alert_type = '一人喧哗'
-                desc = f"检测到一人喧哗：{labels[0]}"
-            else:
-                alert_type = '多人喧哗'
-                desc = f"检测到多人喧哗：{', '.join(labels)}"
+            # 只要检测到声音就生成“Classroom Noise”告警
+            alert_type = 'Classroom Noise'
+            desc = f"检测到教室喧哗"
             alert_info = {
                 'id': str(uuid.uuid4()),
                 'type': alert_type,
