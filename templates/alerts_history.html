@@ -380,6 +380,51 @@
             background: linear-gradient(135deg, #27ae60, #82e0aa);
             color: white;
         }
+        .alerts-table th.type-col, .alerts-table td.type-col {
+          width: 180px;
+          min-width: 140px;
+          max-width: 240px;
+        }
+        .alerts-table th.level-col, .alerts-table td.level-col {
+          width: 60px;
+          min-width: 40px;
+          max-width: 80px;
+        }
+        .alerts-table th.time-col, .alerts-table td.time-col {
+          width: 180px;
+          min-width: 140px;
+          max-width: 220px;
+        }
+        .alerts-table th.details-col, .alerts-table td.details-col {
+          max-width: 550px;
+          min-width: 200px;
+          width: 500px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          cursor: pointer;
+        }
+        .alerts-table td.action-col {
+          width: 70px;
+          min-width: 60px;
+          max-width: 90px;
+          white-space: nowrap;
+        }
+        .alerts-table th:last-child, .alerts-table td:last-child {
+          width: 90px;
+          min-width: 70px;
+          max-width: 120px;
+        }
+        .alerts-table th.status-col, .alerts-table td.status-col {
+          width: 90px;
+          min-width: 70px;
+          max-width: 120px;
+        }
+        .alerts-table th:first-child, .alerts-table td:first-child {
+          width: 60px;
+          min-width: 40px;
+          max-width: 80px;
+        }
     </style>
 </head>
 <body>
@@ -483,12 +528,12 @@
                     <thead>
                       <tr style="background:#f0f4fa;">
                         <th>ID</th>
-                        <th>类型</th>
-                        <th>等级</th>
-                        <th>时间</th>
-                        <th>详情</th>
-                        <th>处理情况</th>
-                        <th>处理操作</th>
+                        <th class="type-col">类型</th>
+                        <th class="level-col">等级</th>
+                        <th class="time-col">时间</th>
+                        <th class="details-col">详情</th>
+                        <th class="status-col">处理情况</th>
+                        <th class="action-col">处理操作</th>
                         <th>图片</th>
                       </tr>
                     </thead>
@@ -620,14 +665,14 @@
                 tbody.innerHTML += `
                   <tr>
                     <td>${alert.id}</td>
-                    <td>${alert.source_type || ''}</td>
-                    <td>${levelText}</td>
-                    <td>${alert.datetime || alert.event_time || ''}</td>
-                    <td>${alert.message || ''}</td>
-                    <td>
+                    <td class="type-col">${alert.source_type || ''}</td>
+                    <td class="level-col">${levelText}</td>
+                    <td class="time-col">${alert.datetime || alert.event_time || ''}</td>
+                    <td class="details-col" title="${alert.message || ''}" onclick="showDetailModal(this)">${alert.message || ''}</td>
+                    <td class="status-col">
                       ${(alert.acknowledged === 1 || alert.acknowledged === true) ? '<span style="color:#27ae60;font-weight:bold;">已处理</span>' : '<span style="color:#e74c3c;font-weight:bold;">未处理</span>'}
                     </td>
-                    <td>
+                    <td class="action-col">
                       ${(alert.acknowledged === 1 || alert.acknowledged === true) ? `<button class='btn btn-sm btn-warning' onclick='unacknowledgeAlert(${alert.id})'>取消处理</button>` : `<button class='btn btn-sm btn-success' onclick='acknowledgeAlert(${alert.id})'>标记处理</button>`}
                     </td>
                     <td>
@@ -738,6 +783,28 @@
             if (page > totalPages) page = totalPages;
             currentPage = page;
             loadAlerts();
+        }
+
+        // 弹窗显示详情内容
+        function showDetailModal(td) {
+            const content = td.getAttribute('title') || td.textContent;
+            const modal = document.createElement('div');
+            modal.style.position = 'fixed';
+            modal.style.left = '0';
+            modal.style.top = '0';
+            modal.style.width = '100vw';
+            modal.style.height = '100vh';
+            modal.style.background = 'rgba(0,0,0,0.4)';
+            modal.style.zIndex = '9999';
+            modal.style.display = 'flex';
+            modal.style.alignItems = 'center';
+            modal.style.justifyContent = 'center';
+            modal.innerHTML = `<div style="background:#fff;padding:24px 32px;border-radius:8px;min-width:300px;max-width:90vw;box-shadow:0 4px 24px rgba(0,0,0,0.2);position:relative;">
+                <span style='position:absolute;right:12px;top:8px;cursor:pointer;font-size:20px;' onclick='this.parentNode.parentNode.remove()'>×</span>
+                <h3 style='margin-top:0;'>详情内容</h3>
+                <div style='white-space:pre-wrap;word-break:break-all;'>${content}</div>
+            </div>`;
+            document.body.appendChild(modal);
         }
     </script>
     <div id="imageModal" style="display:none;position:fixed;z-index:999;left:0;top:0;width:100vw;height:100vh;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;">

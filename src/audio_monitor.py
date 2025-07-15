@@ -46,6 +46,9 @@ TARGET_KEYWORDS = ['Scream', 'Shout', 'Yell', 'Fight', 'Argument', 'Siren', 'Eme
 
 # 声学事件检测
 def detect_audio_event(audio_data, sr):
+    # yamnet_model 为空时直接返回
+    if yamnet_model is None:
+        return None, None
     # 预处理到16kHz单通道
     if sr != 16000:
         audio_data = librosa.resample(audio_data, orig_sr=sr, target_sr=16000)
