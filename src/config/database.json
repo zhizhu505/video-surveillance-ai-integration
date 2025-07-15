@@ -3,7 +3,11 @@
         "host": "localhost",
         "port": 3306,
         "user": "root",
+<<<<<<< HEAD
         "password": "asdfgh0625YYH",
+=======
+        "password": "",
+>>>>>>> 68a8af50705ef299f348bcac22763cdc995a52d1
         "database": "video_surveillance_alerts",
         "charset": "utf8mb4",
         "autocommit": true,

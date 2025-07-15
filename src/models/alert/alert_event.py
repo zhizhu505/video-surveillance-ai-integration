@@ -131,15 +131,25 @@ class AlertEvent:
         # 时间戳用于唯一文件名
         ts = datetime.fromtimestamp(self.timestamp).strftime('%Y%m%d_%H%M%S')
         
-        # 如果图像帧存在，保存为jpg格式
+        # 类型简称映射
+        type_map = {
+            'fall_detection': 'fall',
+            'danger_zone_dwell': 'dwell',
+            'sudden_motion': 'motion',
+            'large_area_motion': 'area',
+            # 可扩展更多类型
+        }
+        type_short = type_map.get(self.source_type.lower(), self.source_type.lower().split('_')[0])
+        
+        # 保存frame
         if self.frame is not None:
-            frame_path = os.path.join(output_dir, f"{self.id}_{ts}_frame.jpg")
+            frame_path = os.path.join(output_dir, f"{type_short}_{ts}.jpg")
             cv2.imwrite(frame_path, self.frame)
             paths['frame'] = frame_path
         
-        # 如果缩略图存在，保存为jpg格式
+        # 保存缩略图
         if self.thumbnail is not None:
-            thumb_path = os.path.join(output_dir, f"{self.id}_{ts}_thumb.jpg")
+            thumb_path = os.path.join(output_dir, f"{type_short}_{ts}_thumb.jpg")
             cv2.imwrite(thumb_path, self.thumbnail)
             paths['thumbnail'] = thumb_path
         

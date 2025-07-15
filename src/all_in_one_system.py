@@ -16,7 +16,7 @@ import numpy as np
 import threading
 import json
 from queue import Queue
-from datetime import datetime
+from datetime import datetime, date
 import traceback
 import collections
 import uuid
@@ -224,6 +224,23 @@ class AllInOneSystem:
         """初始化Web服务器"""
         self.app = Flask(__name__, template_folder='../templates')  # 指定 HTML 模板文件夹位置
 
+        # 添加静态文件服务
+        @self.app.route('/alerts_images/<path:relpath>')
+        def serve_alert_image(relpath):
+            """提供告警图片访问服务"""
+            import os
+            from flask import send_from_directory, abort
+            
+            # 告警图片目录
+            abs_path = os.path.join(os.getcwd(), relpath)
+            dir_name = os.path.dirname(abs_path)
+            filename = os.path.basename(abs_path)
+            if os.path.exists(abs_path) and os.path.isfile(abs_path):
+                return send_from_directory(dir_name, filename)
+            else:
+                # 如果文件不存在，返回默认图片或404
+                return abort(404, description="图片文件不存在")
+
         @self.app.route('/')
         def index():
             return render_template('index.html')
@@ -364,7 +381,6 @@ class AllInOneSystem:
                 return jsonify({'success': False, 'message': '数据库未初始化'})
             
             try:
-                import datetime
                 # 分页参数
                 page = int(request.args.get('page', 1))
                 limit = int(request.args.get('limit', 10))
@@ -378,7 +394,7 @@ class AllInOneSystem:
                 # 时间戳转DATETIME字符串
                 def ts2dtstr(ts):
                     if ts:
-                        return datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+                        return datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
                     return None
                 start_time_str = ts2dtstr(start_time) if start_time else None
                 end_time_str = ts2dtstr(end_time) if end_time else None
@@ -426,9 +442,8 @@ class AllInOneSystem:
                 days = int(request.args.get('days', 30))
                 stats = self.alert_database.get_alert_statistics(days)
                 # 今日告警数
-                import datetime
-                today = datetime.date.today()
-                today_start_dt = datetime.datetime.combine(today, datetime.time.min)
+                today = date.today()
+                today_start_dt = datetime.combine(today, datetime.min.time())
                 today_start_str = today_start_dt.strftime('%Y-%m-%d %H:%M:%S')
                 today_alerts = self.alert_database.get_alert_count(start_time=today_start_str)
                 # 计算未处理告警数
@@ -860,90 +875,6 @@ class AllInOneSystem:
                             # recent_alerts只保留最新10条
                             self.recent_alerts.append(alert_info)
                         
-                        # 保存告警到数据库
-                        if self.alert_database:
-                            try:
-                                from models.alert.alert_event import AlertEvent
-                                from models.alert.alert_rule import AlertLevel
-                                
-                                # 创建告警事件对象
-                                # 根据危险级别映射到告警级别
-                                danger_level = alert.get('danger_level', 'medium')
-                                if danger_level == 'high':
-                                    alert_level = AlertLevel.CRITICAL
-                                elif danger_level == 'medium':
-                                    alert_level = AlertLevel.ALERT
-                                else:
-                                    alert_level = AlertLevel.WARNING
-                                
-                                alert_event = AlertEvent.create(
-                                    rule_id=f"rule_{alert.get('type', 'unknown')}",
-                                    level=alert_level,
-                                    danger_level=danger_level,
-                                    source_type=alert.get('type', 'unknown'),
-                                    message=alert.get('desc', ''),
-                                    details={
-                                        'person_id': alert.get('person_id', ''),
-                                        'person_class': alert.get('person_class', ''),
-                                        'confidence': alert.get('confidence', 0),
-                                        'frame': alert.get('frame', 0),
-                                        'location': alert.get('location', {}),
-                                        'region_name': alert.get('region_name', '')
-                                    },
-                                    frame_idx=alert.get('frame', 0),
-                                    frame=process_frame if self.args.save_alerts else None
-                                )
-                                
-                                # 保存到数据库
-                                image_paths = None
-                                if self.args.save_alerts and process_frame is not None:
-                                    # 保存告警图像
-                                    alert_dir = os.path.join(self.args.output, 'alerts')
-                                    os.makedirs(alert_dir, exist_ok=True)
-                                    image_paths = alert_event.save_images(alert_dir)
-                                
-                                logger.info(f"准备写入告警到数据库: {alert_event.message}")
-                                new_id = self.alert_database.save_alert_event(alert_event)
-                                logger.info(f"写入数据库返回id: {new_id}")
-                                if new_id is not None:
-                                    alert_info['id'] = new_id  # 用数据库自增id覆盖原id
-                            except Exception as e:
-                                logger.error(f"保存告警到数据库失败: {str(e)}")
-                        else:
-                            logger.error("self.alert_database 未初始化，无法写入告警！")
-
-                    # 可视化结果
-                    vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts,
-                                                     object_detections)
-                    prev_frame = process_frame.copy()
-
-                    # 更新recent_alerts
-                    for alert in alerts:
-                        alert_info = {
-                            'id': str(uuid.uuid4()),  # 使用UUID生成唯一ID
-                            'type': alert.get('type', ''),
-                            'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
-                            'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                            'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
-                            'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
-                            'desc': alert.get('desc', ''),
-                            'handled': False,  # 默认未处理
-                            'handled_time': None,  # 处理时间
-                            'person_id': alert.get('person_id', ''),  # 新增：person id
-                            'person_class': alert.get('person_class', '')  # 新增：person类别
-                        }
-                        
-                        with self.alert_lock:
-                            self.recent_alerts.append(alert_info)
-                            self.alert_handling_stats['total_alerts'] += 1
-                            self.alert_handling_stats['unhandled_alerts'] += 1
-                            
-                            if len(self.recent_alerts) > 10:
-                                removed_alert = self.recent_alerts.popleft()
-                                # 如果移除的告警未处理，减少未处理计数
-                                if not removed_alert.get('handled', False):
-                                    self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
-
                         # 追加行为信息
                         behavior_info = f"{alert.get('type', '未知')} (置信度: {alert.get('confidence', 0):.2f}, 帧号: {alert.get('frame', '-')})"
                         if behavior_info not in self.recognized_behaviors:
@@ -964,8 +895,118 @@ class AllInOneSystem:
                     # 对于跳过处理的帧，仍然要可视化，但不进行特征提取
                     vis_frame = self.visualize_frame(original_frame or process_frame, None, None, None, None)
 
-                # 保存处理后的帧
-                self.processed_frame = vis_frame
+                # 可视化结果
+                vis_frame = self.visualize_frame(original_frame or process_frame, process_frame, features, alerts, object_detections)
+                self.processed_frame = vis_frame  # 确保前端能持续收到视频流
+                prev_frame = process_frame.copy()
+
+                # 只保存带标识的图片到数据库（只保存一次，用第一个alert的信息）
+                if self.alert_database and self.args.save_alerts and vis_frame is not None and alerts:
+                    try:
+                        import os
+                        # 类型简称映射
+                        type_map = {
+                            'fall_detection': 'fall',
+                            'danger_zone_dwell': 'dwell',
+                            'sudden_motion': 'motion',
+                            'large_area_motion': 'area',
+                        }
+                        alert = alerts[0]
+                        type_short = type_map.get(alert.get('type', '').lower(), alert.get('type', '').lower().split('_')[0])
+                        # 统一命名：大写+空格+帧号
+                        alert_type = alert.get('type', 'Alert').replace('_', ' ').title()  # Danger Zone Dwell
+                        frame_id = alert.get('frame', self.frame_count)
+                        ts = datetime.now().strftime('%Y%m%d_%H%M%S')
+                        alert_dir = os.path.join(self.args.output, 'alerts')
+                        os.makedirs(alert_dir, exist_ok=True)
+                        filename = f"{alert_type}_{frame_id}_{ts}.jpg"
+                        vis_path = os.path.join(alert_dir, filename)
+                        cv2.imwrite(vis_path, vis_frame)
+                        rel_vis_path = os.path.relpath(vis_path, os.getcwd()).replace('\\', '/')
+                        # 创建告警事件对象
+                        from models.alert.alert_event import AlertEvent
+                        from models.alert.alert_rule import AlertLevel
+                        danger_level = alert.get('danger_level', 'medium')
+                        if danger_level == 'high':
+                            alert_level = AlertLevel.CRITICAL
+                        elif danger_level == 'medium':
+                            alert_level = AlertLevel.ALERT
+                        else:
+                            alert_level = AlertLevel.WARNING
+                        alert_event = AlertEvent.create(
+                            rule_id=f"rule_{alert.get('type', 'unknown')}",
+                            level=alert_level,
+                            danger_level=danger_level,
+                            source_type=alert.get('type', 'unknown'),
+                            message=alert.get('desc', ''),
+                            details={
+                                'person_id': alert.get('person_id', ''),
+                                'person_class': alert.get('person_class', ''),
+                                'confidence': alert.get('confidence', 0),
+                                'frame': alert.get('frame', 0),
+                                'location': alert.get('location', {}),
+                                'region_name': alert.get('region_name', '')
+                            },
+                            frame_idx=alert.get('frame', 0),
+                            frame=None
+                        )
+                        # 只写入一条frame类型图片
+                        rel_image_paths = {'frame': rel_vis_path}
+                        logger.info(f"保存可视化告警图片: {rel_image_paths}")
+                        new_id = self.alert_database.save_alert_event(alert_event, rel_image_paths)
+                        logger.info(f"写入数据库返回id: {new_id}")
+                        # 更新alert_info的id
+                        with self.alert_lock:
+                            for info in self.all_alerts:
+                                if alerts and info['time'] == alert_event.to_dict().get('datetime') and info['type'] == alert_event.source_type:
+                                    info['id'] = new_id
+                    except Exception as e:
+                        logger.error(f"保存可视化告警图片到数据库失败: {str(e)}")
+
+                # 更新recent_alerts
+                for alert in alerts:
+                    alert_info = {
+                        'id': str(uuid.uuid4()),  # 使用UUID生成唯一ID
+                        'type': alert.get('type', ''),
+                        'danger_level': alert.get('danger_level', 'medium'),  # 新增：危险等级
+                        'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'confidence': float(alert.get('confidence', 0)) if alert.get('confidence', '') != '' else '',
+                        'frame': int(alert.get('frame', 0)) if alert.get('frame', '') != '' else '',
+                        'desc': alert.get('desc', ''),
+                        'handled': False,  # 默认未处理
+                        'handled_time': None,  # 处理时间
+                        'person_id': alert.get('person_id', ''),  # 新增：person id
+                        'person_class': alert.get('person_class', '')  # 新增：person类别
+                    }
+                    
+                    with self.alert_lock:
+                        self.recent_alerts.append(alert_info)
+                        self.alert_handling_stats['total_alerts'] += 1
+                        self.alert_handling_stats['unhandled_alerts'] += 1
+                        
+                        if len(self.recent_alerts) > 10:
+                            removed_alert = self.recent_alerts.popleft()
+                            # 如果移除的告警未处理，减少未处理计数
+                            if not removed_alert.get('handled', False):
+                                self.alert_handling_stats['unhandled_alerts'] = max(0, self.alert_handling_stats['unhandled_alerts'] - 1)
+
+                # 追加行为信息
+                if alerts:
+                    for alert in alerts:
+                        behavior_info = f"{alert.get('type', '未知')} (置信度: {alert.get('confidence', 0):.2f}, 帧号: {alert.get('frame', '-')})"
+                        if behavior_info not in self.recognized_behaviors:
+                            self.recognized_behaviors.append(behavior_info)
+
+                        # 追加交互信息（如有）
+                        if object_detections and len(object_detections) > 1:
+                            interaction_info = f"多对象交互检测 (对象数: {len(object_detections)}, 帧号: {alert.get('frame', '-')})"
+                            if interaction_info not in self.recognized_interactions:
+                                self.recognized_interactions.append(interaction_info)
+                        if alert.get('type') == '入侵警告区域':
+                            region_name = alert.get('region_name', '未知区域')
+                            interaction_info = f"区域入侵交互 ({region_name}, 帧号: {alert.get('frame', '-')})"
+                            if interaction_info not in self.recognized_interactions:
+                                self.recognized_interactions.append(interaction_info)
 
                 # 计算FPS
                 elapsed = time.time() - self.start_time
