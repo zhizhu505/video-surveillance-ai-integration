@@ -696,6 +696,11 @@ class AllInOneSystem:
         else:
             source = self.args.source
 
+        # 特殊处理source=1，使用RTMP拉流
+        if source == 1:
+            source = "rtmp://121.36.44.77:1935/live/livestream"
+            logger.info(f"使用RTMP拉流: {source}")
+
         cap = cv2.VideoCapture(source)
         if not cap.isOpened():
             logger.error(f"无法打开视频源: {source}")
@@ -712,7 +717,7 @@ class AllInOneSystem:
         logger.info(f"视频分辨率: {actual_width}x{actual_height}")
 
         # 设置摄像头参数（仅用于本地摄像头）
-        if source == 0 or (isinstance(source, int) and source >= 0):
+        if isinstance(source, int) and source >= 0:
             # 尝试设置MJPG格式（如果支持）
             try:
                 cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'))  # type: ignore
@@ -741,19 +746,37 @@ class AllInOneSystem:
                 if delta < min_frame_time:
                     time.sleep(min_frame_time - delta)
 
+                # 如果启用了旋转选项，进行旋转
+                if self.args.rotate:
+                    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
+
                 # 读取帧
                 ret, frame = cap.read()
                 if not ret:
                     if isinstance(source, str) and not source.isdigit():
-                        # 视频文件结束
-                        logger.info("视频文件播放完毕")
-                        if self.args.loop_video:
+                        # 视频文件或RTMP流结束/中断
+                        logger.warning(f"视频流中断: {source}")
+                        if self.args.loop_video and "rtmp://" not in source:  # RTMP流不循环
                             # 重新开始视频
                             cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
                             continue
                         else:
-                            self.running = False
-                            break
+                            # 尝试重新连接RTMP流
+                            if "rtmp://" in source:
+                                logger.warning("RTMP流断开，尝试重新连接...")
+                                time.sleep(2.0)  # RTMP重连间隔
+                                cap.release()
+                                cap = cv2.VideoCapture(source)
+                                if not cap.isOpened():
+                                    logger.error("RTMP重新连接失败")
+                                    self.running = False
+                                    break
+                                else:
+                                    logger.info("RTMP重新连接成功")
+                                    continue
+                            else:
+                                self.running = False
+                                break
                     else:
                         # 摄像头出错，尝试重新连接
                         logger.warning("视频帧获取失败，尝试重新连接...")
@@ -1348,7 +1371,7 @@ def parse_args():
     parser.add_argument('--width', type=int, default=640, help='视频宽度')
     parser.add_argument('--height', type=int, default=480, help='视频高度')
     parser.add_argument('--loop_video', action='store_true', help='循环播放视频文件')
-
+    parser.add_argument('--rotate', action='store_true', help='将竖屏视频旋转为横屏')  # 新增旋转参数
     # 处理参数
     parser.add_argument('--process_every', type=int, default=3, help='每N帧处理一次')
     parser.add_argument('--process_scale', type=float, default=1.0, help='处理分辨率缩放比例 (0.5=半分辨率)')
