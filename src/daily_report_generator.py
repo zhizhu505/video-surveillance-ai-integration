@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 """
 AI自动生成监控日报模块
@@ -76,7 +74,7 @@ class DailyReportGenerator:
     def _collect_daily_data(self, target_date: str) -> Dict[str, Any]:
         """收集日报所需的数据"""
         try:
-            # 获取告警数据
+            # 通过HTTP请求获取告警数据
             alerts_response = requests.get(
                 f"{self.api_base_url}/api/alerts/history",
                 params={
@@ -315,7 +313,7 @@ class DailyReportGenerator:
                 "Content-Type": "application/json"
             }
             payload = {
-                "model": "deepseek-chat",  # 强制使用官方推荐模型名
+                "model": "deepseek-chat", 
                 "messages": [
                     {"role": "system", "content": self.config['prompt_templates']['system_role']},
                     {"role": "user", "content": prompt}
@@ -372,30 +370,34 @@ class DailyReportGenerator:
         }
     
     def save_report(self, report: Dict[str, Any], output_path: Optional[str] = None) -> str:
-        """保存日报到文件"""
+        """保存日报到文件，支持同一天多份，自动编号"""
+        import re
         if output_path is None:
-            output_path = f"reports/daily_report_{report['date']}.md"
-        
+            date_str = report['date']
+            output_dir = 'reports'
+            os.makedirs(output_dir, exist_ok=True)
+            existing = [f for f in os.listdir(output_dir) if f.startswith(f"daily_report_{date_str}_") and f.endswith('.md')]
+            print("existing files:", existing)
+            nums = []
+            for f in existing:
+                print("checking file:", repr(f))
+                parts = f.rsplit('_', 1)
+                if len(parts) == 2 and parts[1].endswith('.md'):
+                    num_part = parts[1][:-3]
+                    if num_part.isdigit():
+                        print("matched:", num_part)
+                        nums.append(int(num_part))
+            next_num = max(nums) + 1 if nums else 1
+            print("final next_num:", next_num)
+            output_path = os.path.join(output_dir, f"daily_report_{date_str}_{next_num:02d}.md")
         # 确保目录存在
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        
         content = report['content']
         # 去除最外层的 ```markdown ... ``` 包裹
         content = re.sub(r'^```markdown\s*([\s\S]*?)\s*```$', r'\1', content.strip(), flags=re.MULTILINE)
         # 生成完整的Markdown内容
         markdown_content = f"""# 监控日报 - {report['date']}
-
-**生成时间**: {report['generated_at']}
-
----
-
-{content}
-
----
-
-*本报告由AI自动生成，仅供参考。如有疑问，请联系安防管理人员。*
-"""
-        
+\n**生成时间**: {report['generated_at']}\n\n---\n\n{content}\n\n---\n\n*本报告由AI自动生成，仅供参考。如有疑问，请联系安防管理人员。*\n"""
         try:
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(markdown_content)

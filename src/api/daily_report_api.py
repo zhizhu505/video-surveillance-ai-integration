@@ -291,25 +291,58 @@ def test_daily_report():
             'message': f'测试失败: {str(e)}'
         }), 500
 
-@daily_report_bp.route('/raw_content', methods=['GET'])
-def get_daily_report_raw_content():
-    """直接返回指定日期的日报Markdown原文（纯文本）"""
+@daily_report_bp.route('/list', methods=['GET'])
+def list_daily_reports():
+    """获取指定日期所有日报文件列表"""
     try:
-        # 获取日期参数
         target_date = request.args.get('date')
         if not target_date:
             return jsonify({'success': False, 'message': '缺少日期参数'}), 400
-        # 兼容日期格式：2025-07-15 或 2025/07/15
         date_str = target_date.replace('/', '-')
-        # 构造文件路径
         output_dir = 'reports'
-        filename = f"daily_report_{date_str}.md"
-        file_path = os.path.join(output_dir, filename)
-        if not os.path.exists(file_path):
-            return jsonify({'success': False, 'message': f'未找到日报文件: {filename}'}), 404
+        if not os.path.exists(output_dir):
+            return jsonify({'success': True, 'data': []})
+        files = []
+        for fname in os.listdir(output_dir):
+            if fname.startswith(f'daily_report_{date_str}_') and fname.endswith('.md'):
+                fpath = os.path.join(output_dir, fname)
+                files.append({
+                    'filename': fname,
+                    'created_at': os.path.getctime(fpath),
+                    'filesize': os.path.getsize(fpath)
+                })
+        # 按创建时间倒序
+        files.sort(key=lambda x: x['created_at'], reverse=True)
+        return jsonify({'success': True, 'data': files})
+    except Exception as e:
+        logger.error(f"获取日报列表失败: {e}")
+        return jsonify({'success': False, 'message': f'获取日报列表失败: {str(e)}'}), 500
+
+@daily_report_bp.route('/raw_content', methods=['GET'])
+def get_daily_report_raw_content():
+    """直接返回日报Markdown原文（支持filename或date）"""
+    try:
+        filename = request.args.get('filename')
+        output_dir = 'reports'
+        if filename:
+            file_path = os.path.join(output_dir, filename)
+            if not os.path.exists(file_path):
+                return jsonify({'success': False, 'message': f'未找到日报文件: {filename}'}), 404
+        else:
+            # 兼容老逻辑：date参数
+            target_date = request.args.get('date')
+            if not target_date:
+                return jsonify({'success': False, 'message': '缺少日期参数'}), 400
+            date_str = target_date.replace('/', '-')
+            # 查找最新的日报
+            candidates = [f for f in os.listdir(output_dir) if f.startswith(f'daily_report_{date_str}_') and f.endswith('.md')]
+            if not candidates:
+                return jsonify({'success': False, 'message': f'未找到日报文件: {date_str}'}), 404
+            # 按创建时间倒序，取最新
+            candidates.sort(key=lambda f: os.path.getctime(os.path.join(output_dir, f)), reverse=True)
+            file_path = os.path.join(output_dir, candidates[0])
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-        # 直接返回纯文本Markdown
         return Response(content, mimetype='text/markdown; charset=utf-8')
     except Exception as e:
         logger.error(f"读取日报原文失败: {e}")

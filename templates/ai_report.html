@@ -47,7 +47,11 @@
         <label for="date">选择日期：</label>
         <input type="date" id="date" name="date" required>
       </div>
-      <button type="submit" class="btn btn-primary">生成日志</button>
+      <div style="margin-bottom: 18px;">
+        <button type="button" id="viewReportBtn" class="btn btn-primary">查看日志</button>
+        <button type="button" id="newReportBtn" class="btn btn-primary" style="margin-left:10px;">新生成一份</button>
+      </div>
+      <div id="fileList" style="margin-top:18px;"></div>
     </form>
     <div id="loading" class="loading" style="display:none;">日志生成中，请稍候...</div>
     <div id="reportResult" class="markdown-body" style="display:none;"></div>
@@ -55,71 +59,102 @@
   <!-- 确保 marked.js 在页面底部加载 -->
   <script src="/static/marked.min.js"></script>
   <script>
-    window.onload = function() {
-      document.getElementById('reportForm').onsubmit = function(e) {
-        e.preventDefault();
-        document.getElementById('loading').style.display = 'block';
-        document.getElementById('reportResult').style.display = 'none';
-        const date = document.getElementById('date').value;
-        // 封装渲染函数
-        function renderMarkdown(mdContent) {
-          let html = '';
-          if (typeof marked.parse === 'function') {
-            html = marked.parse(mdContent);
-          } else if (typeof marked.marked === 'function') {
-            html = marked.marked(mdContent);
-          } else if (typeof marked === 'function') {
-            html = marked(mdContent);
-          }
-          document.getElementById('reportResult').innerHTML = html;
-          document.getElementById('reportResult').style.display = 'block';
-        }
-        // 先查找raw_content
-        fetch(`/api/daily-report/raw_content?date=${date}`)
-          .then(res => {
-            if (res.ok) return res.text();
-            if (res.status === 404) {
-              // 自动生成
-              return fetch(`/api/daily-report/generate?date=${date}`)
-                .then(res2 => res2.json())
-                .then(data => {
-                  if (data.success) {
-                    // 生成成功后再查一次raw_content
-                    return fetch(`/api/daily-report/raw_content?date=${date}`)
-                      .then(r => {
-                        if (!r.ok) throw new Error('日报生成后读取失败');
-                        return r.text();
-                      });
-                  } else {
-                    throw new Error(data.message || '日报生成失败');
-                  }
-                });
-            }
-            throw new Error('未找到日报或服务器错误');
-          })
-          .then(mdContent => {
+    function renderMarkdown(mdContent) {
+      let html = '';
+      if (typeof marked.parse === 'function') {
+        html = marked.parse(mdContent);
+      } else if (typeof marked.marked === 'function') {
+        html = marked.marked(mdContent);
+      } else if (typeof marked === 'function') {
+        html = marked(mdContent);
+      }
+      document.getElementById('reportResult').innerHTML = html;
+      document.getElementById('reportResult').style.display = 'block';
+    }
+
+    function loadReportContent(filename) {
+      if (!filename) return;
+      document.getElementById('loading').style.display = 'block';
+      fetch(`/api/daily-report/raw_content?filename=${filename}`)
+        .then(res => res.text())
+        .then(md => {
+          document.getElementById('loading').style.display = 'none';
+          renderMarkdown(md);
+        });
+    }
+
+    function loadReportList() {
+      const date = document.getElementById('date').value;
+      if (!date) {
+        alert('请先选择日期');
+        return;
+      }
+      document.getElementById('loading').style.display = 'block';
+      fetch(`/api/daily-report/list?date=${date}`)
+        .then(res => res.json())
+        .then(data => {
+          const list = data.data || [];
+          const fileListDiv = document.getElementById('fileList');
+          fileListDiv.innerHTML = '';
+          if (list.length === 0) {
+            fileListDiv.innerHTML = '<span style="color:#888;">该日期无日志</span>';
+            document.getElementById('reportResult').style.display = 'none';
             document.getElementById('loading').style.display = 'none';
-            renderMarkdown(mdContent);
+            return;
+          }
+          // 生成文件名列表
+          const ul = document.createElement('ul');
+          ul.style.listStyle = 'none';
+          ul.style.padding = '0';
+          list.forEach((item, idx) => {
+            const li = document.createElement('li');
+            li.style.cursor = 'pointer';
+            li.style.marginBottom = '6px';
+            li.style.color = '#3498db';
+            li.textContent = `${item.filename}`;
+            li.onclick = function() {
+              loadReportContent(item.filename);
+              // 高亮选中
+              Array.from(ul.children).forEach(child => child.style.fontWeight = 'normal');
+              li.style.fontWeight = 'bold';
+            };
+            ul.appendChild(li);
+          });
+          fileListDiv.appendChild(ul);
+          // 默认加载第一个
+          loadReportContent(list[0].filename);
+          ul.children[0].style.fontWeight = 'bold';
+          document.getElementById('loading').style.display = 'none';
+        });
+    }
+
+    window.onload = function() {
+      document.getElementById('viewReportBtn').onclick = function() {
+        loadReportList();
+      };
+      document.getElementById('newReportBtn').onclick = function() {
+        const date = document.getElementById('date').value;
+        if (!date) return;
+        document.getElementById('loading').style.display = 'block';
+        fetch(`/api/daily-report/generate`, {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({date: date})
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              loadReportList(); // 生成后刷新并选中新日报
+            } else {
+              throw new Error(data.message || '生成失败');
+            }
           })
           .catch(err => {
             document.getElementById('loading').style.display = 'none';
-            document.getElementById('reportResult').innerHTML = '<span style="color:red;">请求失败：' + err + '</span>';
-            document.getElementById('reportResult').style.display = 'block';
+            alert('生成失败：' + err);
           });
       };
-      // 提供一个全局测试方法，方便控制台直接渲染Markdown
-      window.renderMarkdown = function(md) {
-        let html = '';
-        if (typeof marked.parse === 'function') {
-          html = marked.parse(md);
-        } else if (typeof marked.marked === 'function') {
-          html = marked.marked(md);
-        } else if (typeof marked === 'function') {
-          html = marked(md);
-        }
-        document.getElementById('reportResult').innerHTML = html;
-        document.getElementById('reportResult').style.display = 'block';
-      };
+      window.renderMarkdown = renderMarkdown;
     };
   </script>
 </body>

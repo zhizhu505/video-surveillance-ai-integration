@@ -425,22 +425,31 @@
           min-width: 40px;
           max-width: 80px;
         }
+      .ai-report-btn {
+        text-decoration: none !important;
+        font-size: 20px !important;
+        font-weight: bold;
+        letter-spacing: 1px;
+      }
+      .ai-report-btn:hover {
+        background: linear-gradient(135deg, #357ae8, #4fc3f7);
+        color: #fff;
+        text-decoration: none !important;
+      }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- 头部 -->
-        <div class="header">
-            <h1>🚨 告警历史中心</h1>
-            <p>查看和管理所有历史告警信息</p>
-            <div class="nav-links">
-                <a href="/" class="btn-back">返回监控界面</a>
+        <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="display: inline-block; vertical-align: middle;">🚨 告警历史中心</h1>
+                <p style="margin-top: 8px;">查看和管理所有历史告警信息</p>
+                <div class="nav-links">
+                    <a href="/" class="btn-back">返回监控界面</a>
+                </div>
             </div>
-        </div>
-        
-        <!-- 在头部添加AI生成监控日志按钮 -->
-        <div style="position: absolute; top: 30px; right: 40px; z-index: 10;">
-          <a href="/ai_report" class="btn btn-primary" style="padding: 10px 24px; font-size: 16px;">📝 AI生成监控日志</a>
+            <a href="/ai_report" class="btn btn-primary ai-report-btn" style="padding: 14px 36px; font-size: 22px; text-decoration: none; margin-left: 30px;">📝 AI生成监控日志</a>
         </div>
         
         <!-- 搜索面板 -->
