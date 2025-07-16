@@ -97,6 +97,7 @@ class AllInOneSystem:
     def __init__(self, args):
         """初始化系统"""
         self.args = args
+        print(f"AllInOneSystem初始化, args.web_interface={getattr(args, 'web_interface', None)}")
 
         # 创建输出目录
         os.makedirs(args.output, exist_ok=True)
@@ -193,8 +194,12 @@ class AllInOneSystem:
 
         # 初始化Web服务器（如果可用且启用）
         self.app = None
+        print(f"HAS_FLASK={HAS_FLASK}, args.web_interface={args.web_interface}")
         if args.web_interface and HAS_FLASK:
+            print("即将调用init_web_server()...")
             self.init_web_server()
+        else:
+            print("未调用init_web_server，条件不满足")
 
         # 初始化视频录制器，如果用户传了 --record 参数，就把最终处理后的画面同时录制到视频文件里保存
         self.video_writer = None
@@ -222,7 +227,14 @@ class AllInOneSystem:
 
     def init_web_server(self):
         """初始化Web服务器"""
-        self.app = Flask(__name__, template_folder='../templates')  # 指定 HTML 模板文件夹位置
+        print("init_web_server方法被调用")
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        self.app = Flask(
+            __name__,
+            template_folder=os.path.join(BASE_DIR, '../templates'),
+            static_folder=os.path.join(BASE_DIR, '../static')
+        )
+        print("Flask static_folder:", self.app.static_folder)
 
         # 添加静态文件服务
         @self.app.route('/alerts_images/<path:relpath>')
@@ -608,6 +620,69 @@ class AllInOneSystem:
                 return jsonify({'success': True, 'message': '系统已停止'})
             else:
                 return jsonify({'success': False, 'message': '未知操作'})
+
+        @self.app.route('/api/report_stranger_login', methods=['POST'])
+        def report_stranger_login():
+            """
+            外部前端上传陌生人登录图片和告警信息
+            """
+            from werkzeug.utils import secure_filename
+            import os
+            from datetime import datetime
+            # 1. 获取表单数据
+            username = request.form.get('username')
+            ip = request.form.get('ip')
+            extra = request.form.get('extra', '')
+            file = request.files.get('image')
+
+            if not file or not username:
+                return jsonify({'success': False, 'message': '缺少图片或用户名'}), 400
+
+            # 2. 保存图片到本地
+            filename = secure_filename(f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}")
+            save_dir = os.path.join(os.getcwd(), 'alerts')  # 确保和你原有图片目录一致
+            os.makedirs(save_dir, exist_ok=True)
+            save_path = os.path.join(save_dir, filename)
+            file.save(save_path)
+            rel_path = os.path.relpath(save_path, os.getcwd())  # 存相对路径
+
+            # 3. 写入数据库
+            event_id = None
+            if self.alert_database:
+                try:
+                    from models.alert.alert_event import AlertEvent, AlertLevel
+                except ImportError:
+                    return jsonify({'success': False, 'message': '无法导入AlertEvent'}), 500
+                event = AlertEvent(
+                    id=None,  # MySQL自增
+                    rule_id='stranger_login',
+                    level=AlertLevel.ALERT,
+                    danger_level='medium',
+                    source_type='login',
+                    timestamp=datetime.now().timestamp(),
+                    message=f"检测到陌生人登录：{username}，IP：{ip}",
+                    details={'ip': ip, 'extra': extra},
+                    frame_idx=0,
+                    acknowledged=False,
+                    related_events=[]
+                )
+                event_id = self.alert_database.save_alert_event(event, image_paths={'login': rel_path})
+
+            return jsonify({'success': True, 'event_id': event_id, 'image_path': rel_path})
+
+        @self.app.route('/ai_report')
+        def ai_report_page():
+            return render_template('ai_report.html')
+
+        # 注册AI日报API
+        try:
+            print("准备注册AI日报API Blueprint")
+            from api.daily_report_api import init_daily_report_api
+            init_daily_report_api(self.app)
+            print("AI日报API Blueprint注册完成")
+            logger.info("已集成AI日报API路由")
+        except Exception as e:
+            logger.error(f"集成AI日报API失败: {e}")
 
         def run_web_server():
             """在单独的线程中运行Web服务器"""
@@ -1347,6 +1422,7 @@ def parse_args():
 
 def main():
     """主函数"""
+    print("main函数已启动")
     args = parse_args()
     system = AllInOneSystem(args)
     system.start()

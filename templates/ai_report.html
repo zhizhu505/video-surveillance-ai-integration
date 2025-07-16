@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>AI监控日志生成</title>
+  <link rel="stylesheet" href="/static/your-style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown.min.css">
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e3f0ff 0%, #f6fbff 100%);
+      /* 也可用 background: #eaf6ff; 作为纯色备选 */
+    }
+    .report-container { max-width: 900px; margin: 40px auto; background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);}
+    .report-title { font-size: 28px; font-weight: bold; margin-bottom: 24px;}
+    .form-row { margin-bottom: 18px; }
+    .form-row label { margin-right: 10px; }
+    .btn { padding: 10px 24px; border-radius: 8px; font-size: 18px; font-weight: bold; text-decoration: none; position: static; box-shadow: 0 2px 8px rgba(0,0,0,0.10); margin-top: 10px; }
+    .btn:focus, .btn:active { outline: none; }
+    .btn-primary { background: linear-gradient(90deg, #4f8cff 0%, #6ed0ff 100%); color: #fff; border: none; }
+    .btn-primary:hover { background: linear-gradient(90deg, #357ae8 0%, #4fc3f7 100%); }
+    .loading { color: #888; margin: 20px 0; }
+    .markdown-body {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 24px;
+      margin-top: 24px;
+      box-sizing: border-box;
+      max-width: 100%;
+      overflow-x: auto;
+      word-break: break-all;
+      white-space: normal;
+    }
+    .back-link { display: inline-block; margin-bottom: 18px; color: #3498db; text-decoration: none; font-size: 16px; }
+    .back-link:hover { text-decoration: underline; }
+    @media (max-width: 600px) {
+      .btn { left: 10px; bottom: 10px; padding: 10px 18px; font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="report-container">
+    <a href="/" class="back-link">← 返回告警中心</a>
+    <div class="report-title">📝 AI生成监控日志</div>
+    <form id="reportForm">
+      <div class="form-row">
+        <label for="date">选择日期：</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      <button type="submit" class="btn btn-primary">生成日志</button>
+    </form>
+    <div id="loading" class="loading" style="display:none;">日志生成中，请稍候...</div>
+    <div id="reportResult" class="markdown-body" style="display:none;"></div>
+  </div>
+  <!-- 确保 marked.js 在页面底部加载 -->
+  <script src="/static/marked.min.js"></script>
+  <script>
+    window.onload = function() {
+      document.getElementById('reportForm').onsubmit = function(e) {
+        e.preventDefault();
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('reportResult').style.display = 'none';
+        const date = document.getElementById('date').value;
+        // 封装渲染函数
+        function renderMarkdown(mdContent) {
+          let html = '';
+          if (typeof marked.parse === 'function') {
+            html = marked.parse(mdContent);
+          } else if (typeof marked.marked === 'function') {
+            html = marked.marked(mdContent);
+          } else if (typeof marked === 'function') {
+            html = marked(mdContent);
+          }
+          document.getElementById('reportResult').innerHTML = html;
+          document.getElementById('reportResult').style.display = 'block';
+        }
+        // 先查找raw_content
+        fetch(`/api/daily-report/raw_content?date=${date}`)
+          .then(res => {
+            if (res.ok) return res.text();
+            if (res.status === 404) {
+              // 自动生成
+              return fetch(`/api/daily-report/generate?date=${date}`)
+                .then(res2 => res2.json())
+                .then(data => {
+                  if (data.success) {
+                    // 生成成功后再查一次raw_content
+                    return fetch(`/api/daily-report/raw_content?date=${date}`)
+                      .then(r => {
+                        if (!r.ok) throw new Error('日报生成后读取失败');
+                        return r.text();
+                      });
+                  } else {
+                    throw new Error(data.message || '日报生成失败');
+                  }
+                });
+            }
+            throw new Error('未找到日报或服务器错误');
+          })
+          .then(mdContent => {
+            document.getElementById('loading').style.display = 'none';
+            renderMarkdown(mdContent);
+          })
+          .catch(err => {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('reportResult').innerHTML = '<span style="color:red;">请求失败：' + err + '</span>';
+            document.getElementById('reportResult').style.display = 'block';
+          });
+      };
+      // 提供一个全局测试方法，方便控制台直接渲染Markdown
+      window.renderMarkdown = function(md) {
+        let html = '';
+        if (typeof marked.parse === 'function') {
+          html = marked.parse(md);
+        } else if (typeof marked.marked === 'function') {
+          html = marked.marked(md);
+        } else if (typeof marked === 'function') {
+          html = marked(md);
+        }
+        document.getElementById('reportResult').innerHTML = html;
+        document.getElementById('reportResult').style.display = 'block';
+      };
+    };
+  </script>
+</body>
+</html> 

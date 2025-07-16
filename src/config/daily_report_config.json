@@ -1,0 +1,80 @@
+{
+  "api_settings": {
+    "base_url": "http://localhost:5000",
+    "timeout": 30
+  },
+  "llm_settings": {
+    "provider": "DeepSeek",
+    "model": "DeepSeek-V3-0324",
+    "max_tokens": 1000,
+    "temperature": 0.7,
+    "api_key_env": "DEEPSEEK_API_KEY"
+  },
+  "multimodal_settings": {
+    "enable": false,
+    "model": "Qwen/Qwen-VL-Chat",
+    "device": "cpu",
+    "max_scene_descriptions": 5
+  },
+  "report_settings": {
+    "output_dir": "reports",
+    "format": "markdown",
+    "include_images": false,
+    "max_alerts_per_report": 100
+  },
+  "prompt_templates": {
+    "system_role": "你是一名专业的安防AI分析师，擅长分析监控数据和生成安全报告。请用简洁、专业的语言进行分析和总结。",
+    "statistics_analysis": {
+      "template": "作为安防AI分析师，请分析以下监控统计数据：\n\n数据概览：\n- 总告警数：{total_alerts}\n- 已处理：{handled_count}\n- 未处理：{unhandled_count}\n- 处理率：{handling_rate:.1f}%\n\n告警类型：{source_types}\n\n请从以下角度分析：\n1. 告警数量是否正常？\n2. 处理效率如何？\n3. 主要告警类型是什么？\n4. 有什么异常趋势？\n\n请用简洁的语言总结统计发现。",
+      "variables": ["total_alerts", "handled_count", "unhandled_count", "handling_rate", "source_types"]
+    },
+    "events_analysis": {
+      "template": "作为安防AI分析师，请分析以下监控事件：\n\n事件列表（前20个）：\n{events_summary}\n\n场景描述：\n{scene_descriptions}\n\n请从以下角度分析：\n1. 最严重的事件是什么？\n2. 事件的时间分布有什么特点？\n3. 哪些事件需要重点关注？\n4. 有什么异常模式？\n\n请用简洁的语言总结事件分析。",
+      "variables": ["events_summary", "scene_descriptions"]
+    },
+    "risk_analysis": {
+      "template": "作为安防AI分析师，请评估以下风险指标：\n\n风险指标：\n- 高风险告警：{high_risk_count}个\n- 未处理高风险：{unhandled_high_risk}个\n- 总告警数：{total_alerts}个\n- 处理率：{handling_rate:.1f}%\n\n事件分析结果：\n{events_analysis}\n\n请评估：\n1. 当前风险等级（低/中/高）\n2. 主要风险点是什么？\n3. 需要立即关注的问题？\n4. 风险趋势如何？\n\n请用简洁的语言总结风险评估。",
+      "variables": ["high_risk_count", "unhandled_high_risk", "total_alerts", "handling_rate", "events_analysis"]
+    },
+    "recommendations": {
+      "template": "作为安防AI分析师，基于以下信息生成改进建议：\n\n数据概览：\n- 总告警：{total_alerts}个\n- 未处理：{unhandled_count}个\n- 处理率：{handling_rate:.1f}%\n\n风险分析：\n{risk_analysis}\n\n请从以下方面提供建议：\n1. 立即行动项（24小时内）\n2. 短期改进（1周内）\n3. 长期优化（1个月内）\n4. 预防措施\n\n请用简洁的语言总结建议。",
+      "variables": ["total_alerts", "unhandled_count", "handling_rate", "risk_analysis"]
+    },
+    "final_report": {
+      "template": "作为安防AI分析师，请基于以下分析结果生成一份完整的监控日报：\n\n日期：{date}\n\n分析结果：\n- 统计分析：{statistics_analysis}\n- 事件分析：{events_analysis}\n- 风险分析：{risk_analysis}\n- 改进建议：{recommendations}\n\n请生成一份结构化的日报，包含：\n1. 日报标题和日期\n2. 执行摘要（2-3句话总结）\n3. 详细分析（分点列出）\n4. 风险等级评估\n5. 行动建议\n6. 后续跟进事项\n\n格式要求：使用Markdown格式，结构清晰，语言专业简洁。",
+      "variables": ["date", "statistics_analysis", "events_analysis", "risk_analysis", "recommendations"]
+    }
+  },
+  "cot_steps": [
+    {
+      "name": "statistics_analysis",
+      "description": "统计分析",
+      "depends_on": []
+    },
+    {
+      "name": "events_analysis", 
+      "description": "事件分析",
+      "depends_on": ["statistics_analysis"]
+    },
+    {
+      "name": "risk_analysis",
+      "description": "风险分析", 
+      "depends_on": ["events_analysis"]
+    },
+    {
+      "name": "recommendations",
+      "description": "建议生成",
+      "depends_on": ["risk_analysis"]
+    }
+  ],
+  "output_formats": {
+    "markdown": {
+      "header_template": "# 监控日报 - {date}\n\n**生成时间**: {generated_at}\n\n---\n\n",
+      "footer_template": "\n---\n\n*本报告由AI自动生成，仅供参考。如有疑问，请联系安防管理人员。*"
+    },
+    "html": {
+      "header_template": "<!DOCTYPE html>\n<html>\n<head><title>监控日报 - {date}</title></head>\n<body>\n<h1>监控日报 - {date}</h1>\n<p><strong>生成时间</strong>: {generated_at}</p>\n<hr>\n",
+      "footer_template": "\n<hr>\n<p><em>本报告由AI自动生成，仅供参考。如有疑问，请联系安防管理人员。</em></p>\n</body>\n</html>"
+    }
+  }
+} 
