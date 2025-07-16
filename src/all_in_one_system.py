@@ -1312,7 +1312,7 @@ class AllInOneSystem:
             'interactions': getattr(self, 'recognized_interactions', [])
         }
 
-    def add_audio_alert(self, labels, scores):
+    def add_audio_alert(self, labels, scores, audio_db_stats=None):
         """供音频监控模块调用，推送声学异常告警，支持一人/多人喧哗"""
         now = time.time()
         # 记录音频事件到队列

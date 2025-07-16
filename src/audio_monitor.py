@@ -101,7 +101,12 @@ def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
             audio_data = audio_chunk.flatten()
             labels, scores = detect_audio_event(audio_data, samplerate)
             now = time_module.time()  # 避免与sounddevice的time冲突
-            # 计算音量
+            # 计算音量（分贝）
+            rms = np.sqrt(np.mean(audio_data ** 2))
+            max_db = 20 * np.log10(np.max(np.abs(audio_data)) + 1e-8)
+            min_db = 20 * np.log10(np.min(np.abs(audio_data)) + 1e-8)
+            avg_db = 20 * np.log10(rms + 1e-8)
+            # 兼容原有音量阈值
             volume = float(np.max(np.abs(audio_data)))
             is_noisy = volume > NOISE_VOLUME_THRESHOLD
             noise_window.append(is_noisy)
@@ -109,7 +114,11 @@ def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
             if len(noise_window) == NOISE_WINDOW_SIZE and sum(noise_window) >= NOISE_REQUIRED_SECONDS:
                 if now - last_alert_time > cooldown_seconds:
                     print(f"检测到30秒内有25秒为噪音，触发Classroom Noise告警，音量={volume:.3f}")
-                    alert_callback(['Classroom Noise'], [volume])
+                    alert_callback(['Classroom Noise'], [volume], {
+                        'avg_db': round(float(avg_db), 1),
+                        'max_db': round(float(max_db), 1),
+                        'min_db': round(float(min_db), 1)
+                    })
                     last_alert_time = now
                     noise_window.clear()
             # 兼容原有Speech累计逻辑（可选）
@@ -117,7 +126,11 @@ def audio_monitor_callback(alert_callback, duration=1, samplerate=16000):
             #     ...
             if labels and (now - last_alert_time > cooldown_seconds):
                 print(f"检测到异常声音: {labels} (置信度: {scores})")
-                alert_callback(labels, scores)
+                alert_callback(labels, scores, {
+                    'avg_db': round(float(avg_db), 1),
+                    'max_db': round(float(max_db), 1),
+                    'min_db': round(float(min_db), 1)
+                })
                 last_alert_time = now
 
 # 集成到主系统：自动查找AllInOneSystem实例
@@ -136,11 +149,11 @@ except Exception as e:
 
 # 修改alert_callback，推送到主系统
 
-def alert_callback(labels, scores):
+def alert_callback(labels, scores, audio_db_stats=None):
     if main_system and hasattr(main_system, 'add_audio_alert'):
-        main_system.add_audio_alert(labels, scores)
+        main_system.add_audio_alert(labels, scores, audio_db_stats)
     else:
-        print(f"[ALERT] 声学异常: {labels} (置信度: {scores})")
+        print(f"[ALERT] 声学异常: {labels} (置信度: {scores}), 分贝统计: {audio_db_stats}")
 
 if __name__ == '__main__':
     audio_thread = threading.Thread(target=audio_monitor_callback, args=(alert_callback,))
