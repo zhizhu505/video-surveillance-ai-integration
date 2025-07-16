@@ -746,10 +746,6 @@ class AllInOneSystem:
                 if delta < min_frame_time:
                     time.sleep(min_frame_time - delta)
 
-                # 如果启用了旋转选项，进行旋转
-                if self.args.rotate:
-                    frame = cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
-
                 # 读取帧
                 ret, frame = cap.read()
                 if not ret:
@@ -788,6 +784,13 @@ class AllInOneSystem:
                             self.running = False
                             break
                         continue
+
+                # 检查是否需要旋转（竖屏转横屏）
+                if frame is not None:
+                    h, w = frame.shape[:2]
+                    if h > w:  # 如果是竖屏视频
+                        frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+                        logger.debug("检测到竖屏视频，已自动旋转为横屏")
 
                 # 更新时间和计数
                 last_time = time.time()
@@ -1371,7 +1374,7 @@ def parse_args():
     parser.add_argument('--width', type=int, default=640, help='视频宽度')
     parser.add_argument('--height', type=int, default=480, help='视频高度')
     parser.add_argument('--loop_video', action='store_true', help='循环播放视频文件')
-    parser.add_argument('--rotate', action='store_true', help='将竖屏视频旋转为横屏')  # 新增旋转参数
+
     # 处理参数
     parser.add_argument('--process_every', type=int, default=3, help='每N帧处理一次')
     parser.add_argument('--process_scale', type=float, default=1.0, help='处理分辨率缩放比例 (0.5=半分辨率)')
